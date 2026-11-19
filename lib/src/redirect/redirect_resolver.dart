@@ -3,6 +3,7 @@ import 'package:typed_navigator/src/redirect/redirect_check.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
+import 'package:typed_navigator/src/tree/tree_node.dart';
 
 /// The router's own redirect: the route to go to instead of [target], or
 /// `null` to let the navigation through.
@@ -12,8 +13,8 @@ typedef RouterRedirect = TypedRoute<Object?>? Function(
 );
 
 /// Finds where one target is redirected: the router's redirect first, then the
-/// nodes of every checked route from the top of the tree down; the first
-/// redirect that names another route wins.
+/// shells and nodes of every checked route from the top of the tree down; the
+/// first redirect that names another route wins.
 final class RedirectResolver {
   /// Creates a resolver over [tree] with the router's optional redirect.
   RedirectResolver({required this._tree, required this._routerRedirect});
@@ -43,7 +44,15 @@ final class RedirectResolver {
       yield routerRedirect(context, target);
     }
     for (final checked in check.routesToCheck(target)) {
+      final enteredShells = <ShellNode<Object?>>{};
       for (final route in _tree.chainTo(checked)) {
+        // A shell's redirect runs once per chain, before the first route inside
+        // it.
+        for (final shellNode in _tree.shellNodesOf(route)) {
+          if (enteredShells.add(shellNode)) {
+            yield shellNode.redirectFor(context, target);
+          }
+        }
         yield _tree.nodeFor(route).redirectFor(context, route, target);
       }
     }

@@ -21,7 +21,7 @@ final class RouteTree {
         'The route tree has no nodes. Pass at least one RouteNode.',
       );
     }
-    _placeAll(roots, parent: null);
+    _placeAll(roots, parent: null, shellNodes: const []);
   }
 
   final RouteRegistry _registry = RouteRegistry();
@@ -32,6 +32,13 @@ final class RouteTree {
   /// Throws [ArgumentError] when [route]'s type has no node.
   List<TypedRoute<Object?>> chainTo(TypedRoute<Object?> route) =>
       _registry.placementOf(route).chainFor(route);
+
+  /// The shells around [route]'s node, from the outer one in; empty for a
+  /// route of the root navigator.
+  ///
+  /// Throws [ArgumentError] when [route]'s type has no node.
+  List<ShellNode<Object?>> shellNodesOf(TypedRoute<Object?> route) =>
+      _registry.placementOf(route).shellNodes;
 
   /// Throws [ArgumentError] when [route]'s type has no node, so nothing can
   /// show it.
@@ -46,20 +53,54 @@ final class RouteTree {
   void _placeAll(
     Iterable<TreeNode<Object?>> nodes, {
     required RoutePlacement? parent,
+    required List<ShellNode<Object?>> shellNodes,
   }) {
     for (final node in nodes) {
-      final placement = _placementFor(node, parent);
+      if (node case final ShellNode<Object?> shellNode) {
+        _placeShell(shellNode, parent: parent, shellNodes: shellNodes);
+        continue;
+      }
+      final placement = _placementFor(node, parent, shellNodes);
       _registry.register(placement);
-      _placeAll(placement.node.children, parent: placement);
+      _placeAll(
+        placement.node.children,
+        parent: placement,
+        shellNodes: shellNodes,
+      );
     }
+  }
+
+  /// A shell is transparent: its children sit under the same parent, one shell
+  /// deeper.
+  void _placeShell(
+    ShellNode<Object?> shellNode, {
+    required RoutePlacement? parent,
+    required List<ShellNode<Object?>> shellNodes,
+  }) {
+    if (shellNode.children.isEmpty) {
+      throw ArgumentError.value(
+        shellNode,
+        'children',
+        'A ShellNode has no children. Give it at least one node.',
+      );
+    }
+    _placeAll(
+      shellNode.children,
+      parent: parent,
+      shellNodes: List.unmodifiable([...shellNodes, shellNode]),
+    );
   }
 
   RoutePlacement _placementFor(
     TreeNode<Object?> node,
     RoutePlacement? parent,
+    List<ShellNode<Object?>> shellNodes,
   ) => switch ((node, parent)) {
+    (ShellNode(), _) => throw StateError(
+      'A ShellNode reached the placement of routes; _placeAll places it.',
+    ),
     (final RouteNode<TypedRoute<Object?>> routeNode, _) =>
-      RoutePlacement.topLevel(routeNode),
+      RoutePlacement.topLevel(routeNode, shellNodes: shellNodes),
     (
       final ParentedRouteNode<TypedRoute<Object?>, TypedRoute<Object?>>
       parentedNode,
@@ -69,6 +110,7 @@ final class RouteTree {
         parentedNode.node,
         parent: parent,
         buildParent: parentedNode.buildParent,
+        shellNodes: shellNodes,
       ),
     (ParentedRouteNode(), null) => throw StateError(
       'A node placed with withParent was found where no route is above it; '

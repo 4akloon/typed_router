@@ -58,10 +58,18 @@ class TestPage extends Page<Object?> {
 
   final Widget child;
 
+  /// A page-based route: it shows the child of the page it currently has,
+  /// as MaterialPage does, so a page updated in place shows its new child.
   @override
   Route<Object?> createRoute(BuildContext context) => PageRouteBuilder<Object?>(
     settings: this,
-    pageBuilder: (context, animation, secondaryAnimation) => child,
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        switch (ModalRoute.of(
+          context,
+        )?.settings) {
+          final TestPage page => page.child,
+          _ => child,
+        },
   );
 }
 

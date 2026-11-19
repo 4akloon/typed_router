@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
+import 'package:typed_navigator/src/state/shell_entry.dart';
 
 /// What the user sees: the routes on the active path, bottom to top.
 ///
@@ -72,16 +73,19 @@ final class NavigationState {
   @internal
   NavigationState withError(Object error) => NavigationState._(_entries, error);
 
-  /// This state without [entry]; this same state when [entry] is not in it
-  /// or is its only entry (a state is never empty).
+  /// This state without [removed] (a page the navigator popped, or every
+  /// page of a shell it popped); this same state when none of them is in
+  /// it, or when nothing would be left (a state is never empty).
   @internal
-  NavigationState withoutEntry(NavigationEntry entry) =>
-      _entries.contains(entry) && _entries.length > 1
-      ? NavigationState.fromEntries([
-          for (final kept in _entries)
-            if (kept != entry) kept,
-        ])
-      : this;
+  NavigationState withoutEntries(Iterable<NavigationEntry> removed) {
+    final kept = [
+      for (final entry in _entries)
+        if (!removed.contains(entry)) entry,
+    ];
+    return kept.length == _entries.length || kept.isEmpty
+        ? this
+        : NavigationState.fromEntries(kept);
+  }
 
   /// The entries of this state that [other] does not hold, compared by
   /// identity, bottom to top.
@@ -106,11 +110,34 @@ final class NavigationState {
   @override
   int get hashCode => Object.hash(Object.hashAll(_entries), error);
 
-  /// `RoomsRoute() > RoomRoute(RoomId(7))`, followed by ` (error...)` when the
-  /// redirects failed; for logs and test failures.
+  /// `RoomsRoute() > RoomRoute(RoomId(7))`, shell navigators in brackets,
+  /// followed by ` (error...)` when the redirects failed; for logs and test
+  /// failures.
   @override
   String toString() => switch (error) {
-    final error? => '${routes.join(' > ')} (error: $error)',
-    null => routes.join(' > '),
+    final error? => '${_describeStack()} (error: $error)',
+    null => _describeStack(),
   };
+
+  /// The routes joined with ` > `, each shell navigator in brackets:
+  /// `[UsersRoute() > UserRoute(u1)] > ProfileRoute()`.
+  String _describeStack() {
+    final description = StringBuffer();
+    var openShells = const <ShellEntry>[];
+    for (final (index, entry) in _entries.indexed) {
+      var shared = 0;
+      while (shared < openShells.length &&
+          shared < entry.shells.length &&
+          identical(openShells[shared], entry.shells[shared])) {
+        shared++;
+      }
+      description
+        ..write(']' * (openShells.length - shared))
+        ..write(index == 0 ? '' : ' > ')
+        ..write('[' * (entry.shells.length - shared))
+        ..write(entry.route);
+      openShells = entry.shells;
+    }
+    return '$description${']' * openShells.length}';
+  }
 }

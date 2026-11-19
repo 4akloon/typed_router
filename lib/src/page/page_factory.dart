@@ -9,8 +9,11 @@ import 'package:typed_navigator/src/page/page_request.dart';
 /// `CupertinoPageFactory` from `package:typed_navigator/cupertino.dart`.
 ///
 /// The page must use [PageRequest.key]; the router throws [StateError]
-/// otherwise. A factory does not decide whether a page takes back gestures:
-/// the router does.
+/// otherwise. Its route must show the child of the page it currently holds,
+/// as `MaterialPage` and `CupertinoPage` do: the router updates a page in
+/// place (a shell's page gets a new navigator on every navigation), and a
+/// route that keeps the first child shows a stale screen. A factory does
+/// not decide whether a page takes back gestures: the router does.
 ///
 /// ```dart
 /// final class FadePageFactory implements PageFactory {

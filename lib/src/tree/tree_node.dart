@@ -5,6 +5,8 @@ import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';
 
+part 'shell_node.dart';
+
 // TreeNode is sealed, so its variants live in this library. The functions a
 // node holds are only called from the node's own methods, where the route
 // type is known: read through a wider type they would fail Dart's covariance

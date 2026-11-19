@@ -4,8 +4,9 @@ import 'package:typed_navigator/src/tree/tree_node.dart';
 /// Where routes of one type sit in the tree, and how to build the routes
 /// above one of them.
 final class RoutePlacement {
-  /// A placement with no route above it.
-  const RoutePlacement.topLevel(this.node) : _parentLink = null;
+  /// A placement with no route above it, inside [shellNodes].
+  const RoutePlacement.topLevel(this.node, {this.shellNodes = const []})
+    : _parentLink = null;
 
   /// A placement under [parent]; [buildParent] makes the parent route from a
   /// route placed here.
@@ -14,10 +15,14 @@ final class RoutePlacement {
     required RoutePlacement parent,
     required TypedRoute<Object?> Function(TypedRoute<Object?> route)
     buildParent,
+    this.shellNodes = const [],
   }) : _parentLink = _ParentLink(parent, buildParent);
 
   /// The node that places the routes.
   final RouteNode<TypedRoute<Object?>> node;
+
+  /// The shells around the node in the tree, from the outer one in.
+  final List<ShellNode<Object?>> shellNodes;
 
   final _ParentLink? _parentLink;
 

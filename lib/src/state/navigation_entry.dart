@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
+import 'package:typed_navigator/src/state/shell_entry.dart';
 
 /// One page on a stack: a route together with the identity of its page,
 /// and the push waiting for its result, if any.
@@ -12,11 +13,20 @@ import 'package:typed_navigator/src/route/typed_route.dart';
 ///
 /// Internal: not exported.
 final class NavigationEntry {
-  /// Creates an entry for [route]; `pendingResult` when a push awaits it.
-  NavigationEntry(this.route, {this._pendingResult});
+  /// Creates an entry for [route] inside [shells] (outer first);
+  /// `pendingResult` when a push awaits it.
+  NavigationEntry(
+    this.route, {
+    List<ShellEntry> shells = const [],
+    this._pendingResult,
+  }) : shells = List.unmodifiable(shells);
 
   /// The route shown by this page.
   final TypedRoute<Object?> route;
+
+  /// The shell instances this page stands in, from the outer one in; empty for
+  /// a page of the root navigator.
+  final List<ShellEntry> shells;
 
   final PendingResult<Object?>? _pendingResult;
 
@@ -48,6 +58,11 @@ final class NavigationEntry {
     }
     recordResult(result);
   }
+
+  /// Whether leaving this entry completes [pendingResult]: the push that
+  /// created it awaits this entry.
+  bool completes(PendingResult<Object?> pendingResult) =>
+      identical(_pendingResult, pendingResult);
 
   /// The entry left the state: completes the push awaiting it.
   void leave() => _pendingResult?.complete();

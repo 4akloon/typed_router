@@ -3,7 +3,6 @@ import 'package:typed_navigator/src/redirect/redirect_check.dart';
 import 'package:typed_navigator/src/redirect/redirects.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
-import 'package:typed_navigator/src/state/navigation_entry.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 
@@ -42,11 +41,14 @@ final class StackOperations {
   /// The state [push] would build for [route], without redirects and without
   /// committing.
   NavigationState plannedPush(TypedRoute<Object?> route) =>
-      _planner.pushedOnto(_state, NavigationEntry(route));
+      _planner.pushedOnto(_state, route);
 
   /// See `TypedRouter.push`.
-  Future<T?> push<T>(TypedRoute<T> route) =>
-      _navigateWithNew(route, (entry) => _planner.pushedOnto(_state, entry));
+  Future<T?> push<T>(TypedRoute<T> route) => _navigateWithNew(
+    route,
+    (planned, pendingResult) =>
+        _planner.pushedOnto(_state, planned, pendingResult: pendingResult),
+  );
 
   /// See `TypedRouter.pop`.
   void pop(Object? result) {
@@ -67,7 +69,8 @@ final class StackOperations {
   /// See `TypedRouter.replace`.
   Future<T?> replace<T>(TypedRoute<T> route) => _navigateWithNew(
     route,
-    (entry) => _planner.withTopReplaced(_state, entry),
+    (planned, pendingResult) =>
+        _planner.withTopReplaced(_state, planned, pendingResult: pendingResult),
   );
 
   /// See `TypedRouter.pushAndRemoveUntil`.
@@ -76,24 +79,35 @@ final class StackOperations {
     RoutePredicate predicate,
   ) => _navigateWithNew(
     route,
-    (entry) => _planner.pushedAfterPoppingUntil(_state, entry, predicate),
+    (planned, pendingResult) => _planner.pushedAfterPoppingUntil(
+      _state,
+      planned,
+      predicate,
+      pendingResult: pendingResult,
+    ),
   );
 
-  /// Navigates to the candidate [plan] builds around a new entry for
-  /// [route]. An entry that does not reach the committed state (redirected
-  /// or failed) leaves at once: its push completes with `null`. A redirect
-  /// target gets an entry nobody awaits: its result type is not [T].
+  /// Navigates to the candidate [plan] builds with a new entry for
+  /// [route] that [pendingResult] awaits. When no entry it awaits reaches
+  /// the committed state (redirected or failed), the push completes with
+  /// `null`. A redirect target gets an entry nobody awaits: its result type
+  /// is not [T].
   Future<T?> _navigateWithNew<T>(
     TypedRoute<T> route,
-    NavigationState Function(NavigationEntry entry) plan,
+    NavigationState Function(
+      TypedRoute<Object?> route,
+      PendingResult<Object?>? pendingResult,
+    )
+    plan,
   ) {
     final pendingResult = PendingResult<T>();
-    final entry = NavigationEntry(route, pendingResult: pendingResult);
     _navigate(
-      plan(entry),
-      (redirected) => plan(NavigationEntry(redirected)),
+      plan(route, pendingResult),
+      (redirected) => plan(redirected, null),
     );
-    if (!_state.entries.contains(entry)) entry.leave();
+    if (!_state.entries.any((entry) => entry.completes(pendingResult))) {
+      pendingResult.complete();
+    }
     return pendingResult.future;
   }
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.1 - 2026-11-19
+
+- `ShellNode`, like go_router's `ShellRoute`: a frame with its own
+  navigator around the routes below it; `builder(context, state,
+  navigator)`, optional `pageFactory` and `redirect`. `go` keeps the shell
+  while the navigation stays in it; `push` goes into the shell on screen or
+  starts a new one; the back button pops the deepest current navigator
+  first. `NavigationState.toString` marks shell navigators with brackets.
+- A `PageFactory`'s route must show the child of its current page, as
+  `MaterialPage` does: the router updates a shell's page in place.
+
 ## 0.2.2 - 2026-11-19
 
 - `TypedRouterTargets` in `typed_navigator/testing.dart` (experimental):

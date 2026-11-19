@@ -3,14 +3,13 @@ import 'package:typed_navigator/src/operation/navigation_planner.dart';
 import 'package:typed_navigator/src/operation/stack_operations.dart';
 import 'package:typed_navigator/src/page/navigator_pages.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
+import 'package:typed_navigator/src/page/route_pages.dart';
 import 'package:typed_navigator/src/redirect/redirect_resolver.dart';
 import 'package:typed_navigator/src/redirect/redirects.dart';
 import 'package:typed_navigator/src/redirect/router_mount.dart';
 import 'package:typed_navigator/src/redirect/stack_recheck.dart';
 import 'package:typed_navigator/src/result/result_completion.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
-import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
@@ -39,19 +38,17 @@ final class RouterParts {
       mount: mount,
       redirectLimit: redirectLimit,
     );
+    final planner = NavigationPlanner(tree);
     final controller = NavigationController(
-      initialState: NavigationState.fromEntries([
-        for (final route in tree.chainTo(initialRoute)) NavigationEntry(route),
-      ]),
+      initialState: planner.startingAt(initialRoute),
       entryLifecycle: const ResultCompletion(),
     );
-    final planner = NavigationPlanner(tree);
     return RouterParts._(
       controller: controller,
       operations: StackOperations(controller, planner, redirects),
       recheck: StackRecheck(controller, planner, redirects),
       pages: NavigatorPages(
-        tree: tree,
+        routePages: RoutePages(tree: tree, pageFactory: pageFactory),
         pageFactory: pageFactory,
         errorBuilder: errorBuilder,
       ),

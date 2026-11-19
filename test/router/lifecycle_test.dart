@@ -4,14 +4,18 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
+import '../support/app_fixtures.dart';
 import '../support/route_fixtures.dart';
 import '../support/tree_fixtures.dart';
 
 const rooms = RoomsRoute();
 const room7 = RoomRoute(RoomId(7));
 
-TypedRouter roomsRouter(TypedRoute<Object?> initialRoute) =>
-    TypedRouter(routes: roomsRoutes, initialRoute: initialRoute);
+TypedRouter roomsRouter(TypedRoute<Object?> initialRoute) => TypedRouter(
+  routes: roomsRoutes,
+  initialRoute: initialRoute,
+  pageFactory: const TestPageFactory(),
+);
 
 void main() {
   testWidgets('a ListenableBuilder builds the screen from the router state', (

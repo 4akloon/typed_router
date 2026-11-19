@@ -56,6 +56,17 @@ final class NavigationState {
   @internal
   List<NavigationEntry> get entries => _entries;
 
+  /// This state without [entry]; this same state when [entry] is not in it
+  /// or is its only entry (a state is never empty).
+  @internal
+  NavigationState withoutEntry(NavigationEntry entry) =>
+      _entries.contains(entry) && _entries.length > 1
+      ? NavigationState.fromEntries([
+          for (final kept in _entries)
+            if (kept != entry) kept,
+        ])
+      : this;
+
   /// The entries of this state that [other] does not hold, compared by
   /// identity, bottom to top.
   @internal

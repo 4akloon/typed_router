@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
+import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';
 
@@ -38,7 +39,11 @@ sealed class TreeNode<P> {
 final class RouteNode<R extends TypedRoute<Object?>>
     extends TreeNode<NoParentRoute> {
   /// Creates a node for routes of type [R].
-  const RouteNode({required this.build, this.children = const []});
+  const RouteNode({
+    required this.build,
+    this.children = const [],
+    this.pageFactory,
+  });
 
   /// Builds the screen for a route of type [R].
   final Widget Function(BuildContext context, R route) build;
@@ -46,6 +51,11 @@ final class RouteNode<R extends TypedRoute<Object?>>
   /// Nodes under this one. Each of them is put here with [withParent], so it
   /// can build an [R] for the stack below itself.
   final List<TreeNode<R>> children;
+
+  /// Turns this node's screens into pages instead of the router's factory:
+  /// a sheet, a dialog or a full-screen modal for this route. `null` uses
+  /// the router's factory.
+  final PageFactory? pageFactory;
 
   /// This node under a parent it builds itself from its own route.
   ///
@@ -59,6 +69,16 @@ final class RouteNode<R extends TypedRoute<Object?>>
   /// The route type this node places.
   @internal
   Type get routeType => R;
+
+  /// Builds the screen for [route], which is always an [R].
+  @internal
+  Widget buildScreen(BuildContext context, TypedRoute<Object?> route) =>
+      build(context, route as R);
+
+  /// This node's [pageFactory], or [routerFactory] when it has none.
+  @internal
+  PageFactory pageFactoryOr(PageFactory routerFactory) =>
+      pageFactory ?? routerFactory;
 }
 
 /// A [RouteNode] put under a parent route with [RouteNode.withParent].

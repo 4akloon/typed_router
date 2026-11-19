@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
+import '../support/app_fixtures.dart';
 import '../support/route_fixtures.dart';
 import '../support/tree_fixtures.dart';
 
@@ -17,6 +18,7 @@ void main() {
     final router = TypedRouter(
       routes: roomsRoutes,
       initialRoute: const RoomsRoute(),
+      pageFactory: const TestPageFactory(),
     );
 
     expect(router.state.top, const RoomsRoute());
@@ -28,6 +30,7 @@ void main() {
     final router = TypedRouter(
       routes: [...roomsRoutes, ...usersRoutes],
       initialRoute: const UserGamesRoute('u7'),
+      pageFactory: const TestPageFactory(),
     );
 
     expect(router.state.routes, const [
@@ -41,6 +44,7 @@ void main() {
     final router = TypedRouter(
       routes: roomsRoutes,
       initialRoute: const RoomsRoute(),
+      pageFactory: const TestPageFactory(),
     );
 
     expect(router.state.routes, const [RoomsRoute()]);
@@ -48,7 +52,11 @@ void main() {
 
   test('a router without routes cannot be created', () {
     expect(
-      () => TypedRouter(routes: const [], initialRoute: const RoomsRoute()),
+      () => TypedRouter(
+        routes: const [],
+        initialRoute: const RoomsRoute(),
+        pageFactory: const TestPageFactory(),
+      ),
       throwsArgumentError,
     );
   });
@@ -59,6 +67,7 @@ void main() {
       () => TypedRouter(
         routes: [...roomsRoutes, ...authRoutes, ...authRoutes],
         initialRoute: const RoomsRoute(),
+        pageFactory: const TestPageFactory(),
       ),
       throwsArgumentError,
     );
@@ -67,7 +76,11 @@ void main() {
   test('an initial route without a node fails the router and names its '
       'type', () {
     expect(
-      () => TypedRouter(routes: roomsRoutes, initialRoute: const SignInRoute()),
+      () => TypedRouter(
+        routes: roomsRoutes,
+        initialRoute: const SignInRoute(),
+        pageFactory: const TestPageFactory(),
+      ),
       throwsA(
         isA<ArgumentError>().having(
           (error) => error.message,

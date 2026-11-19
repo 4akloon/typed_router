@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.6 - 2026-11-19
+
+- `TypedRouter` is a `RouterConfig`: pass it to
+  `MaterialApp.router(routerConfig: router)` or `WidgetsApp.router`. It
+  shows the state in a root navigator, removes pages the navigator pops by
+  itself (app bar back, iOS swipe, predictive back) from the state, and
+  offers `navigator` for code outside the widget tree and
+  `TypedRouter.of(context)`.
+- `PageFactory` and `PageRequest`: the router's factory turns screens into
+  pages, a `RouteNode` may have its own; a page without the request key is
+  a `StateError`. `MaterialPageFactory` (`typed_navigator/material.dart`)
+  and `CupertinoPageFactory` (`typed_navigator/cupertino.dart`) are ready
+  to use; the core imports neither.
+- **Breaking:** `TypedRouter` requires `pageFactory`. **Migration:** add
+  `pageFactory: const MaterialPageFactory()` (or your own factory).
+
 ## 0.1.5 - 2026-11-19
 
 - `TypedRouter`: the application's router, created from the route tree and

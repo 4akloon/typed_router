@@ -5,6 +5,8 @@
 /// boundary.
 library;
 
+export 'src/page/page_factory.dart' show PageFactory;
+export 'src/page/page_request.dart' show PageRequest;
 export 'src/route/typed_route.dart' show TypedRoute;
 export 'src/router/typed_router.dart' show TypedRouter;
 export 'src/state/navigation_state.dart' show NavigationState;

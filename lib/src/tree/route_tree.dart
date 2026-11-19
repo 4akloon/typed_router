@@ -33,6 +33,12 @@ final class RouteTree {
   List<TypedRoute<Object?>> chainTo(TypedRoute<Object?> route) =>
       _registry.placementOf(route).chainFor(route);
 
+  /// The node of [route]'s type.
+  ///
+  /// Throws [ArgumentError] when [route]'s type has no node.
+  RouteNode<TypedRoute<Object?>> nodeFor(TypedRoute<Object?> route) =>
+      _registry.placementOf(route).node;
+
   void _placeAll(
     Iterable<TreeNode<Object?>> nodes, {
     required RoutePlacement? parent,

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.2 - 2026-11-19
+
+- `TypedRouterTargets` in `typed_navigator/testing.dart` (experimental):
+  `router.stateAfterGo(route)` and `router.stateAfterPush(route)` build the
+  target a redirect receives, to call a redirect on its own in a test, as
+  go_router tests build a `GoRouterState`.
+
 ## 0.2.1 - 2026-11-19
 
 - Redirects, as in go_router. `TypedRouter(redirect:)` and

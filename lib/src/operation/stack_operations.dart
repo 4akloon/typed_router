@@ -34,6 +34,16 @@ final class StackOperations {
     (redirected) => _planner.goTo(_state, redirected),
   );
 
+  /// The state [go] would build for [route], without redirects and without
+  /// committing.
+  NavigationState plannedGo(TypedRoute<Object?> route) =>
+      _planner.goTo(_state, route);
+
+  /// The state [push] would build for [route], without redirects and without
+  /// committing.
+  NavigationState plannedPush(TypedRoute<Object?> route) =>
+      _planner.pushedOnto(_state, NavigationEntry(route));
+
   /// See `TypedRouter.push`.
   Future<T?> push<T>(TypedRoute<T> route) =>
       _navigateWithNew(route, (entry) => _planner.pushedOnto(_state, entry));

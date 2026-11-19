@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 import 'package:typed_navigator/src/operation/stack_operations.dart';
 import 'package:typed_navigator/src/page/navigator_pages.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
@@ -159,6 +160,18 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
     TypedRoute<T> route,
     bool Function(TypedRoute<Object?> route) predicate,
   ) => _operations.pushAndRemoveUntil(route, predicate);
+
+  /// The state [go] would build for [route], before redirects; for
+  /// `TypedRouterTargets` in `testing.dart`.
+  @internal
+  NavigationState plannedGo(TypedRoute<Object?> route) =>
+      _operations.plannedGo(route);
+
+  /// The state [push] would build for [route], before redirects; for
+  /// `TypedRouterTargets` in `testing.dart`.
+  @internal
+  NavigationState plannedPush(TypedRoute<Object?> route) =>
+      _operations.plannedPush(route);
 
   /// Runs the redirects over the whole stack, as a notification of
   /// `refreshListenable` does: if one redirects, the stack becomes its

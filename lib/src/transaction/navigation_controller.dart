@@ -100,7 +100,7 @@ final class NavigationController extends ChangeNotifier {
   void dispose() {
     _checkUsable();
     _isDisposed = true;
-    _entryLifecycle.entriesLeft(_state.allEntries);
+    _entryLifecycle.stackDisposed(_state.allEntries);
     super.dispose();
   }
 
@@ -109,7 +109,7 @@ final class NavigationController extends ChangeNotifier {
     final entriesThatLeft = _leftEntries.between(_state, next);
     _state = next;
     if (entriesThatLeft.isNotEmpty) {
-      _entryLifecycle.entriesLeft(entriesThatLeft);
+      _entryLifecycle.entriesLeft(entriesThatLeft, next);
     }
     _notify();
     return TransactionCommitted(next);

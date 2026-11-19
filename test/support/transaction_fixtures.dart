@@ -65,7 +65,11 @@ final class RecordingEntryLifecycle implements EntryLifecycle {
   final List<List<NavigationEntry>> reports = [];
 
   @override
-  void entriesLeft(List<NavigationEntry> entries) => reports.add(entries);
+  void entriesLeft(List<NavigationEntry> left, NavigationState remains) =>
+      reports.add(left);
+
+  @override
+  void stackDisposed(List<NavigationEntry> entries) => reports.add(entries);
 }
 
 /// Collects errors reported through [FlutterError.reportError] while a

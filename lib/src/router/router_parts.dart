@@ -16,7 +16,9 @@ import 'package:typed_navigator/src/redirect/stack_recheck.dart';
 import 'package:typed_navigator/src/result/result_completion.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/tabs/tabs_switching.dart';
+import 'package:typed_navigator/src/transaction/entry_lifecycles.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
+import 'package:typed_navigator/src/transaction/retired_navigators.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
@@ -53,7 +55,10 @@ final class RouterParts {
     );
     final controller = NavigationController(
       initialState: planner.startingAt(initialRoute),
-      entryLifecycle: const ResultCompletion(),
+      entryLifecycle: const EntryLifecycles([
+        ResultCompletion(),
+        RetiredNavigators(),
+      ]),
     );
     final operations = StackOperations(controller, planner, redirects);
     final routePages = RoutePages(tree: tree, pageFactory: pageFactory);

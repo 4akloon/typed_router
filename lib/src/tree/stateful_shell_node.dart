@@ -12,6 +12,19 @@ part of 'tree_node.dart';
 /// The children of the branches start their own chains: the tabs pass no
 /// parent route down, and they fit anywhere in the tree.
 ///
+/// Back on the root page of a branch closes the app, as in go_router. To
+/// go to the first tab instead, frame the shell in a `PopScope`:
+///
+/// ```dart
+/// builder: (context, state, shell) => PopScope(
+///   canPop: shell.currentIndex == 0,
+///   onPopInvokedWithResult: (didPop, result) {
+///     if (!didPop) shell.goBranchAt(0);
+///   },
+///   child: shell,
+/// ),
+/// ```
+///
 /// ```dart
 /// StatefulShellNode(
 ///   builder: (context, state, shell) => Scaffold(

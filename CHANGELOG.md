@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.5 - 2026-11-19
+
+- A pageless route in the navigator of a shell or a branch that leaves the
+  state now completes with `null` instead of hanging forever; Flutter and
+  go_router dispose such a navigator with the route.
+- `StatefulShellNode` documents back on a tab root: close the app (as
+  go_router), or frame the shell in a `PopScope` to go to the first tab.
+
 ## 0.3.4 - 2026-11-19
 
 - An Android predictive back gesture now closes only the page on screen.

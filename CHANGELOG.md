@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.8 - 2026-11-19
+
+- The Android back button goes through the router as through the native
+  navigator: a dialog above the top page closes first, `PopScope` can
+  block, then the top page leaves (state and its push follow); on the
+  first page the platform closes the app. Routes opened imperatively
+  behave natively around router operations: `push` keeps them under the
+  new page, removing their page removes them.
+
 ## 0.1.7 - 2026-11-19
 
 - Stack operations on `TypedRouter`: `go` (the route's chain from the

@@ -52,9 +52,11 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
     }
   }
 
-  /// Not handled until the back button arrives (0.1.8).
+  /// The platform's back button, as the native navigator answers it:
+  /// `maybePop` closes a dialog first, respects `PopScope`, and on the
+  /// first page answers `false` so the platform closes the app.
   @override
-  Future<bool> popRoute() => SynchronousFuture(false);
+  Future<bool> popRoute() => navigator?.maybePop() ?? SynchronousFuture(false);
 
   /// Not called: the router has no route information parser until URLs
   /// (0.5).

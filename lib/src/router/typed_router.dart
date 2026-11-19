@@ -74,6 +74,7 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
   final NavigationController _controller;
   final StackOperations _operations;
   final NavigatorPages _pages;
+  final BackButtonDispatcher _backButtonDispatcher = RootBackButtonDispatcher();
   late final TypedRouterDelegate _delegate = TypedRouterDelegate(
     router: this,
     controller: _controller,
@@ -145,9 +146,11 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
   @override
   RouteInformationProvider? get routeInformationProvider => null;
 
-  /// `null` until the back button (0.1.8).
+  /// Sends the platform's back button to the root navigator's `maybePop`:
+  /// a dialog closes first, `PopScope` can block, then the top page leaves;
+  /// on the first page the platform closes the app.
   @override
-  BackButtonDispatcher? get backButtonDispatcher => null;
+  BackButtonDispatcher get backButtonDispatcher => _backButtonDispatcher;
 
   /// Calls [listener] after every navigation that changes [state].
   ///

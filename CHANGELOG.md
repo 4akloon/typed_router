@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.7 - 2026-11-19
+
+- Stack operations on `TypedRouter`: `go` (the route's chain from the
+  tree, keeping entries of the common prefix), `push` (typed
+  `Future<T?>`), `pop`, `canPop`, `popUntil`, `replace`,
+  `pushAndRemoveUntil`. Every push completes exactly once: with the result
+  of `pop` or of a native `Navigator.pop(context, result)`, or `null` when
+  its entry leaves any other way; predicates are atomic.
+- A router navigates without a widgets binding, e.g. in `main` before
+  `runApp`.
+
 ## 0.1.6 - 2026-11-19
 
 - `TypedRouter` is a `RouterConfig`: pass it to

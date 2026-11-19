@@ -39,7 +39,14 @@ final class NavigatorPages {
     final factory = node.pageFactoryOr(_pageFactory);
     final request = PageRequest(
       key: ValueKey(entry),
-      child: Builder(builder: (context) => node.buildScreen(context, route)),
+      // The navigator reports a native Navigator.pop(context, result) here,
+      // just before onDidRemovePage; Route.popped would arrive too late.
+      child: PopScope<Object?>(
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) entry.offerNativeResult(result);
+        },
+        child: Builder(builder: (context) => node.buildScreen(context, route)),
+      ),
     );
     final page = factory.createPage(request);
     if (page.key != request.key) {

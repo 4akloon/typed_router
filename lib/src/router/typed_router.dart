@@ -1,6 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'package:typed_navigator/src/operation/navigation_planner.dart';
+import 'package:typed_navigator/src/operation/stack_operations.dart';
 import 'package:typed_navigator/src/page/navigator_pages.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
+import 'package:typed_navigator/src/result/result_completion.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/router/typed_router_delegate.dart';
 import 'package:typed_navigator/src/router/typed_router_scope.dart';
@@ -55,15 +58,21 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
     final initialState = NavigationState.fromEntries([
       for (final route in tree.chainTo(initialRoute)) NavigationEntry(route),
     ]);
+    final controller = NavigationController(
+      initialState: initialState,
+      entryLifecycle: const ResultCompletion(),
+    );
     return TypedRouter._(
-      NavigationController(initialState: initialState),
+      controller,
+      StackOperations(controller, NavigationPlanner(tree)),
       NavigatorPages(tree: tree, pageFactory: pageFactory),
     );
   }
 
-  TypedRouter._(this._controller, this._pages);
+  TypedRouter._(this._controller, this._operations, this._pages);
 
   final NavigationController _controller;
+  final StackOperations _operations;
   final NavigatorPages _pages;
   late final TypedRouterDelegate _delegate = TypedRouterDelegate(
     router: this,
@@ -82,6 +91,42 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
   /// What is on screen now. Starts at the initial route and its ancestors;
   /// stays readable after [dispose].
   NavigationState get state => _controller.state;
+
+  /// Replaces the stack with [route] and the routes above it in the tree.
+  /// Entries of the common prefix that hold equal routes stay, with their
+  /// screens' state; the pushes of removed entries complete with `null`.
+  void go(TypedRoute<Object?> route) => _operations.go(route);
+
+  /// Puts [route] on top as a new entry, without its ancestors. Completes
+  /// with the result the page is popped with ([pop] or a native
+  /// `Navigator.pop(context, result)`), or `null` when it leaves another
+  /// way. Throws [ArgumentError] when [route]'s type has no node.
+  Future<T?> push<T>(TypedRoute<T> route) => _operations.push(route);
+
+  /// Removes the top entry and completes its [push] with [result].
+  ///
+  /// Throws [StateError] on the last entry (see [canPop]) and
+  /// [ArgumentError] when the top route's [push] awaits another type.
+  @optionalTypeArgs
+  void pop<T>([T? result]) => _operations.pop(result);
+
+  /// Whether [pop] can remove an entry: the stack has more than one.
+  bool get canPop => _operations.canPop;
+
+  /// Removes entries from the top until [predicate] holds for the top
+  /// route; throws [StateError] and changes nothing when none matches.
+  void popUntil(bool Function(TypedRoute<Object?> route) predicate) =>
+      _operations.popUntil(predicate);
+
+  /// Replaces the top entry with [route]; the replaced push completes with
+  /// `null`. Returns the push of [route], as [push] does.
+  Future<T?> replace<T>(TypedRoute<T> route) => _operations.replace(route);
+
+  /// [popUntil] [predicate], then [push] [route], as one navigation.
+  Future<T?> pushAndRemoveUntil<T>(
+    TypedRoute<T> route,
+    bool Function(TypedRoute<Object?> route) predicate,
+  ) => _operations.pushAndRemoveUntil(route, predicate);
 
   /// The root navigator, or `null` while the router is not mounted in a
   /// widget tree. For code outside the widget tree that shows dialogs or

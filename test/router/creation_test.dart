@@ -25,6 +25,20 @@ void main() {
     expect(BindingBase.debugBindingType(), isNull);
   });
 
+  test('a router navigates without a widgets binding, as in main before '
+      'runApp', () {
+    final router = TypedRouter(
+      routes: roomsRoutes,
+      initialRoute: const RoomsRoute(),
+      pageFactory: const TestPageFactory(),
+    );
+
+    router.go(const RoomRoute(RoomId(7)));
+
+    expect(router.state.top, const RoomRoute(RoomId(7)));
+    expect(BindingBase.debugBindingType(), isNull);
+  });
+
   test('a router starts at the initial route with its ancestors from the '
       'tree', () {
     final router = TypedRouter(

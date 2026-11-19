@@ -28,8 +28,10 @@ final class RoomsScreenState extends State<RoomsScreen> {
   Widget build(BuildContext context) => const Text('Rooms');
 }
 
-/// Rooms with a room and a create-room sheet under them.
+/// Rooms with a room and a create-room sheet under them, and a note
+/// editor that returns the edited text.
 final List<TreeNode<NoParentRoute>> appRoutes = [
+  const RouteNode<EditNoteRoute>(build: _editNoteScreen),
   RouteNode<RoomsRoute>(
     build: (context, route) => const RoomsScreen(),
     children: [
@@ -46,6 +48,9 @@ final List<TreeNode<NoParentRoute>> appRoutes = [
 
 Widget _createRoomScreen(BuildContext context, CreateRoomRoute route) =>
     const Text('Create room');
+
+Widget _editNoteScreen(BuildContext context, EditNoteRoute route) =>
+    const Text('Edit note');
 
 /// A page that needs nothing but widgets.dart.
 class TestPage extends Page<Object?> {

@@ -91,3 +91,14 @@ final class CaseInsensitiveRoute implements TypedRoute<void> {
   @override
   String toString() => 'CaseInsensitive($key)';
 }
+
+/// A marker interface for routes that need a signed-in user.
+abstract interface class AuthArea {}
+
+/// A route behind authentication, marked with [AuthArea].
+final class AccountRoute extends TypedRoute<void> implements AuthArea {
+  const AccountRoute();
+
+  @override
+  List<Object?> get fields => const [];
+}

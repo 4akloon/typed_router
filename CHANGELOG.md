@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3 - 2026-11-19
+
+- `NavigationState`: an immutable, never-empty snapshot of the active path
+  with `routes`, `top`, `find<R>()` and `contains<T>()`; equal when it holds
+  the same pages.
+
 ## 0.1.2 - 2026-11-19
 
 - Route tree: `RouteNode<R>` with `build`, `children` and `withParent`,

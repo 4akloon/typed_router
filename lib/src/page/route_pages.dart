@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:typed_navigator/src/page/on_screen_gate.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/page/page_request.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
@@ -24,12 +25,8 @@ final class RoutePages {
     final node = _tree.nodeFor(route);
     final request = PageRequest(
       key: ValueKey(entry),
-      // The navigator reports a native Navigator.pop(context, result) here,
-      // just before onDidRemovePage; Route.popped would arrive too late.
-      child: PopScope<Object?>(
-        onPopInvokedWithResult: (didPop, result) {
-          if (didPop) entry.offerNativeResult(result);
-        },
+      child: OnScreenGate(
+        entry: entry,
         child: Builder(builder: (context) => node.buildScreen(context, route)),
       ),
     );

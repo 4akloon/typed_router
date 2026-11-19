@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.4 - 2026-11-19
+
+- An Android predictive back gesture now closes only the page on screen.
+  With shells and tabs it used to close the top page of every navigator,
+  including covered shells and hidden branches (flutter/flutter#152323,
+  which go_router shares). The router's pages say they cannot pop while
+  their navigator is off screen; a dialog over a shell takes the gesture
+  itself. Page factories need no change.
+
 ## 0.3.3 - 2026-11-19
 
 - Navigator slots, like go_router's `parentNavigatorKey`:

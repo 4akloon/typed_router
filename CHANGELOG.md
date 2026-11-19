@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5 - 2026-11-19
+
+- `TypedRouter`: the application's router, created from the route tree and
+  an initial route (its ancestors built from the tree), with `state`, the
+  `Listenable` contract and `dispose`; no widgets binding needed, no global
+  access, several independent routers per process.
+
 ## 0.1.4 - 2026-11-19
 
 - Navigation transaction (internal): a candidate state runs through

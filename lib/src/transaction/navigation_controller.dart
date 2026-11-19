@@ -68,10 +68,19 @@ final class NavigationController extends ChangeNotifier {
     return _commit(next);
   }
 
+  /// Adds [listener]; throws [StateError] after [dispose].
+  @override
+  void addListener(VoidCallback listener) {
+    _checkUsable();
+    super.addListener(listener);
+  }
+
   /// Reports every entry as left, then releases the listeners. Any later
-  /// navigation throws [StateError].
+  /// navigation, added listener or second dispose throws [StateError];
+  /// removing a listener stays allowed.
   @override
   void dispose() {
+    _checkUsable();
     _isDisposed = true;
     _entryLifecycle.entriesLeft(_state.entries);
     super.dispose();

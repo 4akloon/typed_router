@@ -6,6 +6,7 @@
 library;
 
 export 'src/route/typed_route.dart' show TypedRoute;
+export 'src/router/typed_router.dart' show TypedRouter;
 export 'src/state/navigation_state.dart' show NavigationState;
 export 'src/tree/no_parent_route.dart' show NoParentRoute;
 export 'src/tree/tree_node.dart' show RouteNode, TreeNode;

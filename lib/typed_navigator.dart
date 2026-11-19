@@ -4,3 +4,5 @@
 /// tree declared top-down. URLs are an optional adapter at the platform
 /// boundary.
 library;
+
+export 'src/route/typed_route.dart' show TypedRoute;

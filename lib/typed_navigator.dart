@@ -11,5 +11,7 @@ export 'src/redirect/redirect_chain_error.dart' show RedirectChainError;
 export 'src/route/typed_route.dart' show TypedRoute;
 export 'src/router/typed_router.dart' show TypedRouter;
 export 'src/state/navigation_state.dart' show NavigationState;
+export 'src/tabs/stateful_shell.dart' show StatefulShell;
 export 'src/tree/no_parent_route.dart' show NoParentRoute;
-export 'src/tree/tree_node.dart' show RouteNode, ShellNode, TreeNode;
+export 'src/tree/tree_node.dart'
+    show BranchNode, RouteNode, ShellNode, StatefulShellNode, TreeNode;

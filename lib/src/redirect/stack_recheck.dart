@@ -38,7 +38,7 @@ final class StackRecheck {
     if (steps.isEmpty) return;
     // A stack shown with an error is checked as it is, so it comes back
     // once the redirects let it through.
-    final candidate = NavigationState.fromEntries(_state.entries);
+    final candidate = _state.withoutError();
     final outcome = _controller.navigate(candidate, steps: steps);
     if (outcome case TransactionFailed(:final error)) {
       _controller.applyExternalChange(_state.withError(error));

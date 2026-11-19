@@ -3,6 +3,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:typed_navigator/src/tree/nesting.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
@@ -42,8 +43,13 @@ void main() {
   test('a route knows the shells around it, from the outer one in', () {
     final tree = RouteTree([usersShell]);
 
-    expect(tree.shellNodesOf(const UsersRoute()), [usersShell]);
-    expect(tree.shellNodesOf(const UserRoute('u1')), [usersShell, userShell]);
+    expect(tree.nestingsOf(const UsersRoute()), [
+      ShellNesting(usersShell),
+    ]);
+    expect(tree.nestingsOf(const UserRoute('u1')), [
+      ShellNesting(usersShell),
+      ShellNesting(userShell),
+    ]);
   });
 
   test('a shell without children fails when the router is built', () {

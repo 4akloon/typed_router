@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.2 - 2026-11-19
+
+- Tabs, like go_router's `StatefulShellRoute`: `StatefulShellNode` with
+  `BranchNode<B>` branches named by types, each with its own navigator and
+  kept stack; lazy branches; the builder frames a `StatefulShell` with
+  `currentIndex`, `activeBranch`, `goBranch<B>()`, `goBranchAt`,
+  `resetBranch<B>()`, `resetBranchAt`. `go` to a route of another branch
+  switches to it and keeps what it can; `push` stays in the active branch.
+  Malformed tabs fail when the router is built.
+
 ## 0.3.1 - 2026-11-19
 
 - `ShellNode`, like go_router's `ShellRoute`: a frame with its own

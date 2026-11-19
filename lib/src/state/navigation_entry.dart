@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
-import 'package:typed_navigator/src/state/shell_entry.dart';
+import 'package:typed_navigator/src/state/shell_level.dart';
 
 /// One page on a stack: a route together with the identity of its page,
 /// and the push waiting for its result, if any.
@@ -13,20 +13,43 @@ import 'package:typed_navigator/src/state/shell_entry.dart';
 ///
 /// Internal: not exported.
 final class NavigationEntry {
-  /// Creates an entry for [route] inside [shells] (outer first);
+  /// Creates an entry for [route] inside [levels] (outer first);
   /// `pendingResult` when a push awaits it.
   NavigationEntry(
     this.route, {
-    List<ShellEntry> shells = const [],
+    List<ShellLevel> levels = const [],
     this._pendingResult,
-  }) : shells = List.unmodifiable(shells);
+  }) : levels = List.unmodifiable(levels);
 
   /// The route shown by this page.
   final TypedRoute<Object?> route;
 
-  /// The shell instances this page stands in, from the outer one in; empty for
-  /// a page of the root navigator.
-  final List<ShellEntry> shells;
+  /// The levels of navigators this page stands in (shell instances, branches of
+  /// tabs), from the outer one in; empty for a page of the root navigator.
+  final List<ShellLevel> levels;
+
+  /// The branches of tabs this page stands in, from the outer one in.
+  Iterable<BranchEntry> get branches => levels.whereType<BranchEntry>();
+
+  /// Whether this page stands in [level].
+  bool isIn(ShellLevel level) => levels.contains(level);
+
+  /// The branch of [tabs] this page stands in, or `null`.
+  BranchEntry? branchOf(TabsEntry tabs) =>
+      branches.where((branch) => identical(branch.tabs, tabs)).firstOrNull;
+
+  /// Whether this page stands in a branch of [tabs].
+  bool standsIn(TabsEntry tabs) => branchOf(tabs) != null;
+
+  /// This page's levels outside [tabs], then [branchType] of [tabs]: where
+  /// a page of that branch stands.
+  List<ShellLevel> levelsIn(TabsEntry tabs, Type branchType) {
+    final current = branchOf(tabs);
+    return [
+      ...levels.takeWhile((level) => level != current),
+      tabs.branch(branchType),
+    ];
+  }
 
   final PendingResult<Object?>? _pendingResult;
 

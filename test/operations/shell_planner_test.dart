@@ -3,8 +3,12 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:typed_navigator/src/operation/branch_switch.dart';
+import 'package:typed_navigator/src/operation/entry_chain.dart';
+import 'package:typed_navigator/src/operation/go_plan.dart';
 import 'package:typed_navigator/src/operation/navigation_planner.dart';
-import 'package:typed_navigator/src/state/shell_entry.dart';
+import 'package:typed_navigator/src/operation/shell_path.dart';
+import 'package:typed_navigator/src/state/shell_level.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
@@ -15,7 +19,7 @@ const user1 = UserRoute('u1');
 const user2 = UserRoute('u2');
 const account = AccountRoute();
 
-final planner = NavigationPlanner(
+final planner = _plannerOver(
   RouteTree([
     ShellNode<NoParentRoute>(
       builder: (context, state, navigator) => navigator,
@@ -34,9 +38,19 @@ final planner = NavigationPlanner(
   ]),
 );
 
+NavigationPlanner _plannerOver(RouteTree tree) {
+  final entryChain = EntryChain(ShellPath(tree));
+  return NavigationPlanner(
+    tree,
+    entryChain,
+    GoPlan(tree, entryChain),
+    BranchSwitch(tree, entryChain),
+  );
+}
+
 /// The shell instance of every entry, bottom to top; `null` on the root.
-List<ShellEntry?> shellsOf(NavigationState state) => [
-  for (final entry in state.entries) entry.shells.firstOrNull,
+List<ShellLevel?> shellsOf(NavigationState state) => [
+  for (final entry in state.entries) entry.levels.firstOrNull,
 ];
 
 void main() {

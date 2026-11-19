@@ -3,9 +3,12 @@ import 'package:meta/meta.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/tabs/stateful_shell.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';
 
+part 'branch_node.dart';
 part 'shell_node.dart';
+part 'stateful_shell_node.dart';
 
 // TreeNode is sealed, so its variants live in this library. The functions a
 // node holds are only called from the node's own methods, where the route

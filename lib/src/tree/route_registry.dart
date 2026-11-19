@@ -25,6 +25,10 @@ final class RouteRegistry {
     _placements[routeType] = placement;
   }
 
+  /// Whether [route]'s type has a node.
+  bool hasNodeFor(TypedRoute<Object?> route) =>
+      _placements.containsKey(route.runtimeType);
+
   /// Where [route]'s type sits in the tree.
   RoutePlacement placementOf(TypedRoute<Object?> route) =>
       _placements[route.runtimeType] ??

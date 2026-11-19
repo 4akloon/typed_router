@@ -196,9 +196,10 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
   @override
   RouteInformationProvider? get routeInformationProvider => null;
 
-  /// Sends the platform's back button to the root navigator's `maybePop`:
-  /// a dialog closes first, `PopScope` can block, then the top page leaves;
-  /// on the first page the platform closes the app.
+  /// Sends the platform's back button to `maybePop` of the current
+  /// navigators, the deepest shell or branch first: a dialog closes first,
+  /// `PopScope` can block, then the top page leaves; on the first page the
+  /// platform closes the app.
   @override
   BackButtonDispatcher get backButtonDispatcher => _backButtonDispatcher;
 

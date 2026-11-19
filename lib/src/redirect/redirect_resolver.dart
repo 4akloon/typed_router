@@ -2,8 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/redirect/redirect_check.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/tree/nesting.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
-import 'package:typed_navigator/src/tree/tree_node.dart';
 
 /// The router's own redirect: the route to go to instead of [target], or
 /// `null` to let the navigation through.
@@ -44,13 +44,13 @@ final class RedirectResolver {
       yield routerRedirect(context, target);
     }
     for (final checked in check.routesToCheck(target)) {
-      final enteredShells = <ShellNode<Object?>>{};
+      final enteredLevels = <Nesting>{};
       for (final route in _tree.chainTo(checked)) {
-        // A shell's redirect runs once per chain, before the first route inside
-        // it.
-        for (final shellNode in _tree.shellNodesOf(route)) {
-          if (enteredShells.add(shellNode)) {
-            yield shellNode.redirectFor(context, target);
+        // A shell's or tabs' redirect runs once per chain, before the first
+        // route inside it.
+        for (final level in _tree.nestingsOf(route)) {
+          if (enteredLevels.add(level)) {
+            yield level.redirectFor(context, target);
           }
         }
         yield _tree.nodeFor(route).redirectFor(context, route, target);

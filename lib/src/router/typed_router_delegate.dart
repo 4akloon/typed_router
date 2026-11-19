@@ -30,9 +30,7 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
   final RouterMount _mount;
   final StackRecheck _recheck;
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey();
-  late final CurrentNavigators _currentNavigators = CurrentNavigators(
-    _navigatorKey,
-  );
+  final CurrentNavigators _currentNavigators = const CurrentNavigators();
 
   /// The root navigator, or `null` while it is not mounted.
   NavigatorState? get navigator => _navigatorKey.currentState;
@@ -64,9 +62,9 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
     ),
   );
 
-  /// Called for pages the navigator popped (back in an app bar, a swipe, a
-  /// predictive back gesture) and for pages the router took away; only the
-  /// first changes the state. A page some navigator popped by itself.
+  /// A page some navigator popped by itself (back in an app bar, a swipe, a
+  /// predictive back gesture, `Navigator.pop`):; in a shell's or a branch's
+  /// navigator. A page in a branch not on screen leaves its kept stack.
   void _removePage(Page<Object?> page) {
     final state = _controller.state;
     final removed = _pages.entriesOf(page, state);
@@ -74,17 +72,19 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
     _controller.applyExternalChange(state.withoutEntries(removed));
   }
 
-  /// The platform's back button, as the native navigator answers it: `maybePop`
-  /// closes a dialog first, respects `PopScope`, and on the first page answers
-  /// `false` so the platform closes the app. The system back button: `maybePop`
-  /// on the current navigators, the deepest first, until one handles it.
-  /// `false` lets the platform close the app.
+  /// The system back button: `maybePop` on the current navigators, the deepest
+  /// first, until one handles it. A dialog closes first and `PopScope` can
+  /// refuse, as with the native navigator; `false` lets the platform close the
+  /// app.
   @override
   Future<bool> popRoute() async {
-    for (final navigator in _currentNavigators.deepestFirst(
+    final root = navigator;
+    if (root == null) return false;
+    for (final current in _currentNavigators.deepestFirst(
+      root,
       _controller.state,
     )) {
-      if (await navigator.maybePop()) return true;
+      if (await current.maybePop()) return true;
     }
     return false;
   }

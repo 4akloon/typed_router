@@ -1,6 +1,11 @@
 import 'package:flutter/widgets.dart';
+import 'package:typed_navigator/src/operation/branch_switch.dart';
+import 'package:typed_navigator/src/operation/entry_chain.dart';
+import 'package:typed_navigator/src/operation/go_plan.dart';
 import 'package:typed_navigator/src/operation/navigation_planner.dart';
+import 'package:typed_navigator/src/operation/shell_path.dart';
 import 'package:typed_navigator/src/operation/stack_operations.dart';
+import 'package:typed_navigator/src/page/level_pages.dart';
 import 'package:typed_navigator/src/page/navigator_pages.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/page/route_pages.dart';
@@ -10,6 +15,7 @@ import 'package:typed_navigator/src/redirect/router_mount.dart';
 import 'package:typed_navigator/src/redirect/stack_recheck.dart';
 import 'package:typed_navigator/src/result/result_completion.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
+import 'package:typed_navigator/src/tabs/tabs_switching.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
@@ -38,17 +44,30 @@ final class RouterParts {
       mount: mount,
       redirectLimit: redirectLimit,
     );
-    final planner = NavigationPlanner(tree);
+    final entryChain = EntryChain(ShellPath(tree));
+    final planner = NavigationPlanner(
+      tree,
+      entryChain,
+      GoPlan(tree, entryChain),
+      BranchSwitch(tree, entryChain),
+    );
     final controller = NavigationController(
       initialState: planner.startingAt(initialRoute),
       entryLifecycle: const ResultCompletion(),
     );
+    final operations = StackOperations(controller, planner, redirects);
+    final routePages = RoutePages(tree: tree, pageFactory: pageFactory);
     return RouterParts._(
       controller: controller,
-      operations: StackOperations(controller, planner, redirects),
+      operations: operations,
       recheck: StackRecheck(controller, planner, redirects),
       pages: NavigatorPages(
-        routePages: RoutePages(tree: tree, pageFactory: pageFactory),
+        routePages: routePages,
+        levelPages: LevelPages(
+          routePages: routePages,
+          pageFactory: pageFactory,
+          switchingFor: (tabs) => TabsSwitching(operations, tabs),
+        ),
         pageFactory: pageFactory,
         errorBuilder: errorBuilder,
       ),

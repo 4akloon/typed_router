@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/transaction/entry_lifecycle.dart';
 import 'package:typed_navigator/src/transaction/frame_phase.dart';
+import 'package:typed_navigator/src/transaction/left_entries.dart';
 import 'package:typed_navigator/src/transaction/navigation_step.dart';
 import 'package:typed_navigator/src/transaction/navigation_transaction.dart';
 import 'package:typed_navigator/src/transaction/transaction_outcome.dart';
@@ -12,8 +13,7 @@ import 'package:typed_navigator/src/transaction/transaction_outcome.dart';
 /// commits them synchronously and notifies listeners only when the state
 /// really changed. Delegates the steps to a [NavigationTransaction].
 final class NavigationController extends ChangeNotifier {
-  /// Creates a controller that starts at [initialState] without a
-  /// notification.
+  /// Creates a controller at [initialState], without a notification.
   NavigationController({
     required NavigationState initialState,
     this._framePhase = const FramePhase.scheduler(),
@@ -21,6 +21,7 @@ final class NavigationController extends ChangeNotifier {
   }) : _state = initialState;
 
   final NavigationTransaction _transaction = NavigationTransaction();
+  final LeftEntries _leftEntries = const LeftEntries();
   final FramePhase _framePhase;
   final EntryLifecycle _entryLifecycle;
   NavigationState _state;
@@ -73,12 +74,9 @@ final class NavigationController extends ChangeNotifier {
   }
 
   /// Runs [changes], which navigate while widgets build: the router checking
-  /// its stack as it is shown.
-  ///
-  /// The listeners hear about the commits once the frame is done, in one
-  /// notification: they include the `Router` above the widget that builds,
-  /// which cannot be marked dirty now. Whoever builds below reads [state]
-  /// directly in this frame.
+  /// its stack as it is shown. Listeners (the `Router` above among them, which
+  /// cannot be marked dirty now) hear once, after the frame; whoever builds
+  /// below reads [state] in this frame.
   void changeWhileBuilding(void Function() changes) {
     _isChangingWhileBuilding = true;
     try {
@@ -95,20 +93,20 @@ final class NavigationController extends ChangeNotifier {
     super.addListener(listener);
   }
 
-  /// Reports every entry as left, then releases the listeners. Any later
-  /// navigation, added listener or second dispose throws [StateError];
-  /// removing a listener stays allowed.
+  /// Reports every entry as left (on screen and in branches not on
+  /// screen), then releases the listeners. Any later navigation, added
+  /// listener or second dispose throws [StateError]; removing one is fine.
   @override
   void dispose() {
     _checkUsable();
     _isDisposed = true;
-    _entryLifecycle.entriesLeft(_state.entries);
+    _entryLifecycle.entriesLeft(_state.allEntries);
     super.dispose();
   }
 
   TransactionOutcome _commit(NavigationState next) {
     if (next == _state) return const TransactionUnchanged();
-    final entriesThatLeft = _state.entriesMissingFrom(next);
+    final entriesThatLeft = _leftEntries.between(_state, next);
     _state = next;
     if (entriesThatLeft.isNotEmpty) {
       _entryLifecycle.entriesLeft(entriesThatLeft);

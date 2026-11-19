@@ -1,9 +1,11 @@
-import 'package:typed_navigator/src/operation/shell_path.dart';
+import 'package:typed_navigator/src/operation/branch_switch.dart';
+import 'package:typed_navigator/src/operation/entry_chain.dart';
+import 'package:typed_navigator/src/operation/go_plan.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
-import 'package:typed_navigator/src/state/shell_entry.dart';
+import 'package:typed_navigator/src/state/shell_level.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
 
 /// Which routes may stay on the stack.
@@ -13,59 +15,67 @@ typedef RoutePredicate = bool Function(TypedRoute<Object?> route);
 ///
 /// Changes nothing itself: every method returns a new state, or throws before
 /// anything happens when the operation cannot be planned. New entries get their
-/// shell instances from [ShellPath]; a shell no entry stands in any more is
-/// gone with it.
+/// levels from [EntryChain]; the state keeps the stacks of branches not on
+/// screen as the active path changes.
 final class NavigationPlanner {
-  /// Creates a planner over the routes of [_tree].
-  NavigationPlanner(this._tree) : _shellPath = ShellPath(_tree);
+  /// Creates a planner over the routes of [_tree] that makes entries with
+  /// [_entryChain], plans `go` with [_goPlan] and switches branches with
+  /// [_branchSwitch].
+  NavigationPlanner(
+    this._tree,
+    this._entryChain,
+    this._goPlan,
+    this._branchSwitch,
+  );
 
   final RouteTree _tree;
-  final ShellPath _shellPath;
+  final EntryChain _entryChain;
+  final GoPlan _goPlan;
+  final BranchSwitch _branchSwitch;
 
   /// The chain of [route] from the tree, as the first state of a router.
   NavigationState startingAt(TypedRoute<Object?> route) =>
-      NavigationState.fromEntries(_chained(const [], _tree.chainTo(route)));
+      NavigationState.fromEntries(
+        _entryChain.chained(const [], _tree.chainTo(route)),
+      );
 
-  /// The chain of [route] from the tree, keeping the entries of the common
-  /// prefix that hold equal routes, with their shells.
-  NavigationState goTo(NavigationState current, TypedRoute<Object?> route) {
-    final chain = _tree.chainTo(route);
-    final entries = current.entries;
-    var keptCount = 0;
-    while (keptCount < chain.length &&
-        keptCount < entries.length &&
-        entries[keptCount].route == chain[keptCount]) {
-      keptCount++;
-    }
-    return NavigationState.fromEntries(
-      _chained(entries.take(keptCount).toList(), chain.skip(keptCount)),
-    );
-  }
+  /// The chain of [route] from the tree; see [GoPlan].
+  NavigationState goTo(NavigationState current, TypedRoute<Object?> route) =>
+      current.showing(_goPlan.entriesFor(current, route));
 
-  /// [current] with [route] on top, in the shell on screen when it belongs
-  /// there; [pendingResult] when a push awaits it.
+  /// [current] with [route] on top, in the shell or branch on screen when
+  /// it belongs there, else in new ones; [pendingResult] when a push
+  /// awaits it.
   NavigationState pushedOnto(
     NavigationState current,
     TypedRoute<Object?> route, {
     PendingResult<Object?>? pendingResult,
-  }) => NavigationState.fromEntries([
+  }) => current.showing([
     ...current.entries,
-    _entryAbove(current.entries.last.shells, route, pendingResult),
+    _entryChain.entryAbove(
+      current.topLevels,
+      route,
+      pendingResult: pendingResult,
+    ),
   ]);
 
   /// [current] without its top entry; the caller checks there is one below.
   NavigationState withoutTop(NavigationState current) =>
-      NavigationState.fromEntries(_belowTop(current));
+      current.showing(_belowTop(current));
 
   /// [current] with [route] in place of its top entry, in the top entry's
-  /// shells where they fit.
+  /// levels where they fit.
   NavigationState withTopReplaced(
     NavigationState current,
     TypedRoute<Object?> route, {
     PendingResult<Object?>? pendingResult,
-  }) => NavigationState.fromEntries([
+  }) => current.showing([
     ..._belowTop(current),
-    _entryAbove(current.entries.last.shells, route, pendingResult),
+    _entryChain.entryAbove(
+      current.topLevels,
+      route,
+      pendingResult: pendingResult,
+    ),
   ]);
 
   /// [current] without the entries above the topmost route that matches
@@ -83,7 +93,7 @@ final class NavigationPlanner {
         'No route on the stack matches the predicate; nothing was removed.',
       );
     }
-    return NavigationState.fromEntries(entries.take(matchIndex + 1));
+    return current.showing(entries.take(matchIndex + 1).toList());
   }
 
   /// [poppedUntil], then [pushedOnto], as one candidate.
@@ -98,28 +108,28 @@ final class NavigationPlanner {
     pendingResult: pendingResult,
   );
 
-  List<NavigationEntry> _chained(
-    List<NavigationEntry> kept,
-    Iterable<TypedRoute<Object?>> chain,
-  ) {
-    final entries = [...kept];
-    for (final route in chain) {
-      final below = entries.lastOrNull?.shells ?? const <ShellEntry>[];
-      entries.add(_entryAbove(below, route, null));
-    }
-    return entries;
-  }
+  /// [current] showing [branchType] of [tabs]: the active branch as it
+  /// is, or another one's kept stack or initial chain; [current] itself
+  /// when the tabs are not on the active path.
+  NavigationState branchShown(
+    NavigationState current,
+    TabsEntry tabs,
+    Type branchType,
+  ) => switch (_branchSwitch.shown(current, tabs, branchType)) {
+    final next? => current.showing(next),
+    null => current,
+  };
 
-  NavigationEntry _entryAbove(
-    List<ShellEntry> below,
-    TypedRoute<Object?> route,
-    PendingResult<Object?>? pendingResult,
-  ) => NavigationEntry(
-    route,
-    shells: _shellPath.instancesFor(route, below: below),
-    pendingResult: pendingResult,
-  );
+  /// [current] showing [branchType] of [tabs] from its initial route.
+  NavigationState branchReset(
+    NavigationState current,
+    TabsEntry tabs,
+    Type branchType,
+  ) => switch (_branchSwitch.reset(current, tabs, branchType)) {
+    final next? => current.showing(next),
+    null => current,
+  };
 
-  Iterable<NavigationEntry> _belowTop(NavigationState current) =>
-      current.entries.take(current.entries.length - 1);
+  List<NavigationEntry> _belowTop(NavigationState current) =>
+      current.entries.take(current.entries.length - 1).toList();
 }

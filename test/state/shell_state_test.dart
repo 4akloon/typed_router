@@ -4,7 +4,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/shell_entry.dart';
+import 'package:typed_navigator/src/state/shell_level.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
 import '../support/route_fixtures.dart';
@@ -23,8 +23,8 @@ void main() {
   test('routes are flat across shells', () {
     final shell = ShellEntry(_shellNode());
     final state = NavigationState.fromEntries([
-      NavigationEntry(rooms, shells: [shell]),
-      NavigationEntry(room7, shells: [shell]),
+      NavigationEntry(rooms, levels: [shell]),
+      NavigationEntry(room7, levels: [shell]),
       NavigationEntry(account),
     ]);
 
@@ -36,9 +36,9 @@ void main() {
     final outer = ShellEntry(_shellNode());
     final inner = ShellEntry(_shellNode());
     final state = NavigationState.fromEntries([
-      NavigationEntry(rooms, shells: [outer]),
-      NavigationEntry(room7, shells: [outer, inner]),
-      NavigationEntry(room8, shells: [outer, inner]),
+      NavigationEntry(rooms, levels: [outer]),
+      NavigationEntry(room7, levels: [outer, inner]),
+      NavigationEntry(room8, levels: [outer, inner]),
       NavigationEntry(account),
     ]);
 
@@ -54,8 +54,8 @@ void main() {
     final first = ShellEntry(node);
     final second = ShellEntry(node);
     final state = NavigationState.fromEntries([
-      NavigationEntry(rooms, shells: [first]),
-      NavigationEntry(room7, shells: [second]),
+      NavigationEntry(rooms, levels: [first]),
+      NavigationEntry(room7, levels: [second]),
     ]);
 
     expect(

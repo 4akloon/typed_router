@@ -4,6 +4,7 @@ import 'package:typed_navigator/src/redirect/redirects.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/shell_level.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 
 /// Carries out the router's stack operations: checks what must hold
@@ -48,6 +49,19 @@ final class StackOperations {
     route,
     (planned, pendingResult) =>
         _planner.pushedOnto(_state, planned, pendingResult: pendingResult),
+  );
+
+  /// Shows [branchType] of [tabs]: a navigation with the redirects of the
+  /// branch's top route.
+  void goBranch(TabsEntry tabs, Type branchType) => _navigate(
+    _planner.branchShown(_state, tabs, branchType),
+    (redirected) => _planner.goTo(_state, redirected),
+  );
+
+  /// Shows [branchType] of [tabs] from its initial route, as [goBranch].
+  void resetBranch(TabsEntry tabs, Type branchType) => _navigate(
+    _planner.branchReset(_state, tabs, branchType),
+    (redirected) => _planner.goTo(_state, redirected),
   );
 
   /// See `TypedRouter.pop`.

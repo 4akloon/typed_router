@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
+import 'package:typed_navigator/src/tabs/branch_keep_alive.dart';
 import 'package:typed_navigator/src/tabs/branch_switching.dart';
 
 /// The branch navigators of a `StatefulShellNode`, the active one shown,
@@ -48,17 +49,40 @@ final class StatefulShell extends StatelessWidget {
   /// Resets the branch at [index] in [branches], as [resetBranch].
   void resetBranchAt(int index) => _switching.resetBranch(branches[index]);
 
+  /// The navigators of the branches in tab order, for a builder that lays them
+  /// out itself (a cross-fade, a `PageView`) instead of showing this widget;
+  /// go_router's `navigatorContainerBuilder`. A branch not visited yet is an
+  /// empty box until [goBranch] visits it.
+  ///
+  /// The container only lays them out; switching is still [goBranch] /
+  /// [goBranchAt], and back and the back gesture go to the branch at
+  /// [currentIndex] whatever the container shows. A scrolling container
+  /// must follow the shell both ways: start at [currentIndex], move when
+  /// it changes, and call [goBranchAt] when the user scrolls
+  /// (`PageView(onPageChanged: shell.goBranchAt)`).
+  ///
+  /// Put each navigator in the tree exactly once (it has a global key):
+  /// either this widget or these navigators, not both. Keep a hidden one in
+  /// the tree, or its screens lose their state. Hiding is the container's
+  /// job: `TickerMode`, focus, hit testing and semantics, as this widget's
+  /// own `IndexedStack` does. Each comes kept alive for scrolling
+  /// containers.
+  List<Widget> get navigators => [
+    for (final branch in branches)
+      BranchKeepAlive(
+        key: ValueKey(branch),
+        child: _navigators[branch] ?? const SizedBox.shrink(),
+      ),
+  ];
+
   /// The branch navigators in an `IndexedStack`; a branch not on screen stops
   /// ticking (`TickerMode`), as go_router's default container does.
   @override
   Widget build(BuildContext context) => IndexedStack(
     index: currentIndex,
     children: [
-      for (final branch in branches)
-        TickerMode(
-          enabled: branch == activeBranch,
-          child: _navigators[branch] ?? const SizedBox.shrink(),
-        ),
+      for (final (index, navigator) in navigators.indexed)
+        TickerMode(enabled: index == currentIndex, child: navigator),
     ],
   );
 }

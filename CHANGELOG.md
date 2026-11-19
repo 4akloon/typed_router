@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.9 - 2026-11-19
+
+- `StatefulShell.navigators`: the branch navigators in tab order, each
+  kept alive, for a tabs builder that lays them out in its own container
+  (a cross-fade, a `PageView`), like go_router's `navigatorContainerBuilder`.
+  Switching stays `goBranch`; bind a scrolling container to the shell both
+  ways.
+
 ## 0.3.8 - 2026-11-19
 
 - Tabs not on screen stop ticking (`TickerMode`), and every nested

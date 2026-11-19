@@ -12,6 +12,19 @@ part of 'tree_node.dart';
 /// The children of the branches start their own chains: the tabs pass no
 /// parent route down, and they fit anywhere in the tree.
 ///
+/// To lay out the branches yourself (a cross-fade, a `PageView`), as
+/// go_router's `navigatorContainerBuilder`, put [StatefulShell.navigators]
+/// in your container instead of the shell, and keep the container and the
+/// shell in step (see [StatefulShell.navigators]):
+///
+/// ```dart
+/// builder: (context, state, shell) => PageView(
+///   controller: pages, // moved to shell.currentIndex when it changes
+///   onPageChanged: shell.goBranchAt,
+///   children: shell.navigators,
+/// ),
+/// ```
+///
 /// Back on the root page of a branch closes the app, as in go_router. To
 /// go to the first tab instead, frame the shell in a `PopScope`:
 ///

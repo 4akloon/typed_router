@@ -73,38 +73,44 @@ List<TreeNode<NoParentRoute>> tabsRoutes(
     ),
     redirect: redirect,
     branches: [
-      BranchNode<RoomsBranch>(
-        initial: const RoomsRoute(),
-        children: [
-          RouteNode<RoomsRoute>(
-            build: (context, rooms) => LoggedScreen('Rooms', log),
-            children: [
-              RouteNode<RoomRoute>(
-                build: (context, room) =>
-                    LoggedScreen('Room ${room.id.value}', log),
-              ).withParent((room) => const RoomsRoute()),
-            ],
-          ),
-        ],
-      ),
-      BranchNode<FriendsBranch>(
-        initial: friends,
-        children: [
-          RouteNode<FriendsRoute>(
-            build: (context, friends) => LoggedScreen('Friends', log),
-            children: [
-              RouteNode<FriendRoute>(
-                build: (context, friend) =>
-                    LoggedScreen('Friend ${friend.name}', log),
-              ).withParent((friend) => friends),
-            ],
-          ),
-        ],
-      ),
+      roomsBranch(log),
+      friendsBranch(log),
     ],
   ),
   RouteNode<AccountRoute>(build: (context, account) => const Text('Account')),
 ];
+
+/// The rooms branch: rooms, then a room.
+BranchNode<RoomsBranch> roomsBranch(ScreenLog log) => BranchNode<RoomsBranch>(
+  initial: const RoomsRoute(),
+  children: [
+    RouteNode<RoomsRoute>(
+      build: (context, rooms) => LoggedScreen('Rooms', log),
+      children: [
+        RouteNode<RoomRoute>(
+          build: (context, room) => LoggedScreen('Room ${room.id.value}', log),
+        ).withParent((room) => const RoomsRoute()),
+      ],
+    ),
+  ],
+);
+
+/// The friends branch: friends, then a friend.
+BranchNode<FriendsBranch> friendsBranch(ScreenLog log) =>
+    BranchNode<FriendsBranch>(
+      initial: friends,
+      children: [
+        RouteNode<FriendsRoute>(
+          build: (context, friends) => LoggedScreen('Friends', log),
+          children: [
+            RouteNode<FriendRoute>(
+              build: (context, friend) =>
+                  LoggedScreen('Friend ${friend.name}', log),
+            ).withParent((friend) => friends),
+          ],
+        ),
+      ],
+    );
 
 /// A router over [tabsRoutes] shown in a WidgetsApp; disposed when the
 /// test ends.

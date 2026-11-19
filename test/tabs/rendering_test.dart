@@ -6,35 +6,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
 import '../support/app_fixtures.dart';
+import '../support/container_fixtures.dart';
 import '../support/route_fixtures.dart';
 import '../support/shell_fixtures.dart';
 import '../support/tabs_fixtures.dart';
-
-/// Rotates for ever while its ticker is enabled.
-final class _Spinner extends StatefulWidget {
-  const _Spinner();
-
-  @override
-  State<_Spinner> createState() => _SpinnerState();
-}
-
-final class _SpinnerState extends State<_Spinner>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _rotation = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 1),
-  )..repeat();
-
-  @override
-  void dispose() {
-    _rotation.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) =>
-      RotationTransition(turns: _rotation, child: const Text('Spinner'));
-}
 
 Future<TypedRouter> _pumpSpinningFriends(WidgetTester tester) async {
   final router = TypedRouter(
@@ -52,7 +27,7 @@ Future<TypedRouter> _pumpSpinningFriends(WidgetTester tester) async {
             initial: friends,
             children: [
               RouteNode<FriendsRoute>(
-                build: (context, friends) => const _Spinner(),
+                build: (context, friends) => const Spinner(),
               ),
             ],
           ),
@@ -85,12 +60,12 @@ void main() {
     tester,
   ) async {
     await _pumpSpinningFriends(tester);
-    final spinner = tester.state(find.byType(_Spinner));
+    final spinner = tester.state(find.byType(Spinner));
     shellOf(tester).goBranch<RoomsBranch>();
     await tester.pump();
     expect(
       TickerMode.valuesOf(
-        tester.element(find.byType(_Spinner, skipOffstage: false)),
+        tester.element(find.byType(Spinner, skipOffstage: false)),
       ).enabled,
       isFalse,
     );
@@ -100,7 +75,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(tester.hasRunningAnimations, isTrue);
-    expect(tester.state(find.byType(_Spinner)), same(spinner));
+    expect(tester.state(find.byType(Spinner)), same(spinner));
   });
 
   testWidgets('the frame of a shell is in the semantics tree', (tester) async {

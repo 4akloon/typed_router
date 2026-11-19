@@ -8,8 +8,10 @@
 /// On top of that:
 ///
 /// - platform back: the Android back button, the predictive back gesture
-///   and the iOS back swipe ([TypedNavigatorTester]), and what the app told
-///   the platform ([PlatformNavigationLog]);
+///   (whole, or step by step with [PredictiveBackGesture]) and the iOS back
+///   swipe ([TypedNavigatorTester]), and what the app told the platform
+///   ([PlatformNavigationLog]); a partial iOS swipe is flutter_test's own
+///   `tester.startGesture`;
 /// - targets for calling a redirect on its own, as go_router tests build a
 ///   `GoRouterState` ([TypedRouterTargets]).
 ///
@@ -32,5 +34,6 @@
 library;
 
 export 'src/testing/platform_navigation_log.dart' show PlatformNavigationLog;
+export 'src/testing/predictive_back_gesture.dart' show PredictiveBackGesture;
 export 'src/testing/typed_navigator_tester.dart' show TypedNavigatorTester;
 export 'src/testing/typed_router_targets.dart' show TypedRouterTargets;

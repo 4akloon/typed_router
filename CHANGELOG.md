@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.6 - 2026-11-19
+
+- `tester.startPredictiveBack()` in `typed_navigator/testing.dart`
+  (experimental) returns a `PredictiveBackGesture` to drive the gesture
+  step by step (`moveTo`, `commit`, `cancel`) and check the screen
+  mid-gesture. `predictiveBack()` is built on it and now sends the touch
+  position as Android does.
+
 ## 0.3.5 - 2026-11-19
 
 - A pageless route in the navigator of a shell or a branch that leaves the

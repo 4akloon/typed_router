@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meta/meta.dart';
+import 'package:typed_navigator/src/testing/back_gesture_channel.dart';
+import 'package:typed_navigator/src/testing/predictive_back_gesture.dart';
 
 /// Platform back for widget tests of an app on `TypedRouter`.
 ///
@@ -36,28 +38,23 @@ extension TypedNavigatorTester on WidgetTester {
   }
 
   /// Starts, drags and commits an Android predictive back gesture, then
-  /// settles.
+  /// settles: [startPredictiveBack], a move to 0.35, a commit.
   ///
   /// Pages take it only with a predictive back page transition (for
-  /// Material: `PredictiveBackPageTransitionsBuilder` in the theme). The
-  /// gesture always completes; a cancelled or partial gesture is not
-  /// offered.
+  /// Material: `PredictiveBackPageTransitionsBuilder` in the theme).
   Future<void> predictiveBack() async {
-    await _sendBackGesture('startBackGesture', {
-      'touchOffset': <double>[5, 300],
-      'progress': 0.0,
-      'swipeEdge': 0,
-    });
-    await pump();
-    await _sendBackGesture('updateBackGestureProgress', {
-      'x': 100.0,
-      'y': 300.0,
-      'progress': 0.35,
-      'swipeEdge': 0,
-    });
-    await pump();
-    await _sendBackGesture('commitBackGesture');
-    await pumpAndSettle();
+    final gesture = await startPredictiveBack();
+    await gesture.moveTo(0.35);
+    await gesture.commit();
+  }
+
+  /// Starts an Android predictive back gesture from the left edge and pumps;
+  /// drive it with the returned [PredictiveBackGesture] to check the screen
+  /// mid-gesture, then commit or cancel it.
+  Future<PredictiveBackGesture> startPredictiveBack() async {
+    final channel = BackGestureChannel(this);
+    await channel.start();
+    return PredictiveBackGesture(channel);
   }
 
   /// Swipes from the left edge across the screen, as the iOS back swipe,
@@ -69,13 +66,4 @@ extension TypedNavigatorTester on WidgetTester {
     await dragFrom(const Offset(5, 300), const Offset(500, 0));
     await pumpAndSettle();
   }
-
-  Future<void> _sendBackGesture(
-    String method, [
-    Map<String, Object?>? arguments,
-  ]) => binding.defaultBinaryMessenger.handlePlatformMessage(
-    'flutter/backgesture',
-    const StandardMethodCodec().encodeMethodCall(MethodCall(method, arguments)),
-    (_) {},
-  );
 }

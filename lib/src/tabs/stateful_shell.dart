@@ -48,12 +48,17 @@ final class StatefulShell extends StatelessWidget {
   /// Resets the branch at [index] in [branches], as [resetBranch].
   void resetBranchAt(int index) => _switching.resetBranch(branches[index]);
 
+  /// The branch navigators in an `IndexedStack`; a branch not on screen stops
+  /// ticking (`TickerMode`), as go_router's default container does.
   @override
   Widget build(BuildContext context) => IndexedStack(
     index: currentIndex,
     children: [
       for (final branch in branches)
-        _navigators[branch] ?? const SizedBox.shrink(),
+        TickerMode(
+          enabled: branch == activeBranch,
+          child: _navigators[branch] ?? const SizedBox.shrink(),
+        ),
     ],
   );
 }

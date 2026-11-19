@@ -70,4 +70,29 @@ void main() {
     expect(find.text('Friends'), findsOneWidget);
     expect(find.text('Friend bob', skipOffstage: false), findsNothing);
   });
+
+  testWidgets('a page popped in a hidden tab leaves the state at once and '
+      'the screen when the tab shows, as go_router', (tester) async {
+    final router = await pumpTabsApp(tester, friends);
+    final bob = ResultProbe(router.push(const FriendRoute('bob')));
+    await tester.pumpAndSettle();
+    final friendsNavigator = Navigator.of(
+      tester.element(find.text('Friend bob')),
+    );
+    await settled(tester, () => shellOf(tester).goBranch<RoomsBranch>());
+
+    friendsNavigator.pop('late');
+    for (var frame = 0; frame < 10; frame++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+
+    // The state and the result change at once; the hidden tab's tickers are
+    // off, so its exit transition waits for the tab.
+    expect(bob.completions, ['late']);
+    expect(router.state.find<FriendRoute>(), isNull);
+    expect(find.text('Friend bob', skipOffstage: false), findsOneWidget);
+
+    await settled(tester, () => shellOf(tester).goBranch<FriendsBranch>());
+    expect(find.text('Friend bob', skipOffstage: false), findsNothing);
+  });
 }

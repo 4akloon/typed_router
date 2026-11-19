@@ -75,10 +75,16 @@ final class NavigatorBuild {
     required bool isActive,
   }) => OnScreenLevel(
     isActive: isActive,
-    child: Navigator(
-      key: level.navigatorKey,
-      pages: pagesAt(entries, depth),
-      onDidRemovePage: _onDidRemovePage,
+    // A semantics boundary, as go_router's: without it, the barrier of a route
+    // in this navigator drops the frame painted before it.
+    child: Semantics(
+      container: true,
+      explicitChildNodes: true,
+      child: Navigator(
+        key: level.navigatorKey,
+        pages: pagesAt(entries, depth),
+        onDidRemovePage: _onDidRemovePage,
+      ),
     ),
   );
 }

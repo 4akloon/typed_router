@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.8 - 2026-11-19
+
+- Tabs not on screen stop ticking (`TickerMode`), and every nested
+  navigator is a semantics boundary, as go_router renders them:
+  `pumpAndSettle` settles with an animation in a hidden tab, and a shell's
+  frame stays visible to screen readers.
+
 ## 0.3.6 - 2026-11-19
 
 - `tester.startPredictiveBack()` in `typed_navigator/testing.dart`

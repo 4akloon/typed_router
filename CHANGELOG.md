@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4 - 2026-11-19
+
+- Navigation transaction (internal): a candidate state runs through
+  synchronous steps and is committed before the call returns; listeners
+  are notified only when the state changed, a failing step is reported
+  and leaves the state unchanged, entries that leave the state are
+  reported by identity, and navigating from a step or during build fails
+  in debug.
+
 ## 0.1.3 - 2026-11-19
 
 - `NavigationState`: an immutable, never-empty snapshot of the active path

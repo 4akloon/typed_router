@@ -52,6 +52,19 @@ final class NavigationState {
   /// interface such as `AuthArea`.
   bool contains<T>() => routes.any((route) => route is T);
 
+  /// The stack entries on the active path, bottom to top. Unmodifiable.
+  @internal
+  List<NavigationEntry> get entries => _entries;
+
+  /// The entries of this state that [other] does not hold, compared by
+  /// identity, bottom to top.
+  @internal
+  List<NavigationEntry> entriesMissingFrom(NavigationState other) =>
+      List.unmodifiable([
+        for (final entry in _entries)
+          if (!other._entries.contains(entry)) entry,
+      ]);
+
   /// Whether [other] holds the same pages: the same stack entries in the
   /// same places. Two states with equal routes but rebuilt pages differ.
   @override

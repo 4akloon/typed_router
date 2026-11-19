@@ -6,11 +6,7 @@ import 'package:typed_navigator/src/state/navigation_entry.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
 import '../support/route_fixtures.dart';
-
-NavigationState stateOf(List<TypedRoute<Object?>> routes) =>
-    NavigationState.fromEntries([
-      for (final route in routes) NavigationEntry(route),
-    ]);
+import '../support/state_fixtures.dart';
 
 const rooms = RoomsRoute();
 const room7 = RoomRoute(RoomId(7));

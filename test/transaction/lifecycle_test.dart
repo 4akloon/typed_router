@@ -14,22 +14,17 @@ const room8 = RoomRoute(RoomId(8));
 
 void main() {
   late RecordingEntryLifecycle entryLifecycle;
-  late ReplacingStep step;
 
   setUp(() {
     entryLifecycle = RecordingEntryLifecycle();
-    step = ReplacingStep(stateOf([room8]));
   });
 
-  NavigationController controllerAt(
-    NavigationState initialState, {
-    bool withStep = false,
-  }) => NavigationController(
-    initialState: initialState,
-    steps: withStep ? [step] : const [],
-    framePhase: ManualFramePhase(),
-    entryLifecycle: entryLifecycle,
-  );
+  NavigationController controllerAt(NavigationState initialState) =>
+      NavigationController(
+        initialState: initialState,
+        framePhase: ManualFramePhase(),
+        entryLifecycle: entryLifecycle,
+      );
 
   test('a listener may navigate after a commit', () {
     final controller = controllerAt(stateOf([rooms]));
@@ -46,8 +41,8 @@ void main() {
     expect(controller.state, listenerTarget);
   });
 
-  test('an external change commits as it is, without steps', () {
-    final controller = controllerAt(stateOf([rooms, room7]), withStep: true);
+  test('an external change commits as it is', () {
+    final controller = controllerAt(stateOf([rooms, room7]));
     final afterPop = stateOf([rooms]);
     var notifications = 0;
     controller.addListener(() => notifications++);
@@ -55,7 +50,6 @@ void main() {
     controller.applyExternalChange(afterPop);
 
     expect(controller.state, afterPop);
-    expect(step.receivedCandidates, isEmpty);
     expect(notifications, 1);
   });
 

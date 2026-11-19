@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
+import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';
 
 // TreeNode is sealed, so its variants live in this library. The functions a
@@ -43,6 +44,7 @@ final class RouteNode<R extends TypedRoute<Object?>>
     required this.build,
     this.children = const [],
     this.pageFactory,
+    this.redirect,
   });
 
   /// Builds the screen for a route of type [R].
@@ -56,6 +58,34 @@ final class RouteNode<R extends TypedRoute<Object?>>
   /// a sheet, a dialog or a full-screen modal for this route. `null` uses
   /// the router's factory.
   final PageFactory? pageFactory;
+
+  /// Sends a navigation elsewhere before it shows a route of this node's
+  /// subtree: returns the route to go to instead, or `null` to let it
+  /// through. Optional.
+  ///
+  /// It runs for every route of the subtree that a navigation brings in,
+  /// including a descendant pushed without this node's route, and for every
+  /// one on the stack when the router re-checks it (when it is shown, on
+  /// `refreshListenable`, on `TypedRouter.refresh`). [route] is this
+  /// node's route for that target: the one on the stack, or the one
+  /// `withParent` builds for a descendant. The router's own redirect runs
+  /// first, then the nodes from the top of the tree down; the first that
+  /// redirects wins. [context] is the context of the `Router` showing the
+  /// router; an inherited widget the redirect depends on re-runs it.
+  ///
+  /// ```dart
+  /// RouteNode<RoomsRoute>(
+  ///   build: (context, rooms) => const RoomsPage(),
+  ///   redirect: (context, rooms, target) =>
+  ///       session.isSignedIn ? null : SignInRoute(returnTo: target.top),
+  /// )
+  /// ```
+  final TypedRoute<Object?>? Function(
+    BuildContext context,
+    R route,
+    NavigationState target,
+  )?
+  redirect;
 
   /// This node under a parent it builds itself from its own route.
   ///
@@ -74,6 +104,17 @@ final class RouteNode<R extends TypedRoute<Object?>>
   @internal
   Widget buildScreen(BuildContext context, TypedRoute<Object?> route) =>
       build(context, route as R);
+
+  /// Runs [redirect] for [route], which is always an [R].
+  @internal
+  TypedRoute<Object?>? redirectFor(
+    BuildContext context,
+    TypedRoute<Object?> route,
+    NavigationState target,
+  ) => switch (redirect) {
+    final redirect? => redirect(context, route as R, target),
+    null => null,
+  };
 
   /// This node's [pageFactory], or [routerFactory] when it has none.
   @internal

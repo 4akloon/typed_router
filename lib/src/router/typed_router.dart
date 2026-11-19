@@ -1,17 +1,16 @@
 import 'package:flutter/widgets.dart';
-import 'package:typed_navigator/src/operation/navigation_planner.dart';
 import 'package:typed_navigator/src/operation/stack_operations.dart';
 import 'package:typed_navigator/src/page/navigator_pages.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
-import 'package:typed_navigator/src/result/result_completion.dart';
+import 'package:typed_navigator/src/redirect/router_mount.dart';
+import 'package:typed_navigator/src/redirect/stack_recheck.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
+import 'package:typed_navigator/src/router/router_parts.dart';
 import 'package:typed_navigator/src/router/typed_router_delegate.dart';
 import 'package:typed_navigator/src/router/typed_router_scope.dart';
-import 'package:typed_navigator/src/state/navigation_entry.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';
-import 'package:typed_navigator/src/tree/route_tree.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
 
 /// The application's router: owns the route tree and the current
@@ -38,6 +37,8 @@ import 'package:typed_navigator/src/tree/tree_node.dart';
 ///   ],
 ///   initialRoute: const RoomsRoute(),
 ///   pageFactory: const MaterialPageFactory(),
+///   redirect: (context, target) => session.isBanned ? const BannedRoute() : null,
+///   refreshListenable: session,
 /// );
 /// ```
 final class TypedRouter implements RouterConfig<Object>, Listenable {
@@ -46,39 +47,65 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
   /// [pageFactory] turns every screen into a [Page] unless the route's node
   /// has its own factory.
   ///
+  /// Redirects, as in go_router: [redirect] runs first for every navigation
+  /// the router checks, then the `redirect`s of the nodes (see
+  /// [RouteNode.redirect]); each returns the route to go to instead, or
+  /// `null` to let the navigation through. They get the context of the
+  /// `Router` showing this router and run only while it is shown: a
+  /// navigation before `runApp` is checked when the router is first shown.
+  /// [refreshListenable] and [refresh] re-check the whole stack. A chain of
+  /// more than [redirectLimit] redirects, or a loop, is a
+  /// [RedirectChainError]. When the redirects fail while the router is
+  /// shown for the first time or re-checks the stack, the navigator shows
+  /// [errorBuilder]'s screen (a plain one without it) and [state] carries
+  /// the error.
+  ///
   /// Needs no widgets binding. Throws [ArgumentError] when [routes] is
-  /// empty, a route type has two nodes, or [initialRoute]'s type has no
-  /// node.
+  /// empty, a route type has two nodes, [initialRoute]'s type has no node,
+  /// or [redirectLimit] is negative.
   factory TypedRouter({
     required List<TreeNode<NoParentRoute>> routes,
     required TypedRoute<Object?> initialRoute,
     required PageFactory pageFactory,
-  }) {
-    final tree = RouteTree(routes);
-    final initialState = NavigationState.fromEntries([
-      for (final route in tree.chainTo(initialRoute)) NavigationEntry(route),
-    ]);
-    final controller = NavigationController(
-      initialState: initialState,
-      entryLifecycle: const ResultCompletion(),
-    );
-    return TypedRouter._(
-      controller,
-      StackOperations(controller, NavigationPlanner(tree)),
-      NavigatorPages(tree: tree, pageFactory: pageFactory),
-    );
-  }
+    TypedRoute<Object?>? Function(BuildContext context, NavigationState target)?
+    redirect,
+    Listenable? refreshListenable,
+    int redirectLimit = 5,
+    Widget Function(BuildContext context, Object error)? errorBuilder,
+  }) => TypedRouter._(
+    RouterParts(
+      routes: routes,
+      initialRoute: initialRoute,
+      pageFactory: pageFactory,
+      redirect: redirect,
+      redirectLimit: redirectLimit,
+      errorBuilder: errorBuilder,
+    ),
+    refreshListenable,
+  );
 
-  TypedRouter._(this._controller, this._operations, this._pages);
+  TypedRouter._(RouterParts parts, this._refreshListenable)
+    : _controller = parts.controller,
+      _operations = parts.operations,
+      _recheck = parts.recheck,
+      _pages = parts.pages,
+      _mount = parts.mount {
+    _refreshListenable?.addListener(_recheck.recheck);
+  }
 
   final NavigationController _controller;
   final StackOperations _operations;
+  final StackRecheck _recheck;
   final NavigatorPages _pages;
+  final RouterMount _mount;
+  final Listenable? _refreshListenable;
   final BackButtonDispatcher _backButtonDispatcher = RootBackButtonDispatcher();
   late final TypedRouterDelegate _delegate = TypedRouterDelegate(
     router: this,
     controller: _controller,
     pages: _pages,
+    mount: _mount,
+    recheck: _recheck,
   );
 
   /// The router of the `MaterialApp.router` (or `WidgetsApp.router`) above
@@ -91,6 +118,9 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
 
   /// What is on screen now. Starts at the initial route and its ancestors;
   /// stays readable after [dispose].
+  ///
+  /// Before the router is first shown, it is the requested state: the
+  /// redirects check it when the router is shown.
   NavigationState get state => _controller.state;
 
   /// Replaces the stack with [route] and the routes above it in the tree.
@@ -111,7 +141,8 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
   @optionalTypeArgs
   void pop<T>([T? result]) => _operations.pop(result);
 
-  /// Whether [pop] can remove an entry: the stack has more than one.
+  /// Whether [pop] can remove an entry: the stack has more than one, and
+  /// the error screen is not shown.
   bool get canPop => _operations.canPop;
 
   /// Removes entries from the top until [predicate] holds for the top
@@ -128,6 +159,12 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
     TypedRoute<T> route,
     bool Function(TypedRoute<Object?> route) predicate,
   ) => _operations.pushAndRemoveUntil(route, predicate);
+
+  /// Runs the redirects over the whole stack, as a notification of
+  /// `refreshListenable` does: if one redirects, the stack becomes its
+  /// target with the routes above it. Does nothing while the router is not
+  /// shown.
+  void refresh() => _recheck.recheck();
 
   /// The root navigator, or `null` while the router is not mounted in a
   /// widget tree. For code outside the widget tree that shows dialogs or
@@ -164,12 +201,15 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
   void removeListener(VoidCallback listener) =>
       _controller.removeListener(listener);
 
-  /// Releases the router: drops the listeners and ends every route on the
-  /// stack.
+  /// Releases the router: stops listening to `refreshListenable`, drops
+  /// the listeners and ends every route on the stack.
   ///
   /// [state] stays readable; adding a listener, navigating or disposing
   /// again throws [StateError].
-  void dispose() => _controller.dispose();
+  void dispose() {
+    _refreshListenable?.removeListener(_recheck.recheck);
+    _controller.dispose();
+  }
 
   /// `TypedRouter(RoomsRoute() > RoomRoute(RoomId(7)))`, for logs and test
   /// failures.

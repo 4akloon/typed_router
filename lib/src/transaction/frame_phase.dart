@@ -14,6 +14,9 @@ abstract interface class FramePhase {
 
   /// Whether the current frame is in its build phase.
   bool get isBuilding;
+
+  /// Calls [callback] once the current frame is done.
+  void afterFrame(VoidCallback callback);
 }
 
 final class _SchedulerFramePhase implements FramePhase {
@@ -26,4 +29,8 @@ final class _SchedulerFramePhase implements FramePhase {
       BindingBase.debugBindingType() != null &&
       SchedulerBinding.instance.schedulerPhase ==
           SchedulerPhase.persistentCallbacks;
+
+  @override
+  void afterFrame(VoidCallback callback) =>
+      SchedulerBinding.instance.addPostFrameCallback((_) => callback());
 }

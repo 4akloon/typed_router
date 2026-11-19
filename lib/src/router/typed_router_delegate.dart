@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/page/navigator_pages.dart';
+import 'package:typed_navigator/src/redirect/redirect_scope.dart';
+import 'package:typed_navigator/src/redirect/router_mount.dart';
+import 'package:typed_navigator/src/redirect/stack_recheck.dart';
 import 'package:typed_navigator/src/router/typed_router.dart';
 import 'package:typed_navigator/src/router/typed_router_scope.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
@@ -16,11 +19,15 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
     required this._router,
     required this._controller,
     required this._pages,
+    required this._mount,
+    required this._recheck,
   });
 
   final TypedRouter _router;
   final NavigationController _controller;
   final NavigatorPages _pages;
+  final RouterMount _mount;
+  final StackRecheck _recheck;
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey();
 
   /// The root navigator, or `null` while it is not mounted.
@@ -34,12 +41,19 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
       _controller.removeListener(listener);
 
   @override
-  Widget build(BuildContext context) => TypedRouterScope(
-    router: _router,
-    child: Navigator(
-      key: _navigatorKey,
-      pages: _pages.pagesFor(_controller.state),
-      onDidRemovePage: _removePage,
+  Widget build(BuildContext context) => RedirectScope(
+    key: ObjectKey(_router),
+    mount: _mount,
+    recheckWhileBuilding: _recheck.recheckWhileBuilding,
+    // Reads the state on every build: a re-check while building shows in the
+    // same frame.
+    builder: (context) => TypedRouterScope(
+      router: _router,
+      child: Navigator(
+        key: _navigatorKey,
+        pages: _pages.pagesFor(_controller.state),
+        onDidRemovePage: _removePage,
+      ),
     ),
   );
 

@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.1 - 2026-11-19
+
+- Redirects, as in go_router. `TypedRouter(redirect:)` and
+  `RouteNode(redirect:)` return the route to go to instead, or `null`; they
+  get the `Router`'s `BuildContext` (a dependency on an inherited widget
+  re-runs them) and run while the router is shown, including before its
+  first frame. A redirect replaces the operation's target (`go`, `push`,
+  `replace`, `pushAndRemoveUntil`); the push of a redirected route
+  completes with `null`. `refreshListenable` and `refresh()` re-check the
+  whole stack. `redirectLimit` (5) and loops end in `RedirectChainError`.
+  When the redirects fail as the router is shown or re-checks the stack,
+  `errorBuilder` (or a plain built-in screen) is shown and
+  `NavigationState.error` holds the error.
+
 ## 0.1.9 - 2026-11-19
 
 - `typed_navigator/testing.dart` (experimental): platform back for widget

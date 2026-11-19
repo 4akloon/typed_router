@@ -23,14 +23,25 @@ final class NavigationState {
   /// library, so it throws [StateError].
   @internal
   NavigationState.fromEntries(Iterable<NavigationEntry> entries)
-    : _entries = List.unmodifiable(entries),
-      routes = List.unmodifiable([for (final entry in entries) entry.route]) {
+    : this._(List.unmodifiable(entries), null);
+
+  NavigationState._(this._entries, this.error)
+    : routes = List.unmodifiable([for (final entry in _entries) entry.route]) {
     if (_entries.isEmpty) {
       throw StateError('A navigation state needs at least one entry.');
     }
   }
 
   final List<NavigationEntry> _entries;
+
+  /// What the redirects threw while the router was shown for the first
+  /// time or re-checked its stack; `null` otherwise.
+  ///
+  /// While it is set, the navigator shows only the error screen, and
+  /// [routes] keep the stack the redirects failed on. Any successful
+  /// navigation clears it. It is an [Object] because a redirect may throw
+  /// anything; a loop or a too long chain is a `RedirectChainError`.
+  final Object? error;
 
   /// The routes on the active path, from the bottom of the stack to the
   /// top. Unmodifiable.
@@ -56,6 +67,11 @@ final class NavigationState {
   @internal
   List<NavigationEntry> get entries => _entries;
 
+  /// This state with the stack unchanged and [error] set: the redirects
+  /// failed on it.
+  @internal
+  NavigationState withError(Object error) => NavigationState._(_entries, error);
+
   /// This state without [entry]; this same state when [entry] is not in it
   /// or is its only entry (a state is never empty).
   @internal
@@ -76,18 +92,25 @@ final class NavigationState {
           if (!other._entries.contains(entry)) entry,
       ]);
 
-  /// Whether [other] holds the same pages: the same stack entries in the
-  /// same places. Two states with equal routes but rebuilt pages differ.
+  /// Whether [other] holds the same pages (the same stack entries in the
+  /// same places) and the same [error]. Two states with equal routes but
+  /// rebuilt pages differ.
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is NavigationState && listEquals(other._entries, _entries);
+      other is NavigationState &&
+          listEquals(other._entries, _entries) &&
+          other.error == error;
 
   /// Consistent with [==].
   @override
-  int get hashCode => Object.hashAll(_entries);
+  int get hashCode => Object.hash(Object.hashAll(_entries), error);
 
-  /// `RoomsRoute() > RoomRoute(RoomId(7))`, for logs and test failures.
+  /// `RoomsRoute() > RoomRoute(RoomId(7))`, followed by ` (error...)` when the
+  /// redirects failed; for logs and test failures.
   @override
-  String toString() => routes.join(' > ');
+  String toString() => switch (error) {
+    final error? => '${routes.join(' > ')} (error: $error)',
+    null => routes.join(' > '),
+  };
 }

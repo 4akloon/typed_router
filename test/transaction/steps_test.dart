@@ -2,7 +2,6 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
-import 'package:typed_navigator/src/transaction/navigation_step.dart';
 import 'package:typed_navigator/src/transaction/transaction_outcome.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
@@ -24,21 +23,22 @@ void main() {
 
   tearDown(() => reportedErrors.stop());
 
-  NavigationController controllerWith(List<NavigationStep> steps) =>
-      NavigationController(
-        initialState: stateOf([rooms]),
-        steps: steps,
-        framePhase: framePhase,
-      );
+  NavigationController controllerAtRooms() => NavigationController(
+    initialState: stateOf([rooms]),
+    framePhase: framePhase,
+  );
 
   test('a step can replace the candidate and steps run in order', () {
     final firstReplacement = stateOf([room7]);
     final secondReplacement = stateOf([const SignInRouteForSteps()]);
     final firstStep = ReplacingStep(firstReplacement);
     final secondStep = ReplacingStep(secondReplacement);
-    final controller = controllerWith([firstStep, secondStep]);
+    final controller = controllerAtRooms();
 
-    controller.navigate(stateOf([rooms, room7]));
+    controller.navigate(
+      stateOf([rooms, room7]),
+      steps: [firstStep, secondStep],
+    );
 
     expect(secondStep.receivedCandidates, [firstReplacement]);
     expect(controller.state, secondReplacement);
@@ -46,12 +46,15 @@ void main() {
 
   test('a step that throws leaves the state unchanged and reports the '
       'error', () {
-    final controller = controllerWith([ThrowingStep()]);
+    final controller = controllerAtRooms();
     final stateBefore = controller.state;
     var notifications = 0;
     controller.addListener(() => notifications++);
 
-    final outcome = controller.navigate(stateOf([rooms, room7]));
+    final outcome = controller.navigate(
+      stateOf([rooms, room7]),
+      steps: [ThrowingStep()],
+    );
 
     expect(controller.state, stateBefore);
     expect(notifications, 0);
@@ -63,17 +66,17 @@ void main() {
 
   test('navigating from inside a step fails in debug', () {
     final step = NavigatingStep();
-    final controller = controllerWith([step]);
+    final controller = controllerAtRooms();
     step.controller = controller;
 
-    final outcome = controller.navigate(stateOf([rooms, room7]));
+    final outcome = controller.navigate(stateOf([rooms, room7]), steps: [step]);
 
     expect(outcome, isA<TransactionFailed>());
     expect(reportedErrors.details.single.exception, isA<AssertionError>());
   });
 
   test('navigating while widgets build fails in debug', () {
-    final controller = controllerWith(const []);
+    final controller = controllerAtRooms();
     framePhase.isBuilding = true;
 
     expect(

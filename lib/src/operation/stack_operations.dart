@@ -1,4 +1,6 @@
 import 'package:typed_navigator/src/operation/navigation_planner.dart';
+import 'package:typed_navigator/src/redirect/redirect_check.dart';
+import 'package:typed_navigator/src/redirect/redirects.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
@@ -7,23 +9,30 @@ import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 
 /// Carries out the router's stack operations: checks what must hold
 /// before, asks the planner for the candidate and hands it to the
-/// controller.
+/// controller with the navigation's redirects.
+///
+/// `go`, `push`, `replace` and `pushAndRemoveUntil` run the redirects of the
+/// route they go to; a redirect re-plans the same operation for its target.
+/// `pop` and `popUntil` run none.
 final class StackOperations {
-  /// Creates operations that plan with [_planner] and commit through
-  /// [_controller].
-  StackOperations(this._controller, this._planner);
+  /// Creates operations that plan with [_planner], redirect with
+  /// [_redirects] and commit through [_controller].
+  StackOperations(this._controller, this._planner, this._redirects);
 
   final NavigationController _controller;
   final NavigationPlanner _planner;
+  final Redirects _redirects;
 
   NavigationState get _state => _controller.state;
 
-  /// Whether [pop] can remove an entry.
-  bool get canPop => _state.entries.length > 1;
+  /// Whether [pop] can remove an entry: never on the error screen.
+  bool get canPop => _state.error == null && _state.entries.length > 1;
 
   /// See `TypedRouter.go`.
-  void go(TypedRoute<Object?> route) =>
-      _controller.navigate(_planner.goTo(_state, route));
+  void go(TypedRoute<Object?> route) => _navigate(
+    _planner.goTo(_state, route),
+    (redirected) => _planner.goTo(_state, redirected),
+  );
 
   /// See `TypedRouter.push`.
   Future<T?> push<T>(TypedRoute<T> route) =>
@@ -61,16 +70,28 @@ final class StackOperations {
   );
 
   /// Navigates to the candidate [plan] builds around a new entry for
-  /// [route]. An entry that does not reach the committed state (a step
-  /// redirected or failed) leaves at once: its push completes with `null`.
+  /// [route]. An entry that does not reach the committed state (redirected
+  /// or failed) leaves at once: its push completes with `null`. A redirect
+  /// target gets an entry nobody awaits: its result type is not [T].
   Future<T?> _navigateWithNew<T>(
     TypedRoute<T> route,
     NavigationState Function(NavigationEntry entry) plan,
   ) {
     final pendingResult = PendingResult<T>();
     final entry = NavigationEntry(route, pendingResult: pendingResult);
-    _controller.navigate(plan(entry));
+    _navigate(
+      plan(entry),
+      (redirected) => plan(NavigationEntry(redirected)),
+    );
     if (!_state.entries.contains(entry)) entry.leave();
     return pendingResult.future;
   }
+
+  void _navigate(
+    NavigationState candidate,
+    NavigationState Function(TypedRoute<Object?> redirected) replan,
+  ) => _controller.navigate(
+    candidate,
+    steps: _redirects.stepsFor(replan, const NewRouteCheck()),
+  );
 }

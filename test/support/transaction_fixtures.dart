@@ -44,6 +44,20 @@ final class NavigatingStep implements NavigationStep {
 final class ManualFramePhase implements FramePhase {
   @override
   bool isBuilding = false;
+
+  final List<VoidCallback> _afterFrame = [];
+
+  @override
+  void afterFrame(VoidCallback callback) => _afterFrame.add(callback);
+
+  /// Ends the frame: runs what waited for it.
+  void endFrame() {
+    final callbacks = [..._afterFrame];
+    _afterFrame.clear();
+    for (final callback in callbacks) {
+      callback();
+    }
+  }
 }
 
 /// Records every report of entries that left the state.

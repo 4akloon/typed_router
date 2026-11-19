@@ -16,28 +16,32 @@ final class NavigationController extends ChangeNotifier {
   /// notification.
   NavigationController({
     required NavigationState initialState,
-    List<NavigationStep> steps = const [],
     this._framePhase = const FramePhase.scheduler(),
     this._entryLifecycle = const EntryLifecycle.ignoring(),
-  }) : _state = initialState,
-       _transaction = NavigationTransaction(steps);
+  }) : _state = initialState;
 
-  final NavigationTransaction _transaction;
+  final NavigationTransaction _transaction = NavigationTransaction();
   final FramePhase _framePhase;
   final EntryLifecycle _entryLifecycle;
   NavigationState _state;
   bool _isDisposed = false;
+  bool _isChangingWhileBuilding = false;
+  bool _hasNotificationAfterFrame = false;
 
   /// The committed state.
   NavigationState get state => _state;
 
-  /// Runs [candidate] through the steps and commits the result before
-  /// returning.
+  /// Runs [candidate] through the [steps] of this navigation and commits
+  /// the result before returning.
   ///
   /// A step that throws is reported through [FlutterError.reportError];
   /// the state stays as it was. In debug, navigating from inside a step or
-  /// while widgets build fails with an [AssertionError].
-  TransactionOutcome navigate(NavigationState candidate) {
+  /// while widgets build (outside [changeWhileBuilding]) fails with an
+  /// [AssertionError].
+  TransactionOutcome navigate(
+    NavigationState candidate, {
+    List<NavigationStep> steps = const [],
+  }) {
     _checkUsable();
     assert(
       !_transaction.isRunning,
@@ -45,13 +49,13 @@ final class NavigationController extends ChangeNotifier {
       'instead of calling the router.',
     );
     assert(
-      !_framePhase.isBuilding,
+      _isChangingWhileBuilding || !_framePhase.isBuilding,
       'Navigation was requested while widgets build. Navigate from a '
       'callback, or schedule it with addPostFrameCallback.',
     );
     final NavigationState next;
     try {
-      next = _transaction.run(_state, candidate);
+      next = _transaction.run(_state, candidate, steps);
     } catch (error, stackTrace) {
       // The one place that catches whatever a user step throws, reports it and
       // leaves the state unchanged.
@@ -66,6 +70,22 @@ final class NavigationController extends ChangeNotifier {
   TransactionOutcome applyExternalChange(NavigationState next) {
     _checkUsable();
     return _commit(next);
+  }
+
+  /// Runs [changes], which navigate while widgets build: the router checking
+  /// its stack as it is shown.
+  ///
+  /// The listeners hear about the commits once the frame is done, in one
+  /// notification: they include the `Router` above the widget that builds,
+  /// which cannot be marked dirty now. Whoever builds below reads [state]
+  /// directly in this frame.
+  void changeWhileBuilding(void Function() changes) {
+    _isChangingWhileBuilding = true;
+    try {
+      changes();
+    } finally {
+      _isChangingWhileBuilding = false;
+    }
   }
 
   /// Adds [listener]; throws [StateError] after [dispose].
@@ -93,8 +113,18 @@ final class NavigationController extends ChangeNotifier {
     if (entriesThatLeft.isNotEmpty) {
       _entryLifecycle.entriesLeft(entriesThatLeft);
     }
-    notifyListeners();
+    _notify();
     return TransactionCommitted(next);
+  }
+
+  void _notify() {
+    if (!_isChangingWhileBuilding) return notifyListeners();
+    if (_hasNotificationAfterFrame) return;
+    _hasNotificationAfterFrame = true;
+    _framePhase.afterFrame(() {
+      _hasNotificationAfterFrame = false;
+      if (!_isDisposed) notifyListeners();
+    });
   }
 
   void _checkUsable() {

@@ -1,0 +1,17 @@
+# The package's own rules (naming, finals, trailing commas...) plus Flutter's
+# lints. An app has no public API, so its members need no dartdoc.
+include:
+  - package:flutter_lints/flutter.yaml
+  - ../analysis_options.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - macos/**
+
+linter:
+  rules:
+    public_member_api_docs: false

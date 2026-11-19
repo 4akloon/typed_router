@@ -3,10 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/material.dart';
+import 'package:typed_navigator/testing.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
 import '../support/app_fixtures.dart';
-import '../support/back_gestures.dart';
+import '../support/back_fixtures.dart';
 import '../support/route_fixtures.dart';
 
 const rooms = RoomsRoute();
@@ -61,7 +62,7 @@ void main() {
         theme: predictiveBackTheme,
       );
 
-      await predictiveBack(tester);
+      await tester.predictiveBack();
 
       expect(router.state.routes, const [rooms]);
       expect(find.text('Rooms'), findsOneWidget);
@@ -74,7 +75,7 @@ void main() {
     (tester) async {
       final router = await pumpRoomOverRooms(tester);
 
-      await iosEdgeSwipe(tester);
+      await tester.iosEdgeSwipe();
 
       expect(router.state.routes, const [rooms]);
       expect(find.text('Rooms'), findsOneWidget);

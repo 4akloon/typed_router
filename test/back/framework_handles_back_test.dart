@@ -3,6 +3,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:typed_navigator/testing.dart';
 
 import '../support/back_fixtures.dart';
 import '../support/operation_fixtures.dart';
@@ -13,7 +14,7 @@ void main() {
     (tester) async {
       // WidgetsApp tells the platform nothing before the app is resumed.
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
-      final platform = PlatformCalls(tester);
+      final platform = PlatformNavigationLog(tester);
       final router = await pumpMaterialRooms(tester);
       await tester.pumpAndSettle();
       expect(platform.frameworkHandlesBack.last, isFalse);

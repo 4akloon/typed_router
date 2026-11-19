@@ -1,7 +1,7 @@
-// The system back button and what the platform hears.
+// Apps for the back tests: guarded screens, Material rooms, dialogs opened
+// imperatively.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/material.dart';
 import 'package:typed_navigator/typed_navigator.dart';
@@ -9,45 +9,6 @@ import 'package:typed_navigator/typed_navigator.dart';
 import 'app_fixtures.dart';
 import 'operation_fixtures.dart';
 import 'route_fixtures.dart';
-
-/// Presses the Android back button: the platform's `popRoute` message.
-Future<void> systemBack(WidgetTester tester) async {
-  await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
-    SystemChannels.navigation.name,
-    SystemChannels.navigation.codec.encodeMethodCall(
-      const MethodCall('popRoute'),
-    ),
-    (_) {},
-  );
-  await tester.pumpAndSettle();
-}
-
-/// Records what the app tells the platform on [SystemChannels.platform].
-final class PlatformCalls {
-  PlatformCalls(WidgetTester tester) {
-    final messenger = tester.binding.defaultBinaryMessenger
-      ..setMockMethodCallHandler(SystemChannels.platform, (call) async {
-        calls.add(call);
-        return null;
-      });
-    addTearDown(
-      () => messenger.setMockMethodCallHandler(SystemChannels.platform, null),
-    );
-  }
-
-  final List<MethodCall> calls = [];
-
-  /// Whether the app asked the platform to close it.
-  bool get closedApp =>
-      calls.any((call) => call.method == 'SystemNavigator.pop');
-
-  /// Every `setFrameworkHandlesBack` value, in order.
-  List<Object?> get frameworkHandlesBack => [
-    for (final call in calls)
-      if (call.method == 'SystemNavigator.setFrameworkHandlesBack')
-        call.arguments,
-  ];
-}
 
 /// A form under rooms that refuses the back button.
 final class FormRoute extends TypedRoute<void> {
@@ -102,10 +63,22 @@ Future<TypedRouter> pumpGuarded(
   return router;
 }
 
+/// A theme whose Android pages take predictive back gestures.
+final ThemeData predictiveBackTheme = ThemeData(
+  pageTransitionsTheme: const PageTransitionsTheme(
+    builders: {TargetPlatform.android: PredictiveBackPageTransitionsBuilder()},
+  ),
+);
+
 /// A Material app over the test app's routes, started at rooms.
-Future<TypedRouter> pumpMaterialRooms(WidgetTester tester) async {
+Future<TypedRouter> pumpMaterialRooms(
+  WidgetTester tester, {
+  ThemeData? theme,
+}) async {
   final router = appRouter(rooms, pageFactory: const MaterialPageFactory());
-  await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+  await tester.pumpWidget(
+    MaterialApp.router(routerConfig: router, theme: theme),
+  );
   return router;
 }
 

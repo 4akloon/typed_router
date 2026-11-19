@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.9 - 2026-11-19
+
+- `typed_navigator/testing.dart` (experimental): platform back for widget
+  tests. `tester.systemBack()`, `tester.predictiveBack()` and
+  `tester.iosEdgeSwipe()` send what the platform sends and settle;
+  `PlatformNavigationLog` records `SystemNavigator.pop` and
+  `setFrameworkHandlesBack`. `flutter_test` is now a dependency for this
+  entry point; the core and the adapters do not import it.
+
 ## 0.1.8 - 2026-11-19
 
 - The Android back button goes through the router as through the native

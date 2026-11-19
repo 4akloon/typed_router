@@ -1,6 +1,5 @@
-// Page factories.
-
-import 'dart:io';
+// Page factories. That the core imports no design system is guarded in
+// package_boundaries_test.dart.
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -65,31 +64,5 @@ void main() {
           .having((page) => page.child, 'child', request.child)
           .having((page) => page.fullscreenDialog, 'fullscreenDialog', false),
     );
-  });
-
-  test('the core imports no design system', () {
-    final adapterFolders = {'lib/src/material', 'lib/src/cupertino'};
-    final coreFiles = [
-      File('lib/typed_navigator.dart'),
-      ...Directory('lib/src')
-          .listSync(recursive: true)
-          .whereType<File>()
-          .where(
-            (file) =>
-                file.path.endsWith('.dart') &&
-                !adapterFolders.any(file.path.startsWith),
-          ),
-    ];
-
-    final importingDesignSystems = [
-      for (final file in coreFiles)
-        if (RegExp(
-          r"import 'package:flutter/(material|cupertino)\.dart'",
-        ).hasMatch(file.readAsStringSync()))
-          file.path,
-    ];
-
-    expect(coreFiles, hasLength(greaterThan(10)));
-    expect(importingDesignSystems, isEmpty);
   });
 }

@@ -1,6 +1,7 @@
 // The Android back button.
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:typed_navigator/testing.dart';
 
 import '../support/back_fixtures.dart';
 import '../support/operation_fixtures.dart';
@@ -12,7 +13,7 @@ void main() {
     final room = await pushAndSettle(tester, router, room7);
     final notifications = NotificationCounter(router);
 
-    await systemBack(tester);
+    await tester.systemBack();
 
     expect(router.state.routes, const [rooms]);
     expect(notifications.count, 1);
@@ -27,7 +28,7 @@ void main() {
     await pushAndSettle(tester, router, room7);
     final dialog = await openDialogOver(tester, 'Room 7');
 
-    await systemBack(tester);
+    await tester.systemBack();
 
     expect(find.text('Dialog'), findsNothing);
     expect(router.state.routes, const [rooms, room7]);
@@ -38,9 +39,9 @@ void main() {
       'about it', (tester) async {
     final attempts = <bool>[];
     final router = await pumpGuarded(tester, const FormRoute(), attempts);
-    final platform = PlatformCalls(tester);
+    final platform = PlatformNavigationLog(tester);
 
-    await systemBack(tester);
+    await tester.systemBack();
 
     expect(router.state.routes, const [rooms, FormRoute()]);
     expect(attempts, [false]);
@@ -50,9 +51,9 @@ void main() {
   testWidgets('the back button on the first page lets the platform close '
       'the app', (tester) async {
     final router = await pumpMaterialRooms(tester);
-    final platform = PlatformCalls(tester);
+    final platform = PlatformNavigationLog(tester);
 
-    await systemBack(tester);
+    await tester.systemBack();
 
     expect(platform.closedApp, isTrue);
     expect(router.state.routes, const [rooms]);
@@ -62,9 +63,9 @@ void main() {
       'it', (tester) async {
     final attempts = <bool>[];
     await pumpGuarded(tester, const ExitGuardRoute(), attempts);
-    final platform = PlatformCalls(tester);
+    final platform = PlatformNavigationLog(tester);
 
-    await systemBack(tester);
+    await tester.systemBack();
 
     expect(platform.closedApp, isFalse);
     expect(attempts, [false]);
@@ -74,24 +75,24 @@ void main() {
     tester,
   ) async {
     final router = await pumpMaterialRooms(tester);
-    final platform = PlatformCalls(tester);
+    final platform = PlatformNavigationLog(tester);
     await pushAndSettle(tester, router, room7);
     await openDialogOver(tester, 'Room 7');
     await pushAndSettle(tester, router, room8);
 
-    await systemBack(tester);
+    await tester.systemBack();
     expect(router.state.routes, const [rooms, room7]);
     expect(find.text('Dialog'), findsOneWidget);
 
-    await systemBack(tester);
+    await tester.systemBack();
     expect(find.text('Dialog'), findsNothing);
     expect(router.state.routes, const [rooms, room7]);
 
-    await systemBack(tester);
+    await tester.systemBack();
     expect(router.state.routes, const [rooms]);
     expect(platform.closedApp, isFalse);
 
-    await systemBack(tester);
+    await tester.systemBack();
     expect(platform.closedApp, isTrue);
   });
 }

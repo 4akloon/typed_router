@@ -5,10 +5,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/material.dart';
+import 'package:typed_navigator/testing.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
 import '../support/app_fixtures.dart';
-import '../support/back_gestures.dart';
+import '../support/back_fixtures.dart';
 import '../support/operation_fixtures.dart';
 
 Future<TypedRouter> pumpRooms(WidgetTester tester, {ThemeData? theme}) async {
@@ -40,7 +41,7 @@ void main() {
       final room = ResultProbe(router.push(room7));
       await tester.pumpAndSettle();
 
-      await predictiveBack(tester);
+      await tester.predictiveBack();
 
       expect(router.state.routes, const [rooms]);
       expect(room.completions, [null]);

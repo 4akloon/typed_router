@@ -1,13 +1,13 @@
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/tree/nesting.dart';
+import 'package:typed_navigator/src/tree/nesting_path.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
 
 /// Where routes of one type sit in the tree, and how to build the routes
 /// above one of them.
 final class RoutePlacement {
-  /// A placement with no route above it, inside [nestings].
-  const RoutePlacement.topLevel(this.node, {this.nestings = const []})
-    : _parentLink = null;
+  /// A placement with no route above it, at [path].
+  RoutePlacement.topLevel(this.node, {required this.path}) : _parentLink = null;
 
   /// A placement under [parent]; [buildParent] makes the parent route from a
   /// route placed here.
@@ -16,15 +16,22 @@ final class RoutePlacement {
     required RoutePlacement parent,
     required TypedRoute<Object?> Function(TypedRoute<Object?> route)
     buildParent,
-    this.nestings = const [],
+    required this.path,
   }) : _parentLink = _ParentLink(parent, buildParent);
 
   /// The node that places the routes.
   final RouteNode<TypedRoute<Object?>> node;
 
-  /// The navigator levels around the node in the tree (shells, branches of
-  /// tabs), from the outer one in.
-  final List<Nesting> nestings;
+  /// Where the node sits: the nesting its routes are shown in, and the one
+  /// around it in the tree.
+  final NestingPath path;
+
+  /// The shells and branches the routes are shown in, outer first.
+  List<Nesting> get nestings => path.shown;
+
+  /// The shells and branches around the node in the tree, outer first: their
+  /// redirects guard the routes.
+  List<Nesting> get guardingNestings => path.guarding;
 
   final _ParentLink? _parentLink;
 

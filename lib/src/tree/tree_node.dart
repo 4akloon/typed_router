@@ -4,9 +4,11 @@ import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/tabs/stateful_shell.dart';
+import 'package:typed_navigator/src/tree/navigator_slot.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';
 
 part 'branch_node.dart';
+part 'parented_route_node.dart';
 part 'shell_node.dart';
 part 'stateful_shell_node.dart';
 
@@ -50,6 +52,7 @@ final class RouteNode<R extends TypedRoute<Object?>>
     this.children = const [],
     this.pageFactory,
     this.redirect,
+    this.parentNavigatorSlot,
   });
 
   /// Builds the screen for a route of type [R].
@@ -58,6 +61,12 @@ final class RouteNode<R extends TypedRoute<Object?>>
   /// Nodes under this one. Each of them is put here with [withParent], so it
   /// can build an [R] for the stack below itself.
   final List<TreeNode<R>> children;
+
+  /// The navigator to show this route in, like go_router's
+  /// `parentNavigatorKey`: [NavigatorSlot.root], or the slot of a shell or
+  /// branch above this node. `null` shows it in the nearest shell or
+  /// branch. Children without their own slot stay in the same navigator.
+  final NavigatorSlot? parentNavigatorSlot;
 
   /// Turns this node's screens into pages instead of the router's factory:
   /// a sheet, a dialog or a full-screen modal for this route. `null` uses
@@ -125,25 +134,4 @@ final class RouteNode<R extends TypedRoute<Object?>>
   @internal
   PageFactory pageFactoryOr(PageFactory routerFactory) =>
       pageFactory ?? routerFactory;
-}
-
-/// A [RouteNode] put under a parent route with [RouteNode.withParent].
-///
-/// Not exported: users only ever see it as a `TreeNode<P>`.
-final class ParentedRouteNode<
-  P extends TypedRoute<Object?>,
-  R extends TypedRoute<Object?>
->
-    extends TreeNode<P> {
-  /// Wraps [node] with the function that builds its parent route.
-  const ParentedRouteNode(this.node, this._buildParent);
-
-  /// The node placed under the parent.
-  final RouteNode<R> node;
-
-  final P Function(R route) _buildParent;
-
-  /// Builds the parent route of [route], which is always an [R].
-  TypedRoute<Object?> buildParent(TypedRoute<Object?> route) =>
-      _buildParent(route as R);
 }

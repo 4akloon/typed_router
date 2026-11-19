@@ -1,5 +1,6 @@
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/tree/nesting.dart';
+import 'package:typed_navigator/src/tree/nesting_path.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';
 import 'package:typed_navigator/src/tree/route_registry.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
@@ -22,7 +23,11 @@ final class RouteTree {
         'The route tree has no nodes. Pass at least one RouteNode.',
       );
     }
-    TreeWalk(_registry).placeAll(roots, parent: null, nestings: const []);
+    TreeWalk(_registry).placeAll(
+      roots,
+      parent: null,
+      path: const NestingPath.top(),
+    );
   }
 
   final RouteRegistry _registry = RouteRegistry();
@@ -34,13 +39,19 @@ final class RouteTree {
   List<TypedRoute<Object?>> chainTo(TypedRoute<Object?> route) =>
       _registry.placementOf(route).chainFor(route);
 
-  /// The navigator levels around [route]'s node (shells, branches of
-  /// tabs), from the outer one in; empty for a route of the root
-  /// navigator.
+  /// The shells and branches [route] is shown in, outer first; empty for a
+  /// route of the root navigator.
   ///
   /// Throws [ArgumentError] when [route]'s type has no node.
   List<Nesting> nestingsOf(TypedRoute<Object?> route) =>
       _registry.placementOf(route).nestings;
+
+  /// The shells and branches around [route]'s node in the tree, outer first:
+  /// their redirects guard it, wherever it is shown.
+  ///
+  /// Throws [ArgumentError] when [route]'s type has no node.
+  List<Nesting> guardingNestingsOf(TypedRoute<Object?> route) =>
+      _registry.placementOf(route).guardingNestings;
 
   /// Throws [ArgumentError] when [route]'s type has no node, so nothing can
   /// show it.

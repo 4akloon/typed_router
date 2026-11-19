@@ -1,42 +1,51 @@
 import 'package:typed_navigator/src/route/typed_route.dart';
+import 'package:typed_navigator/src/tree/navigator_slot.dart';
 import 'package:typed_navigator/src/tree/nesting.dart';
+import 'package:typed_navigator/src/tree/nesting_path.dart';
 import 'package:typed_navigator/src/tree/route_placement.dart';
 import 'package:typed_navigator/src/tree/route_registry.dart';
 import 'package:typed_navigator/src/tree/tabs_validation.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
 
+// Messages name route types; type names are readable in debug builds, where
+// these errors are met.
+// ignore_for_file: avoid_type_to_string
+
 /// Walks the nodes of a tree and registers a placement for every route
-/// node: its parent link and the navigator levels around it.
+/// node: its parent link and its [NestingPath].
 ///
 /// Shells and tabs place no route of their own. A shell is transparent: its
 /// children sit under the same parent, one level deeper. The children of a
-/// branch start their own chains inside that branch's level.
+/// branch start their own chains inside that branch's level. A route with a
+/// `parentNavigatorSlot` is shown in that slot's navigator, and its children
+/// with it.
 final class TreeWalk {
   /// Creates a walk that registers into [_registry].
   TreeWalk(this._registry);
 
   final RouteRegistry _registry;
   final TabsValidation _tabsValidation = const TabsValidation();
+  final Set<NavigatorSlot> _usedSlots = {NavigatorSlot.root};
 
-  /// Places [nodes] under [parent], inside [nestings].
+  /// Places [nodes] under [parent], at [path].
   void placeAll(
     Iterable<TreeNode<Object?>> nodes, {
     required RoutePlacement? parent,
-    required List<Nesting> nestings,
+    required NestingPath path,
   }) {
     for (final node in nodes) {
       switch (node) {
         case final ShellNode<Object?> shellNode:
-          _placeShell(shellNode, parent, nestings);
+          _placeShell(shellNode, parent, path);
         case final StatefulShellNode tabs:
-          _placeTabs(tabs, nestings);
+          _placeTabs(tabs, path);
         case RouteNode() || ParentedRouteNode():
-          final placement = _placementFor(node, parent, nestings);
+          final placement = _placementFor(node, parent, path);
           _registry.register(placement);
           placeAll(
             placement.node.children,
             parent: placement,
-            nestings: nestings,
+            path: placement.path,
           );
       }
     }
@@ -45,7 +54,7 @@ final class TreeWalk {
   void _placeShell(
     ShellNode<Object?> shellNode,
     RoutePlacement? parent,
-    List<Nesting> nestings,
+    NestingPath path,
   ) {
     if (shellNode.children.isEmpty) {
       throw ArgumentError.value(
@@ -57,33 +66,44 @@ final class TreeWalk {
     placeAll(
       shellNode.children,
       parent: parent,
-      nestings: List.unmodifiable([
-        ...nestings,
+      path: path.inside(
         ShellNesting(shellNode),
-      ]),
+        _claimed(shellNode.navigatorSlot),
+      ),
     );
   }
 
-  void _placeTabs(StatefulShellNode tabs, List<Nesting> nestings) {
+  void _placeTabs(StatefulShellNode tabs, NestingPath path) {
     _tabsValidation.checkBranches(tabs);
     for (final branch in tabs.branches) {
-      final level = BranchNesting(tabs, branch.branchType);
+      final nesting = BranchNesting(tabs, branch.branchType);
       placeAll(
         branch.children,
         parent: null,
-        nestings: List.unmodifiable([...nestings, level]),
+        path: path.inside(nesting, _claimed(branch.navigatorSlot)),
       );
-      _tabsValidation.checkInitial(branch, level, _registry);
+      _tabsValidation.checkInitial(branch, nesting, _registry);
     }
+  }
+
+  /// [slot], once: a slot names one shell or branch.
+  NavigatorSlot? _claimed(NavigatorSlot? slot) {
+    if (slot != null && !_usedSlots.add(slot)) {
+      throw ArgumentError(
+        'A NavigatorSlot is given to two shells or branches. Give each its '
+        'own slot.',
+      );
+    }
+    return slot;
   }
 
   RoutePlacement _placementFor(
     TreeNode<Object?> node,
     RoutePlacement? parent,
-    List<Nesting> nestings,
+    NestingPath path,
   ) => switch ((node, parent)) {
     (final RouteNode<TypedRoute<Object?>> routeNode, _) =>
-      RoutePlacement.topLevel(routeNode, nestings: nestings),
+      RoutePlacement.topLevel(routeNode, path: _placed(routeNode, path)),
     (
       final ParentedRouteNode<TypedRoute<Object?>, TypedRoute<Object?>>
       parentedNode,
@@ -93,7 +113,7 @@ final class TreeWalk {
         parentedNode.node,
         parent: parent,
         buildParent: parentedNode.buildParent,
-        nestings: nestings,
+        path: _placed(parentedNode.node, path),
       ),
     _ => throw StateError(
       'A node that places no route, or a node placed with withParent where '
@@ -101,4 +121,24 @@ final class TreeWalk {
       'TreeNode and the walk should make this impossible.',
     ),
   };
+
+  /// [path] shown where [node]'s `parentNavigatorSlot` says.
+  NestingPath _placed(RouteNode<TypedRoute<Object?>> node, NestingPath path) {
+    final slot = node.parentNavigatorSlot;
+    if (slot == null) return path;
+    if (path.placedIn(slot) case final placed?) return placed;
+    if (path.isBelowShown(slot)) {
+      throw ArgumentError(
+        "${node.routeType}'s parentNavigatorSlot names a navigator deeper "
+        'than the one its parent route is shown in. A route shows in its '
+        "parent's navigator or further out: use that navigator's slot or an "
+        'outer one.',
+      );
+    }
+    throw ArgumentError(
+      "${node.routeType}'s parentNavigatorSlot is neither the root nor the "
+      'slot of a shell or branch above it. Use NavigatorSlot.root or the '
+      'slot of an enclosing ShellNode or BranchNode.',
+    );
+  }
 }

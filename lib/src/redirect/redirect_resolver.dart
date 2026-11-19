@@ -48,7 +48,7 @@ final class RedirectResolver {
       for (final route in _tree.chainTo(checked)) {
         // A shell's or tabs' redirect runs once per chain, before the first
         // route inside it.
-        for (final level in _tree.nestingsOf(route)) {
+        for (final level in _tree.guardingNestingsOf(route)) {
           if (enteredLevels.add(level)) {
             yield level.redirectFor(context, target);
           }

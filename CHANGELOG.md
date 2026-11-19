@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.3 - 2026-11-19
+
+- Navigator slots, like go_router's `parentNavigatorKey`:
+  `NavigatorSlot.root` or a `NavigatorSlot` given to a `ShellNode` or
+  `BranchNode` (`navigatorSlot`), chosen by `RouteNode(parentNavigatorSlot:)`
+  to show a route above the tabs or in an outer shell; its children follow
+  it. Shell and tab redirects still guard such routes. A foreign slot, a
+  slot deeper than the parent's navigator or a slot on two nodes fails
+  when the router is built.
+
 ## 0.3.2 - 2026-11-19
 
 - Tabs, like go_router's `StatefulShellRoute`: `StatefulShellNode` with

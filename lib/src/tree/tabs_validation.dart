@@ -48,7 +48,7 @@ final class TabsValidation {
     final initial = branch.initial;
     final isInBranch =
         registry.hasNodeFor(initial) &&
-        registry.placementOf(initial).nestings.contains(level);
+        registry.placementOf(initial).guardingNestings.contains(level);
     if (!isInBranch) {
       throw ArgumentError(
         'The initial route $initial of branch ${branch.branchType} is not '

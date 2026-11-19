@@ -38,7 +38,12 @@ final class ShellNode<P> extends TreeNode<P> {
     required this.children,
     this.pageFactory,
     this.redirect,
+    this.navigatorSlot,
   });
+
+  /// Names this shell's navigator, so routes below can show in it with
+  /// `RouteNode.parentNavigatorSlot`. Optional.
+  final NavigatorSlot? navigatorSlot;
 
   /// Builds the frame around [navigator]: the shell's own navigator with
   /// the pages of its children. Rebuilt on every navigation; [state] is the

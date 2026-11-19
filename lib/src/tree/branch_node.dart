@@ -8,7 +8,15 @@ part of 'tree_node.dart';
 /// the compiler checks.
 final class BranchNode<B> {
   /// Creates a branch that starts at [initial].
-  const BranchNode({required this.initial, required this.children});
+  const BranchNode({
+    required this.initial,
+    required this.children,
+    this.navigatorSlot,
+  });
+
+  /// Names this branch's navigator, so routes below can show in it with
+  /// `RouteNode.parentNavigatorSlot`. Optional.
+  final NavigatorSlot? navigatorSlot;
 
   /// The route the branch shows on its first visit and after a reset; it
   /// must be in [children]'s subtree, which the router checks when it is

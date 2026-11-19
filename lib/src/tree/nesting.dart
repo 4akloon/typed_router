@@ -3,7 +3,7 @@ import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
 
-/// How a route is nested in the tree: inside a shell, or inside one branch of
+/// How a route is nested in the tree: inside a shell, a split, or one branch of
 /// tabs. Each nesting gives the route a navigator of its own on the stack. A
 /// value: two nestings are equal when they name the same node (and branch).
 sealed class Nesting {
@@ -39,6 +39,31 @@ final class ShellNesting extends Nesting {
 
   @override
   String toString() => 'ShellNesting(${identityHashCode(node)})';
+}
+
+/// Nesting inside a [SplitNode].
+final class SplitNesting extends Nesting {
+  /// Creates the nesting inside [node].
+  const SplitNesting(this.node);
+
+  /// The split.
+  final SplitNode<Object?> node;
+
+  @override
+  TypedRoute<Object?>? redirectFor(
+    BuildContext context,
+    NavigationState target,
+  ) => node.redirectFor(context, target);
+
+  @override
+  bool operator ==(Object other) =>
+      other is SplitNesting && identical(other.node, node);
+
+  @override
+  int get hashCode => identityHashCode(node);
+
+  @override
+  String toString() => 'SplitNesting(${identityHashCode(node)})';
 }
 
 /// Nesting inside one branch of a [StatefulShellNode].

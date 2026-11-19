@@ -55,6 +55,5 @@ const List<ScenarioSection> catalogue = [
   ScenarioSection(
     title: '0.4 Split view',
     scenarios: splitViewScenarios,
-    placeholder: 'Coming with SplitNode.',
   ),
 ];

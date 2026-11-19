@@ -7,6 +7,7 @@ import 'package:typed_navigator/src/redirect/stack_recheck.dart';
 import 'package:typed_navigator/src/router/current_navigators.dart';
 import 'package:typed_navigator/src/router/typed_router.dart';
 import 'package:typed_navigator/src/router/typed_router_scope.dart';
+import 'package:typed_navigator/src/state/shell_level.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 
 /// Shows the router's state in the root navigator and brings back the
@@ -56,6 +57,7 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
         pages: _pages.pagesFor(
           _controller.state,
           onDidRemovePage: _removePage,
+          onDidRemoveColumn: _removeColumn,
         ),
         onDidRemovePage: _removePage,
       ),
@@ -68,6 +70,15 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
   void _removePage(Page<Object?> page) {
     final state = _controller.state;
     final removed = _pages.entriesOf(page, state);
+    if (removed.isEmpty) return;
+    _controller.applyExternalChange(state.withoutEntries(removed));
+  }
+
+  /// A page a split's column navigator popped by itself: the column closes with
+  /// every one to its right.
+  void _removeColumn(Page<Object?> page, SplitEntry split) {
+    final state = _controller.state;
+    final removed = _pages.columnEntriesOf(page, split, state);
     if (removed.isEmpty) return;
     _controller.applyExternalChange(state.withoutEntries(removed));
   }

@@ -32,10 +32,13 @@ final class NavigatorPages {
   final Widget Function(BuildContext context, Object error)? _errorBuilder;
 
   /// The pages of the root navigator for [state], bottom to top. Every
-  /// navigator reports the pages it removes itself to [onDidRemovePage].
+  /// navigator reports the pages it removes itself to [onDidRemovePage],
+  /// the navigator of a split's column to [onDidRemoveColumn].
   List<Page<Object?>> pagesFor(
     NavigationState state, {
     required void Function(Page<Object?> page) onDidRemovePage,
+    required void Function(Page<Object?> page, SplitEntry split)
+    onDidRemoveColumn,
   }) => switch (state.error) {
     final error? => [_errorPage(error)],
     null => NavigatorBuild(
@@ -43,6 +46,7 @@ final class NavigatorPages {
       levelPages: _levelPages,
       state: state,
       onDidRemovePage: onDidRemovePage,
+      onDidRemoveColumn: onDidRemoveColumn,
     ).pagesAt(state.entries, 0),
   };
 
@@ -56,12 +60,35 @@ final class NavigatorPages {
           for (final entry in state.entries)
             if (entry.isIn(shell)) entry,
         ],
+        ObjectKey(value: final SplitEntry split) => [
+          for (final entry in state.entries)
+            if (entry.isIn(split)) entry,
+        ],
         ObjectKey(value: final TabsEntry tabs) => [
           for (final entry in state.entries)
             if (entry.standsIn(tabs)) entry,
         ],
         _ => const [],
       };
+
+  /// The entries a column of [split] stands for, with every entry above them in
+  /// [split]: a column closes with the ones to its right.
+  List<NavigationEntry> columnEntriesOf(
+    Page<Object?> page,
+    SplitEntry split,
+    NavigationState state,
+  ) {
+    final removed = entriesOf(page, state);
+    if (removed.isEmpty) return removed;
+    final first = state.entries.indexOf(removed.first);
+    // Not on screen: already gone, or in a branch not shown, whose kept
+    // stack loses only these entries.
+    if (first < 0) return removed;
+    return [
+      for (final entry in state.entries.skip(first))
+        if (entry.isIn(split)) entry,
+    ];
+  }
 
   Page<Object?> _errorPage(Object error) => _routePages.created(
     _pageFactory,

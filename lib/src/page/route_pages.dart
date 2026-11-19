@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/page/on_screen_gate.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/page/page_request.dart';
+import 'package:typed_navigator/src/split/split_part.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
 
@@ -25,12 +26,31 @@ final class RoutePages {
     final node = _tree.nodeFor(route);
     final request = PageRequest(
       key: ValueKey(entry),
-      child: OnScreenGate(
-        entry: entry,
-        child: Builder(builder: (context) => node.buildScreen(context, route)),
+      // The screen keeps its state when a split moves it between its stack's
+      // navigator and a column's.
+      child: KeyedSubtree(
+        key: entry.screenKey,
+        child: OnScreenGate(
+          entry: entry,
+          child: Builder(
+            builder: (context) => node.buildScreen(context, route),
+          ),
+        ),
       ),
     );
     return created(node.pageFactoryOr(_pageFactory), request, '$route');
+  }
+
+  /// The part of a split's stack that [entry] is.
+  SplitPart splitPartFor(NavigationEntry entry) {
+    final node = _tree.nodeFor(entry.route);
+    return SplitPart(
+      owner: entry,
+      page: pageFor(entry),
+      route: entry.route,
+      presentation: node.splitPresentation,
+      placeholder: node.placeholderOf(entry.route),
+    );
   }
 
   /// The page [factory] creates for [request], which shows [description];

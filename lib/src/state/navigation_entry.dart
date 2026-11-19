@@ -1,6 +1,7 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
+import 'package:typed_navigator/src/state/column_owner.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
 
 /// One page on a stack: a route together with the identity of its page,
@@ -12,7 +13,7 @@ import 'package:typed_navigator/src/state/shell_level.dart';
 /// does not override `==`.
 ///
 /// Internal: not exported.
-final class NavigationEntry {
+final class NavigationEntry implements ColumnOwner {
   /// Creates an entry for [route] inside [levels] (outer first);
   /// `pendingResult` when a push awaits it.
   NavigationEntry(
@@ -23,6 +24,10 @@ final class NavigationEntry {
 
   /// The route shown by this page.
   final TypedRoute<Object?> route;
+
+  /// Keys the screen of this page, so it keeps its state when a split moves it
+  /// to another navigator.
+  final GlobalKey screenKey = GlobalKey();
 
   /// The levels of navigators this page stands in (shell instances, branches of
   /// tabs), from the outer one in; empty for a page of the root navigator.

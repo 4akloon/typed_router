@@ -7,8 +7,8 @@ import 'package:typed_navigator/src/state/stack_parts.dart';
 // builds.
 // ignore_for_file: avoid_type_to_string
 
-/// The text of a stack for logs and test failures: routes joined with
-/// ` > `, a shell's navigator in brackets, tabs in braces with every
+/// The text of a stack for logs and test failures: routes joined with ` > `, a
+/// shell's or a split's navigator in brackets, tabs in braces with every
 /// visited branch and the active one starred:
 /// `{*RoomsBranch: [RoomsRoute() > RoomRoute(7)] | HomeBranch: [HomeRoute()]}`.
 final class StackDescription {
@@ -44,7 +44,7 @@ final class StackDescription {
   ) => switch (level) {
     BranchEntry(:final tabs, :final branchType) =>
       '{${_describeBranches(tabs, branchType, entries, depth)}}',
-    ShellEntry() => '[${_describe(entries, depth)}]',
+    ShellEntry() || SplitEntry() => '[${_describe(entries, depth)}]',
   };
 
   String _describeBranches(

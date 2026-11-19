@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+- Split view: `SplitNode` shows one stack side by side in columns while it is
+  wide (rooms | room, or Miller columns) and as an ordinary stack while it is
+  narrow; `maximumColumns(size)` gets the split's own size. Screens keep their
+  state when the width changes. The top route's optional
+  `RouteNode.placeholder` takes the next column;
+  `RouteNode.splitPresentation: SplitPresentation.cover` shows a route over
+  the whole split. `builder` lays out `SplitView.columns` (`RouteColumn`,
+  `PlaceholderColumn`) itself. Navigation needs no new calls: `go` replaces a
+  column, `push` adds one, back removes the deepest. Every column has its own
+  navigator: `Navigator.pop(context)` in a column closes it and the columns to
+  its right, which the native `Navigator` has no counterpart for. Changes in
+  columns are instant.
+
 ## 0.3.9 - 2026-11-19
 
 - `StatefulShell.navigators`: the branch navigators in tab order, each

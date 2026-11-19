@@ -62,8 +62,8 @@ void main() {
       ]),
       fails(
         "RoomsRoute's parentNavigatorSlot is neither the root nor the slot "
-        'of a shell or branch above it. Use NavigatorSlot.root or the slot '
-        'of an enclosing ShellNode or BranchNode.',
+        'of a shell, split or branch above it. Use NavigatorSlot.root or the '
+        'slot of an enclosing ShellNode, SplitNode or BranchNode.',
       ),
     );
     expect(
@@ -85,8 +85,8 @@ void main() {
         ),
       ]),
       fails(
-        'A NavigatorSlot is given to two shells or branches. Give each its '
-        'own slot.',
+        'A NavigatorSlot is given to two shells, splits or branches. Give '
+        'each its own slot.',
       ),
     );
   });

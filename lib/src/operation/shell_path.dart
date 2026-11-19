@@ -68,6 +68,7 @@ final class ShellPath {
 
   ShellLevel _new(Nesting nesting) => switch (nesting) {
     ShellNesting(:final node) => ShellEntry(node),
+    SplitNesting(:final node) => SplitEntry(node),
     BranchNesting(:final node, :final branch) => TabsEntry(node).branch(branch),
   };
 }

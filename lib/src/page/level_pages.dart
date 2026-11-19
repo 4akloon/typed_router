@@ -2,14 +2,17 @@ import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/page/page_request.dart';
 import 'package:typed_navigator/src/page/route_pages.dart';
+import 'package:typed_navigator/src/split/blank_page_key.dart';
+import 'package:typed_navigator/src/split/split_part.dart';
+import 'package:typed_navigator/src/split/split_projection.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
 import 'package:typed_navigator/src/tabs/branch_switching.dart';
 import 'package:typed_navigator/src/tabs/stateful_shell.dart';
 
-/// Makes the page that holds a nested navigator: a shell's or a tabs instance's
-/// with its branch navigators. The page comes from the node's factory or the
-/// router's and is keyed by the instance.
+/// Makes the page that holds a nested navigator: a shell's, a tabs instance's
+/// with its branch navigators, or a split's with its projection. The page comes
+/// from the node's factory or the router's and is keyed by the instance.
 final class LevelPages {
   /// Creates the pages with [_routePages] checking the factories, the
   /// router's [_pageFactory] for nodes without their own, and
@@ -33,8 +36,13 @@ final class LevelPages {
     shell.node.pageFactoryOr(_pageFactory),
     PageRequest(
       key: ObjectKey(shell),
-      child: Builder(
-        builder: (context) => shell.node.builder(context, state, navigator),
+      // Keyed, so the frame keeps its state when a split moves the page to
+      // another navigator.
+      child: KeyedSubtree(
+        key: shell.frameKey,
+        child: Builder(
+          builder: (context) => shell.node.builder(context, state, navigator),
+        ),
       ),
     ),
     'a shell',
@@ -58,11 +66,47 @@ final class LevelPages {
       tabs.node.pageFactoryOr(_pageFactory),
       PageRequest(
         key: ObjectKey(tabs),
-        child: Builder(
-          builder: (context) => tabs.node.builder(context, state, shell),
+        child: KeyedSubtree(
+          key: tabs.frameKey,
+          child: Builder(
+            builder: (context) => tabs.node.builder(context, state, shell),
+          ),
         ),
       ),
       'tabs',
     );
   }
+
+  /// The page of [split], showing [parts] as a stack or as columns; the
+  /// navigators report the pages they remove to [onDidRemovePage], the
+  /// column navigators to [onDidRemoveColumn].
+  Page<Object?> splitPage(
+    SplitEntry split,
+    NavigationState state,
+    List<SplitPart> parts, {
+    required void Function(Page<Object?> page) onDidRemovePage,
+    required void Function(Page<Object?> page, SplitEntry split)
+    onDidRemoveColumn,
+  }) => _routePages.created(
+    split.node.pageFactoryOr(_pageFactory),
+    PageRequest(
+      key: ObjectKey(split),
+      child: SplitProjection(
+        split: split,
+        state: state,
+        parts: parts,
+        blankPage: _internalPage(const BlankPageKey(), const SizedBox()),
+        rowPage: (row) =>
+            _internalPage(ObjectKey(split.columnsNavigatorKey), row),
+        onDidRemovePage: onDidRemovePage,
+        onDidRemoveColumn: onDidRemoveColumn,
+      ),
+    ),
+    'a split',
+  );
+
+  /// A page of the router's own: the row of a split's columns, the empty
+  /// page under a column.
+  Page<Object?> _internalPage(LocalKey key, Widget child) => _routePages
+      .created(_pageFactory, PageRequest(key: key, child: child), 'a split');
 }

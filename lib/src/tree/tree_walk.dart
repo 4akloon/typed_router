@@ -4,28 +4,25 @@ import 'package:typed_navigator/src/tree/nesting.dart';
 import 'package:typed_navigator/src/tree/nesting_path.dart';
 import 'package:typed_navigator/src/tree/route_placement.dart';
 import 'package:typed_navigator/src/tree/route_registry.dart';
+import 'package:typed_navigator/src/tree/slot_placement.dart';
 import 'package:typed_navigator/src/tree/tabs_validation.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
-
-// Messages name route types; type names are readable in debug builds, where
-// these errors are met.
-// ignore_for_file: avoid_type_to_string
 
 /// Walks the nodes of a tree and registers a placement for every route
 /// node: its parent link and its [NestingPath].
 ///
-/// Shells and tabs place no route of their own. A shell is transparent: its
-/// children sit under the same parent, one level deeper. The children of a
-/// branch start their own chains inside that branch's level. A route with a
-/// `parentNavigatorSlot` is shown in that slot's navigator, and its children
-/// with it.
+/// Shells, splits and tabs place no route of their own. A shell or a split is
+/// transparent: its children sit under the same parent, one level deeper. The
+/// children of a branch start their own chains inside that branch's level. A
+/// route with a `parentNavigatorSlot` is shown in that slot's navigator, and
+/// its children with it.
 final class TreeWalk {
   /// Creates a walk that registers into [_registry].
   TreeWalk(this._registry);
 
   final RouteRegistry _registry;
   final TabsValidation _tabsValidation = const TabsValidation();
-  final Set<NavigatorSlot> _usedSlots = {NavigatorSlot.root};
+  final SlotPlacement _slots = SlotPlacement();
 
   /// Places [nodes] under [parent], at [path].
   void placeAll(
@@ -35,8 +32,26 @@ final class TreeWalk {
   }) {
     for (final node in nodes) {
       switch (node) {
-        case final ShellNode<Object?> shellNode:
-          _placeShell(shellNode, parent, path);
+        case final ShellNode<Object?> shell:
+          _placeInside(
+            shell,
+            'ShellNode',
+            ShellNesting(shell),
+            shell.children,
+            shell.navigatorSlot,
+            parent,
+            path,
+          );
+        case final SplitNode<Object?> split:
+          _placeInside(
+            split,
+            'SplitNode',
+            SplitNesting(split),
+            split.children,
+            split.navigatorSlot,
+            parent,
+            path,
+          );
         case final StatefulShellNode tabs:
           _placeTabs(tabs, path);
         case RouteNode() || ParentedRouteNode():
@@ -51,25 +66,28 @@ final class TreeWalk {
     }
   }
 
-  void _placeShell(
-    ShellNode<Object?> shellNode,
+  /// Places [children] of [node], a shell or a split ([nodeName]), one
+  /// [nesting] deeper.
+  void _placeInside(
+    TreeNode<Object?> node,
+    String nodeName,
+    Nesting nesting,
+    List<TreeNode<Object?>> children,
+    NavigatorSlot? slot,
     RoutePlacement? parent,
     NestingPath path,
   ) {
-    if (shellNode.children.isEmpty) {
+    if (children.isEmpty) {
       throw ArgumentError.value(
-        shellNode,
+        node,
         'children',
-        'A ShellNode has no children. Give it at least one node.',
+        'A $nodeName has no children. Give it at least one node.',
       );
     }
     placeAll(
-      shellNode.children,
+      children,
       parent: parent,
-      path: path.inside(
-        ShellNesting(shellNode),
-        _claimed(shellNode.navigatorSlot),
-      ),
+      path: path.inside(nesting, _slots.claimed(slot)),
     );
   }
 
@@ -80,21 +98,10 @@ final class TreeWalk {
       placeAll(
         branch.children,
         parent: null,
-        path: path.inside(nesting, _claimed(branch.navigatorSlot)),
+        path: path.inside(nesting, _slots.claimed(branch.navigatorSlot)),
       );
       _tabsValidation.checkInitial(branch, nesting, _registry);
     }
-  }
-
-  /// [slot], once: a slot names one shell or branch.
-  NavigatorSlot? _claimed(NavigatorSlot? slot) {
-    if (slot != null && !_usedSlots.add(slot)) {
-      throw ArgumentError(
-        'A NavigatorSlot is given to two shells or branches. Give each its '
-        'own slot.',
-      );
-    }
-    return slot;
   }
 
   RoutePlacement _placementFor(
@@ -103,7 +110,7 @@ final class TreeWalk {
     NestingPath path,
   ) => switch ((node, parent)) {
     (final RouteNode<TypedRoute<Object?>> routeNode, _) =>
-      RoutePlacement.topLevel(routeNode, path: _placed(routeNode, path)),
+      RoutePlacement.topLevel(routeNode, path: _slots.placed(routeNode, path)),
     (
       final ParentedRouteNode<TypedRoute<Object?>, TypedRoute<Object?>>
       parentedNode,
@@ -113,7 +120,7 @@ final class TreeWalk {
         parentedNode.node,
         parent: parent,
         buildParent: parentedNode.buildParent,
-        path: _placed(parentedNode.node, path),
+        path: _slots.placed(parentedNode.node, path),
       ),
     _ => throw StateError(
       'A node that places no route, or a node placed with withParent where '
@@ -121,24 +128,4 @@ final class TreeWalk {
       'TreeNode and the walk should make this impossible.',
     ),
   };
-
-  /// [path] shown where [node]'s `parentNavigatorSlot` says.
-  NestingPath _placed(RouteNode<TypedRoute<Object?>> node, NestingPath path) {
-    final slot = node.parentNavigatorSlot;
-    if (slot == null) return path;
-    if (path.placedIn(slot) case final placed?) return placed;
-    if (path.isBelowShown(slot)) {
-      throw ArgumentError(
-        "${node.routeType}'s parentNavigatorSlot names a navigator deeper "
-        'than the one its parent route is shown in. A route shows in its '
-        "parent's navigator or further out: use that navigator's slot or an "
-        'outer one.',
-      );
-    }
-    throw ArgumentError(
-      "${node.routeType}'s parentNavigatorSlot is neither the root nor the "
-      'slot of a shell or branch above it. Use NavigatorSlot.root or the '
-      'slot of an enclosing ShellNode or BranchNode.',
-    );
-  }
 }

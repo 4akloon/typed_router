@@ -12,6 +12,9 @@ final class BranchEntry extends ShellLevel {
   final Type branchType;
 
   @override
+  ColumnOwner get columnOwner => tabs;
+
+  @override
   bool isInstanceOf(Nesting nesting) =>
       nesting is BranchNesting &&
       identical(nesting.node, tabs.node) &&

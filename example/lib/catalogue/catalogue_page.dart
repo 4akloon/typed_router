@@ -29,9 +29,6 @@ final class CataloguePage extends StatelessWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => onOpen(scenario),
             ),
-          if (section.scenarios.isEmpty)
-            if (section.placeholder case final placeholder?)
-              ListTile(enabled: false, title: Text(placeholder)),
         ],
       ],
     ),

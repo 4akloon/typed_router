@@ -5,7 +5,7 @@ part of 'shell_level.dart';
 /// navigator.
 ///
 /// Compared by identity.
-final class TabsEntry {
+final class TabsEntry implements ColumnOwner {
   /// Creates a new instance of [node] and its branches.
   TabsEntry(this.node) : branchTypes = List.unmodifiable(node.branchTypes) {
     for (final branchType in branchTypes) {
@@ -15,6 +15,10 @@ final class TabsEntry {
 
   /// The node this instance shows.
   final StatefulShellNode node;
+
+  /// Keys the frame the tabs' builder makes, so it keeps its state when a split
+  /// moves the tabs' page to another navigator.
+  final GlobalKey frameKey = GlobalKey();
 
   /// The branch types, in tab order.
   final List<Type> branchTypes;

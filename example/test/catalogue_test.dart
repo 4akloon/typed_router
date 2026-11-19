@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator_example/catalogue/catalogue.dart';
 import 'package:typed_navigator_example/example_app.dart';
@@ -26,18 +25,4 @@ void main() {
       });
     }
   }
-
-  testWidgets('the split view section shows its placeholder while empty', (
-    tester,
-  ) async {
-    await tester.pumpWidget(const ExampleApp());
-
-    await tester.scrollUntilVisible(
-      find.text('0.4 Split view'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-
-    expect(find.text('Coming with SplitNode.'), findsOneWidget);
-  });
 }

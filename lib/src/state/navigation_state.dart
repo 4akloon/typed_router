@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
+import 'package:typed_navigator/src/router/navigation_state_scope.dart';
 import 'package:typed_navigator/src/state/inactive_branches.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
+import 'package:typed_navigator/src/state/route_lookup.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
 import 'package:typed_navigator/src/state/stack_description.dart';
 
@@ -10,9 +13,8 @@ import 'package:typed_navigator/src/state/stack_description.dart';
 /// Immutable and never empty. The router creates a new state for every
 /// navigation that changes the screen; it has no public constructor.
 ///
-/// Routes pushed imperatively on top of a page (`Navigator.push`,
-/// `showDialog`) are not part of the state: [top] stays the page below
-/// them.
+/// Routes pushed imperatively over a page (`Navigator.push`, `showDialog`)
+/// are not in the state: [top] stays the page below them.
 ///
 /// ```dart
 /// final state = router.state;
@@ -35,39 +37,42 @@ final class NavigationState {
     }
   }
 
+  /// The state of the router above [context], which rebuilds on every
+  /// navigation, as with `ModalRoute.of`: for a screen showing the state, a
+  /// list highlighting the item opened from it. Throws [FlutterError] without a
+  /// router above.
+  static NavigationState of(BuildContext context) =>
+      NavigationStateScope.stateOf(context);
+
   final List<NavigationEntry> _entries;
   final InactiveBranches _inactive;
 
-  /// What the redirects threw while the router was shown for the first
-  /// time or re-checked its stack; `null` otherwise.
-  ///
-  /// While it is set, the navigator shows only the error screen, and
-  /// [routes] keep the stack the redirects failed on. Any successful
-  /// navigation clears it. It is an [Object] because a redirect may throw
-  /// anything; a loop or a too long chain is a `RedirectChainError`.
+  /// What the redirects threw when the router was first shown or re-checked
+  /// its stack, else `null`. While set, only the error screen shows and
+  /// [routes] keep the failed stack; a successful navigation clears it. An
+  /// [Object]: a redirect may throw anything (a loop: `RedirectChainError`).
   final Object? error;
 
-  /// The routes on the active path, from the bottom of the stack to the
-  /// top. Unmodifiable.
+  /// The routes on the active path, bottom to top. Unmodifiable.
   final List<TypedRoute<Object?>> routes;
 
   /// The route on top: the one on screen.
   TypedRoute<Object?> get top => routes.last;
 
-  /// The route of type [R] nearest to the top, or `null` when there is
-  /// none. [R] may be a route type or a common supertype of routes.
-  R? find<R extends TypedRoute<Object?>>() {
-    for (final route in routes.reversed) {
-      if (route case final R match) return match;
-    }
-    return null;
-  }
+  /// The route of type [R] (a route type or a common supertype) nearest to
+  /// the top, or `null`.
+  R? find<R extends TypedRoute<Object?>>() => RouteLookup(routes).find<R>();
 
   /// Whether a route on the active path is a [T]: a route type or a marker
   /// interface such as `AuthArea`.
-  bool contains<T>() => routes.any((route) => route is T);
+  bool contains<T>() => RouteLookup(routes).contains<T>();
 
-  /// The stack entries on the active path, bottom to top. Unmodifiable.
+  /// The route right above [route]'s entry nearest to the top (as [find]):
+  /// the item a list opened, seen under a back gesture; else `null`.
+  TypedRoute<Object?>? routeAfter(TypedRoute<Object?> route) =>
+      RouteLookup(routes).after(route);
+
+  /// The stack entries on the active path, bottom to top.
   @internal
   List<NavigationEntry> get entries => _entries;
 
@@ -79,8 +84,7 @@ final class NavigationState {
   @internal
   List<ShellLevel> get topLevels => _entries.last.levels;
 
-  /// Every entry on the stack: the active path, then the kept branch stacks.
-  /// Leaving the stack means leaving this list.
+  /// Every entry: the active path, then the kept branch stacks.
   @internal
   List<NavigationEntry> get allEntries => [..._entries, ..._inactive.entries];
 
@@ -104,14 +108,13 @@ final class NavigationState {
       NavigationState._(_entries, null, _inactive);
 
   /// This state without [removed] (pages a navigator popped by itself, on
-  /// screen or in a branch not on screen); this same state when nothing
-  /// changes or nothing would be left on screen.
+  /// screen or in a hidden branch); this same state when nothing changes
+  /// or nothing would be left on screen.
   @internal
   NavigationState withoutEntries(Iterable<NavigationEntry> removed) {
     final removedEntries = removed.toSet();
     final kept = [
-      for (final entry in _entries)
-        if (!removedEntries.contains(entry)) entry,
+      ..._entries.where((entry) => !removedEntries.contains(entry)),
     ];
     if (kept.isEmpty) return this;
     final next = NavigationState._(
@@ -140,11 +143,8 @@ final class NavigationState {
   /// tabs in braces with their branches, followed by ` (error...)` when the
   /// redirects failed; for logs and test failures.
   @override
-  String toString() {
-    final stack = StackDescription(_entries, _inactive);
-    return switch (error) {
-      final error? => '$stack (error: $error)',
-      null => '$stack',
-    };
-  }
+  String toString() => switch ((StackDescription(_entries, _inactive), error)) {
+    (final stack, final error?) => '$stack (error: $error)',
+    (final stack, null) => '$stack',
+  };
 }

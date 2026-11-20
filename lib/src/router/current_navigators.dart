@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/shell_level.dart';
 
 /// The navigators the system back button goes to, deepest first, as go_router's
 /// `_findCurrentNavigators`.
@@ -15,14 +16,31 @@ final class CurrentNavigators {
   List<NavigatorState> deepestFirst(
     NavigatorState root,
     NavigationState state,
+  ) => [root, ..._outermostFirst(state.topLevels)].reversed.toList();
+
+  /// The current navigators of [level] and of the levels inside it, the deepest
+  /// first; none when the top entry of [state] is not in [level] or the page
+  /// holding [level] is not current.
+  List<NavigatorState> insideDeepestFirst(
+    ShellLevel level,
+    NavigationState state,
   ) {
-    final navigators = [root];
-    for (final level in state.topLevels) {
+    final levels = state.topLevels;
+    final index = levels.indexOf(level);
+    if (index < 0) return const [];
+    return _outermostFirst(levels.sublist(index)).reversed.toList();
+  }
+
+  /// The mounted navigators of [levels], outer first, up to the first
+  /// whose page is not current.
+  List<NavigatorState> _outermostFirst(List<ShellLevel> levels) {
+    final navigators = <NavigatorState>[];
+    for (final level in levels) {
       final navigator = level.navigatorKey.currentState;
       if (navigator == null || !_isOnTop(navigator)) break;
       navigators.add(navigator);
     }
-    return navigators.reversed.toList();
+    return navigators;
   }
 
   /// Whether the shell page holding [navigator] is the current route of

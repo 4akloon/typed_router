@@ -1,4 +1,5 @@
 import 'package:typed_navigator/src/operation/entry_chain.dart';
+import 'package:typed_navigator/src/operation/go_plan.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
@@ -9,11 +10,12 @@ import 'package:typed_navigator/src/tree/route_tree.dart';
 /// What was above the tabs goes.
 final class BranchSwitch {
   /// Creates the switch over routes of [_tree], making entries with
-  /// [_entryChain].
-  BranchSwitch(this._tree, this._entryChain);
+  /// [_entryChain] and resetting with [_goPlan].
+  BranchSwitch(this._tree, this._entryChain, this._goPlan);
 
   final RouteTree _tree;
   final EntryChain _entryChain;
+  final GoPlan _goPlan;
 
   /// The path showing [branchType] of [tabs]: the active branch as it is,
   /// another branch's kept stack, or its initial chain on the first visit.
@@ -35,8 +37,11 @@ final class BranchSwitch {
     };
   }
 
-  /// The path showing [branchType] of [tabs] from its initial chain.
-  /// `null` when [tabs] is not on the active path.
+  /// The path showing [branchType] of [tabs] from its initial chain: `go`
+  /// to the initial route from the branch's stack (go_router's
+  /// `initialLocation: true`), so the entries the chain shares with that
+  /// stack stay, with their screens. `null` when [tabs] is not on the
+  /// active path.
   List<NavigationEntry>? reset(
     NavigationState current,
     TabsEntry tabs,
@@ -44,11 +49,17 @@ final class BranchSwitch {
   ) {
     final inTabs = _entriesIn(current, tabs);
     if (inTabs.isEmpty) return null;
-    return _initial(
-      _below(current, inTabs.first),
-      inTabs.first,
-      tabs,
-      branchType,
+    final below = _below(current, inTabs.first);
+    final stack = inTabs.first.branchOf(tabs)?.branchType == branchType
+        ? inTabs
+        : current.inactiveBranches.stackOf(tabs, branchType) ?? const [];
+    return _goPlan.entriesFrom(
+      current,
+      [...below, ...stack],
+      [
+        for (final entry in below) entry.route,
+        ..._tree.chainTo(tabs.node.branchOf(branchType).initial),
+      ],
     );
   }
 

@@ -5,6 +5,7 @@ import 'package:typed_navigator/src/redirect/redirect_scope.dart';
 import 'package:typed_navigator/src/redirect/router_mount.dart';
 import 'package:typed_navigator/src/redirect/stack_recheck.dart';
 import 'package:typed_navigator/src/router/current_navigators.dart';
+import 'package:typed_navigator/src/router/navigation_state_scope.dart';
 import 'package:typed_navigator/src/router/typed_router.dart';
 import 'package:typed_navigator/src/router/typed_router_scope.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
@@ -51,13 +52,16 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
     // same frame.
     builder: (context) => TypedRouterScope(
       router: _router,
-      child: Navigator(
-        key: _navigatorKey,
-        pages: _pages.pagesFor(
-          _controller.state,
+      child: NavigationStateScope(
+        state: _controller.state,
+        child: Navigator(
+          key: _navigatorKey,
+          pages: _pages.pagesFor(
+            _controller.state,
+            onDidRemovePage: _removePage,
+          ),
           onDidRemovePage: _removePage,
         ),
-        onDidRemovePage: _removePage,
       ),
     ),
   );

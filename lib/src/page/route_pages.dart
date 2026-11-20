@@ -25,9 +25,14 @@ final class RoutePages {
     final node = _tree.nodeFor(route);
     final request = PageRequest(
       key: ValueKey(entry),
-      child: OnScreenGate(
-        entry: entry,
-        child: Builder(builder: (context) => node.buildScreen(context, route)),
+      child: KeyedSubtree(
+        key: entry.screenKey,
+        child: OnScreenGate(
+          entry: entry,
+          child: Builder(
+            builder: (context) => node.buildScreen(context, route),
+          ),
+        ),
       ),
     );
     return created(node.pageFactoryOr(_pageFactory), request, '$route');

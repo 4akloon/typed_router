@@ -15,6 +15,7 @@ import 'package:typed_navigator/src/redirect/router_mount.dart';
 import 'package:typed_navigator/src/redirect/stack_recheck.dart';
 import 'package:typed_navigator/src/result/result_completion.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
+import 'package:typed_navigator/src/router/current_navigators.dart';
 import 'package:typed_navigator/src/tabs/tabs_switching.dart';
 import 'package:typed_navigator/src/transaction/entry_lifecycles.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
@@ -47,11 +48,12 @@ final class RouterParts {
       redirectLimit: redirectLimit,
     );
     final entryChain = EntryChain(ShellPath(tree));
+    final goPlan = GoPlan(tree, entryChain);
     final planner = NavigationPlanner(
       tree,
       entryChain,
-      GoPlan(tree, entryChain),
-      BranchSwitch(tree, entryChain),
+      goPlan,
+      BranchSwitch(tree, entryChain, goPlan),
     );
     final controller = NavigationController(
       initialState: planner.startingAt(initialRoute),
@@ -72,6 +74,7 @@ final class RouterParts {
           routePages: routePages,
           pageFactory: pageFactory,
           switchingFor: (tabs) => TabsSwitching(operations, tabs),
+          currentNavigators: const CurrentNavigators(),
         ),
         pageFactory: pageFactory,
         errorBuilder: errorBuilder,

@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.3.10 - 2026-11-20
+
+- `NavigationState.of(context)` reads the router's state and rebuilds the
+  screen on every navigation, as `GoRouterState.of`.
+- `NavigationState.routeAfter(route)` answers the route right above
+  `route`'s entry nearest to the top: the item a list opened, which the
+  list highlights while a back gesture reveals it.
+- Fix: a predictive back gesture over a shell or tabs pushed above another
+  page closed the whole level; it now closes the page on top inside it,
+  or nothing when that page refuses with `PopScope`, as
+  `NavigatorPopHandler` does. A level nested under another page no longer
+  takes the gesture with it. A `maybePop` from a level's frame goes to the
+  navigators inside, the deepest first.
+- Fix: `resetBranch` / `resetBranchAt` rebuilt the branch's initial
+  screens, so tapping the active tab again reset a tab already on its
+  first page. Like go_router's `goBranch(index, initialLocation: true)`,
+  the screens the initial chain shares with the branch's stack now stay,
+  and nested tabs keep their stacks.
+
 ## 0.3.9 - 2026-11-19
 
 - `StatefulShell.navigators`: the branch navigators in tab order, each

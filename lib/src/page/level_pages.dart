@@ -1,7 +1,10 @@
 import 'package:flutter/widgets.dart';
+import 'package:typed_navigator/src/page/level_inside.dart';
+import 'package:typed_navigator/src/page/level_pop_gate.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/page/page_request.dart';
 import 'package:typed_navigator/src/page/route_pages.dart';
+import 'package:typed_navigator/src/router/current_navigators.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
 import 'package:typed_navigator/src/tabs/branch_switching.dart';
@@ -12,17 +15,20 @@ import 'package:typed_navigator/src/tabs/stateful_shell.dart';
 /// router's and is keyed by the instance.
 final class LevelPages {
   /// Creates the pages with [_routePages] checking the factories, the
-  /// router's [_pageFactory] for nodes without their own, and
-  /// [_switchingFor] giving each tabs instance its branch switching.
+  /// router's [_pageFactory] for nodes without their own,
+  /// [_switchingFor] giving each tabs instance its branch switching, and
+  /// [_currentNavigators] finding the navigators inside a level for back.
   LevelPages({
     required this._routePages,
     required this._pageFactory,
     required this._switchingFor,
+    required this._currentNavigators,
   });
 
   final RoutePages _routePages;
   final PageFactory _pageFactory;
   final BranchSwitching Function(TabsEntry tabs) _switchingFor;
+  final CurrentNavigators _currentNavigators;
 
   /// The page of [shell], whose builder frames [navigator].
   Page<Object?> shellPage(
@@ -33,8 +39,12 @@ final class LevelPages {
     shell.node.pageFactoryOr(_pageFactory),
     PageRequest(
       key: ObjectKey(shell),
-      child: Builder(
-        builder: (context) => shell.node.builder(context, state, navigator),
+      child: _gated(
+        shell,
+        state,
+        Builder(
+          builder: (context) => shell.node.builder(context, state, navigator),
+        ),
       ),
     ),
     'a shell',
@@ -58,11 +68,22 @@ final class LevelPages {
       tabs.node.pageFactoryOr(_pageFactory),
       PageRequest(
         key: ObjectKey(tabs),
-        child: Builder(
-          builder: (context) => tabs.node.builder(context, state, shell),
+        child: _gated(
+          active,
+          state,
+          Builder(
+            builder: (context) => tabs.node.builder(context, state, shell),
+          ),
         ),
       ),
       'tabs',
     );
   }
+
+  /// [frame] of [level], giving back to what is inside while it handles back.
+  Widget _gated(ShellLevel level, NavigationState state, Widget frame) =>
+      LevelPopGate(
+        inside: LevelInside(level, state, _currentNavigators),
+        child: frame,
+      );
 }

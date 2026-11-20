@@ -1,7 +1,6 @@
 // A back gesture goes only to the page on screen, across shells, tabs and
 // dialogs (flutter/flutter#152323).
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/material.dart';
@@ -31,7 +30,6 @@ Future<TypedRouter> _pumpMaterial(
   List<TreeNode<NoParentRoute>> routes,
   TypedRoute<Object?> initialRoute,
 ) async {
-  final isAndroid = defaultTargetPlatform == TargetPlatform.android;
   final router = TypedRouter(
     routes: routes,
     initialRoute: initialRoute,
@@ -41,7 +39,7 @@ Future<TypedRouter> _pumpMaterial(
   await tester.pumpWidget(
     MaterialApp.router(
       routerConfig: router,
-      theme: isAndroid ? predictiveBackTheme : null,
+      theme: predictiveBackTheme,
     ),
   );
   await tester.pumpAndSettle();

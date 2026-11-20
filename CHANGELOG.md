@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Fix: `resetBranch` / `resetBranchAt` rebuilt the branch's initial screens,
+  so tapping the active tab again reset a tab already on its first page. Like
+  go_router's `goBranch(index, initialLocation: true)`, the screens the
+  initial chain shares with the branch's stack now stay, and nested tabs keep
+  their stacks.
+
 - Split view: every column on screen but the deepest and the first shows a
   back button. It closes the column and the columns to its right, after asking
   the pages on screen to its right: an app `PopScope(canPop: false)` there

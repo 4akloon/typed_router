@@ -25,7 +25,19 @@ final class GoPlan {
     TypedRoute<Object?> route,
   ) {
     final chain = _tree.chainTo(route);
-    final base = _closestBase(current, chain);
+    return entriesFrom(current, _closestBase(current, chain), chain);
+  }
+
+  /// The active path showing [chain] from [base], a stack [current] holds
+  /// (its active path, or the entries below a tabs instance followed by a
+  /// branch's stack): the entries of [base] that hold the routes [chain]
+  /// starts with stay; new entries for the rest reuse the shells and tabs
+  /// of the entries they replace.
+  List<NavigationEntry> entriesFrom(
+    NavigationState current,
+    List<NavigationEntry> base,
+    List<TypedRoute<Object?>> chain,
+  ) {
     final kept = base.take(_commonPrefix(base, chain)).toList();
     return _entryChain.chained(
       kept,

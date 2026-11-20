@@ -48,11 +48,12 @@ final class RouterParts {
       redirectLimit: redirectLimit,
     );
     final entryChain = EntryChain(ShellPath(tree));
+    final goPlan = GoPlan(tree, entryChain);
     final planner = NavigationPlanner(
       tree,
       entryChain,
-      GoPlan(tree, entryChain),
-      BranchSwitch(tree, entryChain),
+      goPlan,
+      BranchSwitch(tree, entryChain, goPlan),
     );
     final controller = NavigationController(
       initialState: planner.startingAt(initialRoute),

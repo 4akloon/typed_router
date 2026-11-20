@@ -40,11 +40,12 @@ final planner = _plannerOver(
 
 NavigationPlanner _plannerOver(RouteTree tree) {
   final entryChain = EntryChain(ShellPath(tree));
+  final goPlan = GoPlan(tree, entryChain);
   return NavigationPlanner(
     tree,
     entryChain,
-    GoPlan(tree, entryChain),
-    BranchSwitch(tree, entryChain),
+    goPlan,
+    BranchSwitch(tree, entryChain, goPlan),
   );
 }
 

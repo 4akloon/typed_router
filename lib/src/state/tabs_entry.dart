@@ -20,6 +20,9 @@ final class TabsEntry implements ColumnOwner {
   /// moves the tabs' page to another navigator.
   final GlobalKey frameKey = GlobalKey();
 
+  @override
+  GlobalKey get pageContentKey => frameKey;
+
   /// The branch types, in tab order.
   final List<Type> branchTypes;
 

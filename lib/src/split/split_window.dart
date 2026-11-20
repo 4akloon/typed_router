@@ -12,15 +12,20 @@ import 'package:typed_navigator/src/state/navigation_entry.dart';
 ///
 /// Compared by identity: it is made for one build.
 final class SplitWindow {
-  /// Lays out [parts], bottom to top, in at most [columns] columns.
-  factory SplitWindow(List<SplitPart> parts, int columns) {
+  /// Lays out [parts], bottom to top, in at most [columns] columns; the
+  /// top column's placeholder is built in [context].
+  factory SplitWindow(
+    List<SplitPart> parts,
+    int columns,
+    BuildContext context,
+  ) {
     final coverStart = parts.indexWhere(
       (part) => part.presentation == SplitPresentation.cover,
       1,
     );
     final columned = coverStart < 0 ? parts : parts.sublist(0, coverStart);
     final covers = coverStart < 0 ? <SplitPart>[] : parts.sublist(coverStart);
-    final placeholder = columned.lastOrNull?.placeholder;
+    final placeholder = columned.lastOrNull?.placeholderIn?.call(context);
     final routeColumns = placeholder == null ? columns : columns - 1;
     final shown = math.min(columned.length, routeColumns);
     final hiddenCount = columned.length - shown;
@@ -56,16 +61,16 @@ final class SplitWindow {
       part != deepest &&
       (hidden.isNotEmpty || part != shown.first);
 
-  /// The keys of the screens on screen to the right of [part], which back
-  /// from it asks first: the route columns after it, or the covers when
-  /// they hide the columns, and [top], the state's top page.
+  /// The keys of the screens on screen to the right of [part], which back from
+  /// it asks first: the top screen of each column after it (inside a shell or
+  /// tabs too), or of the covers when they hide the columns, and [top], the
+  /// state's top page.
   List<GlobalKey> screensRightOf(SplitPart part, NavigationEntry top) {
     final onScreen = covers.isNotEmpty
         ? covers
         : shown.skip(shown.indexOf(part) + 1);
     return {
-      for (final right in onScreen)
-        if (right.owner case final NavigationEntry entry) entry.screenKey,
+      for (final right in onScreen) right.topScreenKey,
       top.screenKey,
     }.toList();
   }

@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+- Split view, selection: `NavigationState.of(context)` reads the state and
+  rebuilds the screen on every navigation; `NavigationState.routeAfter(route)`
+  answers the route open to its right. `RouteNode.placeholder` may answer
+  `null` for a route (no placeholder column). One back closes one thing: a
+  pageless route in a visible column left of the deepest closes first, with
+  the button and the gesture. Predictive back in the deepest column shows the
+  placeholder that takes its place. Pageless routes of the split's navigators
+  complete with `null` when the split switches between a stack and columns.
+  The back button inside a shell or tabs shown as a middle column closes that
+  page. **Migration:** on pages that keep the back gesture away (inside a
+  level in a middle column; the deepest column while a pageless route lies to
+  its left) `Navigator.pop(context, result)` completes the push with `null`,
+  as in middle columns. Esc stays the app's: see the example's
+  `CloseOnEscape`.
+
 - Fix: `resetBranch` / `resetBranchAt` rebuilt the branch's initial screens,
   so tapping the active tab again reset a tab already on its first page. Like
   go_router's `goBranch(index, initialLocation: true)`, the screens the

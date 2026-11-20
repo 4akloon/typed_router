@@ -41,6 +41,9 @@ final class SplitEntry extends ShellLevel implements ColumnOwner {
   ColumnOwner get columnOwner => this;
 
   @override
+  GlobalKey get pageContentKey => frameKey;
+
+  @override
   List<GlobalKey<NavigatorState>> get ownNavigatorKeys => [
     navigatorKey,
     columnsNavigatorKey,

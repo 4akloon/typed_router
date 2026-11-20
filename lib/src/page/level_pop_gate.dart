@@ -51,9 +51,7 @@ final class _LevelPopGateState extends State<LevelPopGate> {
     // maybePop; as the first page of its column's navigator, it gets no back
     // gesture.
     final closesColumn =
-        context
-            .dependOnInheritedWidgetOfExactType<ColumnBackScope>()
-            ?.closing !=
+        context.dependOnInheritedWidgetOfExactType<ColumnBackScope>()?.back !=
         null;
     _isOnScreen =
         closesColumn ||

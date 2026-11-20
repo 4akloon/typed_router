@@ -31,9 +31,7 @@ final class OnScreenGate extends StatelessWidget {
             ?.isOnScreen ??
         true;
     final closesColumn =
-        context
-            .dependOnInheritedWidgetOfExactType<ColumnBackScope>()
-            ?.closing !=
+        context.dependOnInheritedWidgetOfExactType<ColumnBackScope>()?.back !=
         null;
     // Within its own navigator Flutter already gives the gesture only to
     // the current route; the gate covers the navigators around it.

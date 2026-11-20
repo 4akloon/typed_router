@@ -17,6 +17,9 @@ final class ShellEntry extends ShellLevel implements ColumnOwner {
   final GlobalKey frameKey = GlobalKey();
 
   @override
+  GlobalKey get pageContentKey => frameKey;
+
+  @override
   ColumnOwner get columnOwner => this;
 
   @override

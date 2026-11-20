@@ -45,10 +45,12 @@ final class RouteNode<R extends TypedRoute<Object?>>
 
   /// What a [SplitNode] shows in the next column while a route of this node is
   /// the top one: "pick a room" next to the rooms. Not a route: it is not in
-  /// the state and has no navigator of its own. `null` lets the top route take
+  /// the state and has no navigator of its own. Called while the split lays out
+  /// its columns; answering `null` for a route (a folder without subfolders)
+  /// leaves no placeholder for it. Without a placeholder the top route takes
   /// the rest of the width. Ignored outside a split and when the split shows a
   /// stack.
-  final Widget Function(BuildContext context, R route)? placeholder;
+  final Widget? Function(BuildContext context, R route)? placeholder;
 
   /// How a route of this node shows inside a [SplitNode]: a column, or
   /// [SplitPresentation.cover] over the whole split together with every
@@ -106,15 +108,11 @@ final class RouteNode<R extends TypedRoute<Object?>>
   Widget buildScreen(BuildContext context, TypedRoute<Object?> route) =>
       build(context, route as R);
 
-  /// The placeholder for [route], which is always an [R], or `null` when
-  /// this node has none.
+  /// The placeholder for [route], which is always an [R], built in
+  /// `context`; `null` when this node has none or it answers `null`.
   @internal
-  Widget? placeholderOf(TypedRoute<Object?> route) => switch (placeholder) {
-    final placeholder? => Builder(
-      builder: (context) => placeholder(context, route as R),
-    ),
-    null => null,
-  };
+  Widget? placeholderOf(BuildContext context, TypedRoute<Object?> route) =>
+      placeholder?.call(context, route as R);
 
   /// Runs [redirect] for [route], which is always an [R].
   @internal

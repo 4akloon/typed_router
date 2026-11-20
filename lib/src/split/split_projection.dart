@@ -1,10 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:typed_navigator/src/page/nested_navigator.dart';
-import 'package:typed_navigator/src/split/column_closing.dart';
-import 'package:typed_navigator/src/split/split_column.dart';
+import 'package:typed_navigator/src/page/after_build.dart';
+import 'package:typed_navigator/src/split/pageless_columns.dart';
+import 'package:typed_navigator/src/split/split_layout.dart';
 import 'package:typed_navigator/src/split/split_part.dart';
-import 'package:typed_navigator/src/split/split_view.dart';
-import 'package:typed_navigator/src/split/split_window.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
 
@@ -13,7 +11,10 @@ import 'package:typed_navigator/src/state/shell_level.dart';
 /// row of columns and the cover pages, each column a navigator of its own keyed
 /// by its part, so a screen never changes navigator while the columns shift
 ///.
-final class SplitProjection extends StatelessWidget {
+///
+/// It follows the pageless routes of its columns: while one lies left of the
+/// deepest column, that one keeps the back gesture away.
+final class SplitProjection extends StatefulWidget {
   /// Creates the projection of [split]'s [parts], bottom to top.
   const SplitProjection({
     required this.split,
@@ -35,8 +36,9 @@ final class SplitProjection extends StatelessWidget {
   /// The parts of the split's stack, bottom to top. At least one.
   final List<SplitPart> parts;
 
-  /// The empty page under the page of a column whose route can pop.
-  final Page<Object?> blankPage;
+  /// Makes the page under the deepest column's page, showing what takes the
+  /// column's place after back.
+  final Page<Object?> Function(Widget child) blankPage;
 
   /// Makes the page holding the row of columns.
   final Page<Object?> Function(Widget row) rowPage;
@@ -49,92 +51,72 @@ final class SplitProjection extends StatelessWidget {
   final void Function(Page<Object?> page, SplitEntry split) onDidRemoveColumn;
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) {
-      final columns = split.node.columnsFor(constraints.biggest);
-      return columns < 2 ? _stack(context) : _columns(context, columns);
-    },
-  );
+  State<SplitProjection> createState() => _SplitProjectionState();
+}
 
-  Widget _stack(BuildContext context) {
-    final navigator = NestedNavigator(
-      navigatorKey: split.navigatorKey,
-      pages: [for (final part in parts) part.page],
-      onDidRemovePage: onDidRemovePage,
-      isActive: true,
-    );
-    final view = SplitView(
-      columns: [RouteColumn(parts.last.route, navigator)],
-      maximumColumns: 1,
-    );
-    return _frame(context, view);
+final class _SplitProjectionState extends State<SplitProjection> {
+  static const _pageless = PagelessColumns();
+  List<NavigatorState> _pagelessColumns = const [];
+  bool _holdsPageless = false;
+  int? _shownColumns;
+  late final AfterBuild _refresh = AfterBuild(_readPageless);
+  late final AfterBuild _switch = AfterBuild(_closePagelessAndSwitch);
+
+  /// Reads which navigators hold a pageless route; rebuilds when the
+  /// columns left of the deepest change from none to some or back.
+  void _readPageless() {
+    _holdsPageless = _pageless.isAnyOpen(widget.split, widget.state);
+    final next = _pageless.rightmostFirst(widget.split, widget.state);
+    if (next.isEmpty == _pagelessColumns.isEmpty) return;
+    setState(() => _pagelessColumns = next);
   }
 
-  Widget _columns(BuildContext context, int columns) {
-    final window = SplitWindow(parts, columns);
-    final view = SplitView(
-      columns: [
-        for (final part in window.shown)
-          RouteColumn(
-            part.route,
-            _columnNavigator(part, window),
-          ),
-        if ((window.deepest, window.placeholder) case (
-          final deepest?,
-          final placeholder?,
-        ))
-          PlaceholderColumn(
-            deepest.route,
-            Semantics(container: true, child: placeholder),
-          ),
-      ],
-      maximumColumns: columns,
-    );
-    final row = Stack(
-      fit: StackFit.expand,
-      children: [
-        for (final part in window.hidden)
-          Offstage(
-            child: TickerMode(
-              enabled: false,
-              child: _columnNavigator(part, window),
-            ),
-          ),
-        Builder(builder: (context) => _frame(context, view)),
-      ],
-    );
-    return NestedNavigator(
-      navigatorKey: split.columnsNavigatorKey,
-      pages: [rowPage(row), for (final part in window.covers) part.page],
-      onDidRemovePage: onDidRemovePage,
-      isActive: true,
-    );
+  /// Closes the pageless routes the change of projection would lose, then lets
+  /// it happen.
+  void _closePagelessAndSwitch() {
+    _pageless.closeAll(widget.split, widget.state);
+    setState(() => _holdsPageless = false);
   }
 
-  /// The split's builder around [view], keyed so it keeps its state when
-  /// the projection changes.
-  Widget _frame(BuildContext context, SplitView view) => KeyedSubtree(
-    key: split.frameKey,
-    child: split.node.frame(context, state, view),
-  );
+  /// The columns to show for [wanted]: the shown ones for one more frame
+  /// while a change between a stack and columns would lose pageless routes.
+  int _columnsFor(int wanted) {
+    final shown = _shownColumns;
+    if (shown != null && (shown < 2) != (wanted < 2) && _holdsPageless) {
+      _switch.request(isWanted: () => mounted);
+      return shown;
+    }
+    return _shownColumns = wanted;
+  }
 
-  /// The navigator of [part]'s column in [window]. In the deepest column an
-  /// empty page under the page lets back and the back gesture close it; a shown
-  /// column to its left closes through its page's back button; the split's
-  /// first part never closes this way.
-  Widget _columnNavigator(SplitPart part, SplitWindow window) {
-    final isDeepest = part == window.deepest;
-    return NestedNavigator(
-      navigatorKey: split.columnKeyOf(part.owner),
-      pages: [if (isDeepest && part != parts.first) blankPage, part.page],
-      onDidRemovePage: (page) => onDidRemoveColumn(page, split),
-      isActive: isDeepest,
-      columnClosing: window.closesByBackButton(part)
-          ? ColumnClosing(
-              window.screensRightOf(part, state.entries.last),
-              () => onDidRemoveColumn(part.page, split),
-            )
-          : null,
+  @override
+  Widget build(BuildContext context) {
+    final layout = SplitLayout(
+      widget.split,
+      widget.state,
+      widget.parts,
+      blankPage: widget.blankPage,
+      rowPage: widget.rowPage,
+      onDidRemovePage: widget.onDidRemovePage,
+      onDidRemoveColumn: widget.onDidRemoveColumn,
+    );
+    // A navigator inside dispatches one whenever its history changes, a
+    // pageless route pushed or popped included.
+    return NotificationListener<NavigationNotification>(
+      onNotification: (notification) {
+        _refresh.request(isWanted: () => mounted);
+        return false;
+      },
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final columns = _columnsFor(
+            widget.split.node.columnsFor(constraints.biggest),
+          );
+          return columns < 2
+              ? layout.stack(context)
+              : layout.columns(context, columns, _pagelessColumns);
+        },
+      ),
     );
   }
 }

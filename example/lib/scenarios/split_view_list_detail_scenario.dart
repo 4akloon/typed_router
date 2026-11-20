@@ -3,6 +3,7 @@ import 'package:typed_navigator/material.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 import 'package:typed_navigator_example/catalogue/scenario.dart';
 import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
+import 'package:typed_navigator_example/scenarios/close_on_escape.dart';
 import 'package:typed_navigator_example/scenarios/split_rooms.dart';
 import 'package:typed_navigator_example/scenarios/split_routes.dart';
 import 'package:typed_navigator_example/support/router_demo.dart';
@@ -22,6 +23,8 @@ const splitViewListDetailScenario = Scenario(
     '"Navigator.pop this column" closes the column and every one to its '
         'right; the sheet stays in its column when the columns shift.',
     'From the hall, "push room 3 alone" opens a split with only the room.',
+    'Esc goes back, as the system back button: the library leaves Esc to '
+        'the app (CloseOnEscape around the split), as Navigator does.',
   ],
   build: _build,
 );
@@ -31,6 +34,7 @@ Widget _build(ScenarioFrame frame) => RouterDemo(
   createRouter: () => TypedRouter(
     routes: splitRoomsRoutes(
       maximumColumns: (size) => size.width >= 700 ? 2 : 1,
+      builder: (context, state, split) => CloseOnEscape(child: split),
     ),
     initialRoute: const HallRoute(),
     pageFactory: const MaterialPageFactory(),

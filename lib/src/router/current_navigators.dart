@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:typed_navigator/src/split/pageless_columns.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
@@ -11,16 +12,25 @@ import 'package:typed_navigator/src/state/shell_level.dart';
 /// top entry; stops at a navigator whose page is not current (a dialog or
 /// another page above it), so back reaches that first.
 final class CurrentNavigators {
-  /// Creates the lookup.
-  const CurrentNavigators();
+  /// Creates the lookup; [_pagelessColumns] finds the split columns with a
+  /// pageless route.
+  const CurrentNavigators([this._pagelessColumns = const PagelessColumns()]);
 
-  /// The current navigators for [state] under [root], the deepest first.
+  final PagelessColumns _pagelessColumns;
+
+  /// The current navigators for [state] under [root], the deepest first. The
+  /// columns of a split with a pageless route left of the top entry's column
+  /// come before all, the rightmost first: one back closes one thing.
   List<NavigatorState> deepestFirst(
     NavigatorState root,
     NavigationState state,
   ) {
     final top = state.entries.last;
-    return [root, ..._outermostFirst(top.levels, top)].reversed.toList();
+    return [
+      for (final split in top.levels.reversed.whereType<SplitEntry>())
+        ..._pagelessColumns.rightmostFirst(split, state),
+      ...[root, ..._outermostFirst(top.levels, top)].reversed,
+    ];
   }
 
   /// The current navigators of [level] and of the levels inside it, the deepest

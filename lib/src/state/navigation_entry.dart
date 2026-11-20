@@ -29,6 +29,9 @@ final class NavigationEntry implements ColumnOwner {
   /// to another navigator.
   final GlobalKey screenKey = GlobalKey();
 
+  @override
+  GlobalKey get pageContentKey => screenKey;
+
   /// The levels of navigators this page stands in (shell instances, branches of
   /// tabs), from the outer one in; empty for a page of the root navigator.
   final List<ShellLevel> levels;

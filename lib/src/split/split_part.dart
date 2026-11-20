@@ -9,13 +9,14 @@ import 'package:typed_navigator/src/state/column_owner.dart';
 /// Compared by identity: it holds a page made for one build.
 final class SplitPart {
   /// Creates the part [owner] stands for, shown by [page], whose top
-  /// route is [route].
+  /// route is [route] with its screen keyed [topScreenKey].
   const SplitPart({
     required this.owner,
     required this.page,
     required this.route,
+    required this.topScreenKey,
     this.presentation = SplitPresentation.column,
-    this.placeholder,
+    this.placeholderIn,
   });
 
   /// The entry or the nested level this part stands for; its column
@@ -28,11 +29,16 @@ final class SplitPart {
   /// The top route of the part.
   final TypedRoute<Object?> route;
 
+  /// Keys the screen of the part's top route: closing a column to the left asks
+  /// it first.
+  final GlobalKey topScreenKey;
+
   /// How the part shows while the split shows columns.
   final SplitPresentation presentation;
 
-  /// The placeholder shown after this part when it is the top one.
-  final Widget? placeholder;
+  /// Builds the placeholder shown after this part when it is the top one, in
+  /// the split's context; `null`, or answering `null`, for none.
+  final Widget? Function(BuildContext context)? placeholderIn;
 
   @override
   String toString() => 'SplitPart($route)';

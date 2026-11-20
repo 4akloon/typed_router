@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator_example/scenarios/split_view_custom_layout_scenario.dart';
 import 'package:typed_navigator_example/scenarios/split_view_list_detail_scenario.dart';
@@ -38,6 +39,18 @@ void main() {
     expect(shownState(tester), '[RoomsRoute() > RoomRoute(2) > RoomRoute(3)]');
 
     await tester.tap(find.text('Navigator.pop this column').first);
+    await tester.pumpAndSettle();
+
+    expect(shownState(tester), '[RoomsRoute()]');
+  });
+
+  testWidgets('Esc closes the deepest column with the recipe', (tester) async {
+    _windowWidth(tester, 1200);
+    await startScenario(tester, splitViewListDetailScenario);
+    await tapLabel(tester, 'go to the rooms');
+    await tapLabel(tester, 'Room 2');
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pumpAndSettle();
 
     expect(shownState(tester), '[RoomsRoute()]');

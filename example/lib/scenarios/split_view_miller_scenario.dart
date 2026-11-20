@@ -38,8 +38,10 @@ final List<TreeNode<NoParentRoute>> _routes = [
     children: [
       RouteNode<FolderRoute>(
         build: (context, folder) => _FolderPage(folder),
-        placeholder: (context, folder) =>
-            const Scaffold(body: Center(child: Text('Pick a folder'))),
+        // A folder without subfolders has nothing to pick.
+        placeholder: (context, folder) => folder.hasSubfolders
+            ? const Scaffold(body: Center(child: Text('Pick a folder')))
+            : null,
       ),
     ],
   ),
@@ -50,6 +52,9 @@ final class FolderRoute extends TypedRoute<void> {
   const FolderRoute(this.path);
 
   final String path;
+
+  /// Whether the folder has subfolders: down to four levels below Home.
+  bool get hasSubfolders => path.split('/').length < 5;
 
   @override
   List<Object?> get fields => [path];
@@ -70,20 +75,20 @@ final class _FolderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final router = TypedRouter.of(context);
-    final depth = folder.path.split('/').length;
+    // Rebuilds on navigation, so the folder open beside this one stays
+    // highlighted.
+    final open = NavigationState.of(context).routeAfter(folder);
     return Scaffold(
       appBar: AppBar(title: Text(folder.path.split('/').last)),
       body: ListView(
         children: [
           const Padding(padding: EdgeInsets.all(8), child: TapCounter()),
-          if (depth < 5)
+          if (folder.hasSubfolders)
             for (final child in ['Alpha', 'Beta', 'Gamma'])
               ListTile(
                 leading: const Icon(Icons.folder_outlined),
                 title: Text(child),
-                selected: router.state.routes.contains(
-                  FolderRoute('${folder.path}/$child'),
-                ),
+                selected: open == FolderRoute('${folder.path}/$child'),
                 onTap: () => _open(router, child),
               )
           else

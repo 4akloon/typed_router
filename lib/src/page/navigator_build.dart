@@ -76,6 +76,7 @@ final class NavigatorBuild {
           owner: level.columnOwner,
           page: _levelPage(level, entries, depth),
           route: entries.last.route,
+          topScreenKey: entries.last.screenKey,
         ),
       },
   ];

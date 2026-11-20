@@ -113,7 +113,7 @@ final class LevelPages {
           split: split,
           state: state,
           parts: parts,
-          blankPage: _internalPage(const BlankPageKey(), const SizedBox()),
+          blankPage: (child) => _internalPage(const BlankPageKey(), child),
           rowPage: (row) =>
               _internalPage(ObjectKey(split.columnsNavigatorKey), row),
           onDidRemovePage: onDidRemovePage,

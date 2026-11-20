@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/page/after_build.dart';
+import 'package:typed_navigator/src/split/column_back.dart';
 import 'package:typed_navigator/src/split/column_back_scope.dart';
-import 'package:typed_navigator/src/split/column_closing.dart';
 
 /// Gives a page in a split column that is not the deepest its back button:
 /// while [ColumnBackScope] above says back closes the column, the page's route
@@ -30,7 +30,7 @@ final class ColumnBackEntry extends StatefulWidget {
 
 final class _ColumnBackEntryState extends State<ColumnBackEntry> {
   ModalRoute<Object?>? _route;
-  ColumnClosing? _closing;
+  ColumnBack? _back;
   LocalHistoryEntry? _entry;
   ModalRoute<Object?>? _entryRoute;
   late final AfterBuild _sync = AfterBuild(_syncEntry);
@@ -39,9 +39,7 @@ final class _ColumnBackEntryState extends State<ColumnBackEntry> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _route = ModalRoute.of(context);
-    _closing = context
-        .dependOnInheritedWidgetOfExactType<ColumnBackScope>()
-        ?.closing;
+    _back = context.dependOnInheritedWidgetOfExactType<ColumnBackScope>()?.back;
     _sync.request(isWanted: () => mounted);
   }
 
@@ -53,7 +51,10 @@ final class _ColumnBackEntryState extends State<ColumnBackEntry> {
 
   /// Puts the entry on the route that should hold it now, or takes it off.
   void _syncEntry() {
-    final wanted = _closing == null ? null : _route;
+    final wanted = switch ((_back, _route)) {
+      (final back?, final route?) when back.holdsEntryOn(route) => route,
+      _ => null,
+    };
     if (wanted == _entryRoute) return;
     _withdraw();
     // The route pops its newest entry first; the app's own go before ours.
@@ -76,19 +77,16 @@ final class _ColumnBackEntryState extends State<ColumnBackEntry> {
     }
   }
 
-  /// The route popped [entry]: closes the column unless it was withdrawn
-  /// or a page to its right refuses. When it stays, the route's `canPop`
-  /// changed with the entry gone, so [didChangeDependencies] puts it back.
+  /// The route popped [entry]: does the back of its page, unless it was
+  /// withdrawn. When the page stays (a page to the right refused), the
+  /// route's `canPop` changed with the entry gone, so
+  /// [didChangeDependencies] puts it back.
   void _popped(LocalHistoryEntry entry) {
     if (!identical(entry, _entry)) return;
     final route = _entryRoute;
     _entry = null;
     _entryRoute = null;
-    _closing?.tryClose(
-      // Navigator tells a route it popped only when the route itself
-      // leaves, not its local history; the page's PopScope must hear it.
-      beforeClosing: () => route?.onPopInvokedWithResult(true, null),
-    );
+    if ((_back, route) case (final back?, final route?)) back.popped(route);
   }
 
   @override

@@ -51,8 +51,9 @@ final class RoutePages {
       owner: entry,
       page: pageFor(entry),
       route: entry.route,
+      topScreenKey: entry.screenKey,
       presentation: node.splitPresentation,
-      placeholder: node.placeholderOf(entry.route),
+      placeholderIn: (context) => node.placeholderOf(context, entry.route),
     );
   }
 

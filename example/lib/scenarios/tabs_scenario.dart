@@ -14,6 +14,8 @@ const tabsScenario = Scenario(
     'Tap the counter on Rooms, push room 1 and 2, switch to Friends and '
         'back: the rooms stack and the count are kept.',
     'Tap the active tab again: it resets to its initial route.',
+    'Push a room: the door flies into it. Each tab\'s navigator has a hero '
+        'controller of its own, with the app\'s flight path.',
     'On Profile, "go to room 5": go to a route of another branch switches '
         'tabs.',
     'Back pops inside the tab; on a tab\'s first page it goes to Rooms '

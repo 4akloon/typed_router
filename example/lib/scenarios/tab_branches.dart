@@ -1,6 +1,7 @@
 import 'package:typed_navigator/typed_navigator.dart';
 import 'package:typed_navigator_example/support/demo_button.dart';
 import 'package:typed_navigator_example/support/demo_page.dart';
+import 'package:typed_navigator_example/support/room_badge.dart';
 import 'package:typed_navigator_example/support/tap_counter.dart';
 
 /// The branches of the two tabs scenarios: rooms, friends and a profile,
@@ -13,6 +14,7 @@ List<BranchNode<Object?>> tabBranches() => [
         build: (context, rooms) => DemoPage(
           title: 'Rooms',
           actions: [
+            const RoomBadge(size: 32),
             const TapCounter(),
             DemoButton(
               'push room 1',
@@ -25,6 +27,7 @@ List<BranchNode<Object?>> tabBranches() => [
             build: (context, room) => DemoPage(
               title: 'Room ${room.id}',
               actions: [
+                const RoomBadge(size: 96),
                 DemoButton(
                   'push room ${room.id + 1}',
                   onPressed: () =>

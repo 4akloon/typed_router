@@ -32,6 +32,18 @@ void main() {
     expect(find.text('Room 5'), findsOneWidget);
   });
 
+  testWidgets('the door flies into a room inside its tab', (tester) async {
+    await startScenario(tester, tabsScenario);
+
+    await tester.tap(find.text('push room 1'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 150));
+
+    final door = find.byKey(const Key('room badge'));
+    expect(find.ancestor(of: door, matching: find.byType(Hero)), findsNothing);
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('the page view follows the tab bar', (tester) async {
     await startScenario(tester, tabsPageViewScenario);
 

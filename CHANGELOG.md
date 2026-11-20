@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.3 - 2026-11-20
+
+- Heroes fly inside a shell's navigator and inside every tabs branch:
+  each nested navigator has a hero controller of its own, along the app's
+  flight path (an arc in `MaterialApp`), as go_router does. Heroes do not
+  fly between navigators.
+- **Note:** a shell builder that wrapped `navigator` in its own
+  `HeroControllerScope` is now shadowed by the nested controller (drop the
+  wrapper); `HeroControllerScope.none` above the router no longer stops
+  flights inside nested navigators, as in go_router.
+
 ## 0.3.10 - 2026-11-20
 
 - `NavigationState.of(context)` reads the router's state and rebuilds the

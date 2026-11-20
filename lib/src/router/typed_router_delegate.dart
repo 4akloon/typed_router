@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:typed_navigator/src/page/hero_flight_scope.dart';
 import 'package:typed_navigator/src/page/navigator_pages.dart';
 import 'package:typed_navigator/src/redirect/redirect_scope.dart';
 import 'package:typed_navigator/src/redirect/router_mount.dart';
@@ -52,15 +53,20 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
     // same frame.
     builder: (context) => TypedRouterScope(
       router: _router,
-      child: NavigationStateScope(
-        state: _controller.state,
-        child: Navigator(
-          key: _navigatorKey,
-          pages: _pages.pagesFor(
-            _controller.state,
+      child: HeroFlightScope(
+        // The app's controller stands above the root navigator, which hides it
+        // from the navigators inside.
+        createRectTween: HeroControllerScope.maybeOf(context)?.createRectTween,
+        child: NavigationStateScope(
+          state: _controller.state,
+          child: Navigator(
+            key: _navigatorKey,
+            pages: _pages.pagesFor(
+              _controller.state,
+              onDidRemovePage: _removePage,
+            ),
             onDidRemovePage: _removePage,
           ),
-          onDidRemovePage: _removePage,
         ),
       ),
     ),

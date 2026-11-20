@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/page/nested_navigator.dart';
+import 'package:typed_navigator/src/split/column_closing.dart';
 import 'package:typed_navigator/src/split/split_column.dart';
 import 'package:typed_navigator/src/split/split_part.dart';
 import 'package:typed_navigator/src/split/split_view.dart';
@@ -76,7 +77,7 @@ final class SplitProjection extends StatelessWidget {
         for (final part in window.shown)
           RouteColumn(
             part.route,
-            _columnNavigator(part, isActive: part == window.deepest),
+            _columnNavigator(part, window),
           ),
         if ((window.deepest, window.placeholder) case (
           final deepest?,
@@ -96,7 +97,7 @@ final class SplitProjection extends StatelessWidget {
           Offstage(
             child: TickerMode(
               enabled: false,
-              child: _columnNavigator(part, isActive: false),
+              child: _columnNavigator(part, window),
             ),
           ),
         Builder(builder: (context) => _frame(context, view)),
@@ -117,15 +118,23 @@ final class SplitProjection extends StatelessWidget {
     child: split.node.frame(context, state, view),
   );
 
-  /// The navigator of [part]'s column: its page alone, so it cannot pop and
-  /// shows no back button, except in the deepest column ([isActive]), where an
-  /// empty page under it lets back and the back gesture close it; the split's
-  /// first part never can.
-  Widget _columnNavigator(SplitPart part, {required bool isActive}) =>
-      NestedNavigator(
-        navigatorKey: split.columnKeyOf(part.owner),
-        pages: [if (isActive && part != parts.first) blankPage, part.page],
-        onDidRemovePage: (page) => onDidRemoveColumn(page, split),
-        isActive: isActive,
-      );
+  /// The navigator of [part]'s column in [window]. In the deepest column an
+  /// empty page under the page lets back and the back gesture close it; a shown
+  /// column to its left closes through its page's back button; the split's
+  /// first part never closes this way.
+  Widget _columnNavigator(SplitPart part, SplitWindow window) {
+    final isDeepest = part == window.deepest;
+    return NestedNavigator(
+      navigatorKey: split.columnKeyOf(part.owner),
+      pages: [if (isDeepest && part != parts.first) blankPage, part.page],
+      onDidRemovePage: (page) => onDidRemoveColumn(page, split),
+      isActive: isDeepest,
+      columnClosing: window.closesByBackButton(part)
+          ? ColumnClosing(
+              window.screensRightOf(part, state.entries.last),
+              () => onDidRemoveColumn(part.page, split),
+            )
+          : null,
+    );
+  }
 }

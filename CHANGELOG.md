@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Split view: every column on screen but the deepest and the first shows a
+  back button. It closes the column and the columns to its right, after asking
+  the pages on screen to its right: an app `PopScope(canPop: false)` there
+  keeps it open. Gestures still go to the deepest column only. **Migration:**
+  `Navigator.canPop` is now `true` in those columns, and
+  `Navigator.pop(context, result)` there completes the column's `push` with
+  `null`, not `result` (a native pop delivers it); the result of a middle
+  column is lost.
+
 - Fix: a predictive back gesture over a shell, tabs or split pushed above
   another page closed the whole level; it now closes the page on top inside
   it, or nothing when that page refuses with `PopScope`, as

@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/split/split_part.dart';
 import 'package:typed_navigator/src/split/split_presentation.dart';
+import 'package:typed_navigator/src/state/navigation_entry.dart';
 
 /// Which parts of a split's stack show where while it shows columns: the
 /// columns on screen, the parts before them kept offstage, the placeholder of
@@ -47,6 +48,27 @@ final class SplitWindow {
 
   /// The column the back button and the back gesture go to.
   SplitPart? get deepest => shown.lastOrNull;
+
+  /// Whether [part] closes through its page's back button: on screen, not the
+  /// deepest, not the split's first.
+  bool closesByBackButton(SplitPart part) =>
+      shown.contains(part) &&
+      part != deepest &&
+      (hidden.isNotEmpty || part != shown.first);
+
+  /// The keys of the screens on screen to the right of [part], which back
+  /// from it asks first: the route columns after it, or the covers when
+  /// they hide the columns, and [top], the state's top page.
+  List<GlobalKey> screensRightOf(SplitPart part, NavigationEntry top) {
+    final onScreen = covers.isNotEmpty
+        ? covers
+        : shown.skip(shown.indexOf(part) + 1);
+    return {
+      for (final right in onScreen)
+        if (right.owner case final NavigationEntry entry) entry.screenKey,
+      top.screenKey,
+    }.toList();
+  }
 
   @override
   String toString() =>

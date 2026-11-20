@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator_example/scenarios/split_view_custom_layout_scenario.dart';
 import 'package:typed_navigator_example/scenarios/split_view_list_detail_scenario.dart';
@@ -70,6 +70,25 @@ void main() {
       'FolderRoute(Home/Alpha/Beta)]',
     );
     expect(find.text('Pick a folder'), findsOneWidget);
+  });
+
+  testWidgets('the back button of a middle Miller column closes it and '
+      'the ones to its right', (tester) async {
+    _windowWidth(tester, 1200);
+    await startScenario(tester, splitViewMillerScenario);
+    await tapLabel(tester, 'Alpha');
+    await tester.tap(find.text('Beta').last);
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.descendant(
+        of: find.widgetWithText(AppBar, 'Alpha'),
+        matching: find.byType(BackButton),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(shownState(tester), '[FolderRoute(Home)]');
   });
 
   testWidgets('a custom layout labels the typed columns', (tester) async {

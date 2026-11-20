@@ -1,8 +1,9 @@
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:typed_navigator/src/page/after_build.dart';
 import 'package:typed_navigator/src/page/level_inside.dart';
 import 'package:typed_navigator/src/page/level_pop_entry.dart';
 import 'package:typed_navigator/src/page/on_screen_scope.dart';
+import 'package:typed_navigator/src/split/column_back_scope.dart';
 
 /// The content of a level's page (a shell's, a tabs instance's, a split's):
 /// registers a [LevelPopEntry] with the page's route, so a back gesture goes
@@ -33,7 +34,9 @@ final class _LevelPopGateState extends State<LevelPopGate> {
   late final LevelPopEntry _entry = LevelPopEntry(() => widget.inside);
   ModalRoute<Object?>? _route;
   bool _isOnScreen = true;
-  bool _isRefreshScheduled = false;
+  late final AfterBuild _refresh = AfterBuild(
+    () => _entry.refresh(isOnScreen: _isOnScreen),
+  );
 
   @override
   void didChangeDependencies() {
@@ -44,14 +47,23 @@ final class _LevelPopGateState extends State<LevelPopGate> {
       _route = route;
       route?.registerPopEntry(_entry);
     }
-    _isOnScreen =
+    // A level whose back button closes its split column counts as on screen for
+    // maybePop; as the first page of its column's navigator, it gets no back
+    // gesture.
+    final closesColumn =
         context
-            .dependOnInheritedWidgetOfExactType<OnScreenScope>()
-            ?.isOnScreen ??
-        true;
+            .dependOnInheritedWidgetOfExactType<ColumnBackScope>()
+            ?.closing !=
+        null;
+    _isOnScreen =
+        closesColumn ||
+        (context
+                .dependOnInheritedWidgetOfExactType<OnScreenScope>()
+                ?.isOnScreen ??
+            true);
     // A gate made or moved next to navigators that already exist (a level's
     // page moving between a split's navigators) hears nothing from them.
-    _refreshAfterFrame();
+    _refresh.request(isWanted: () => mounted);
   }
 
   @override
@@ -61,26 +73,11 @@ final class _LevelPopGateState extends State<LevelPopGate> {
     super.dispose();
   }
 
-  /// Refreshes the entry now when the frame is done, else after it.
-  void _refreshAfterFrame() {
-    final binding = SchedulerBinding.instance;
-    if (binding.schedulerPhase == SchedulerPhase.postFrameCallbacks) {
-      _entry.refresh(isOnScreen: _isOnScreen);
-      return;
-    }
-    if (_isRefreshScheduled) return;
-    _isRefreshScheduled = true;
-    binding.addPostFrameCallback((timeStamp) {
-      _isRefreshScheduled = false;
-      if (mounted) _entry.refresh(isOnScreen: _isOnScreen);
-    }, debugLabel: 'LevelPopGate.refresh');
-  }
-
   @override
   Widget build(BuildContext context) =>
       NotificationListener<NavigationNotification>(
         onNotification: (notification) {
-          _refreshAfterFrame();
+          _refresh.request(isWanted: () => mounted);
           return false;
         },
         child: widget.child,

@@ -38,19 +38,19 @@ void main() {
     expect(sheet.completions, [null]);
   });
 
-  testWidgets('only the deepest column can pop, so only it shows back', (
+  testWidgets('every column but the first can pop, so it shows back', (
     tester,
   ) async {
     await pumpSplitApp(tester, playerAnn, columns: 3);
 
     expect(navigatorOf(tester, 'Rooms').canPop(), isFalse);
-    expect(navigatorOf(tester, 'Room 1').canPop(), isFalse);
+    expect(navigatorOf(tester, 'Room 1').canPop(), isTrue);
     expect(navigatorOf(tester, 'Player ann').canPop(), isTrue);
     expect(
       ModalRoute.of(
         tester.element(find.text('Room 1:0')),
       )?.impliesAppBarDismissal,
-      isFalse,
+      isTrue,
     );
   });
 

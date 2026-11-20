@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/page/on_screen_gate.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/page/page_request.dart';
+import 'package:typed_navigator/src/split/column_back_entry.dart';
 import 'package:typed_navigator/src/split/split_part.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
@@ -32,8 +33,10 @@ final class RoutePages {
         key: entry.screenKey,
         child: OnScreenGate(
           entry: entry,
-          child: Builder(
-            builder: (context) => node.buildScreen(context, route),
+          child: ColumnBackEntry(
+            child: Builder(
+              builder: (context) => node.buildScreen(context, route),
+            ),
           ),
         ),
       ),

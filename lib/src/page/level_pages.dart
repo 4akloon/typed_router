@@ -6,6 +6,7 @@ import 'package:typed_navigator/src/page/page_request.dart';
 import 'package:typed_navigator/src/page/route_pages.dart';
 import 'package:typed_navigator/src/router/current_navigators.dart';
 import 'package:typed_navigator/src/split/blank_page_key.dart';
+import 'package:typed_navigator/src/split/column_back_entry.dart';
 import 'package:typed_navigator/src/split/split_part.dart';
 import 'package:typed_navigator/src/split/split_projection.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
@@ -127,7 +128,7 @@ final class LevelPages {
   Widget _gated(ShellLevel level, NavigationState state, Widget frame) =>
       LevelPopGate(
         inside: LevelInside(level, state, _currentNavigators),
-        child: frame,
+        child: ColumnBackEntry(child: frame),
       );
 
   /// A page of the router's own: the row of a split's columns, the empty

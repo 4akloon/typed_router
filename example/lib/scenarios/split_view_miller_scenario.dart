@@ -15,6 +15,9 @@ const splitViewMillerScenario = Scenario(
         'offstage, alive.',
     'Tap a folder in an earlier column: the deeper columns close and the '
         'new one opens (popUntil, then push).',
+    'The back button of any column but the first closes it and the '
+        'columns to its right. Android back and the back gestures close the '
+        'deepest column only.',
     'Resize the window: the number of columns follows, the counters stay.',
   ],
   build: _build,

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/page/level_pages.dart';
 import 'package:typed_navigator/src/page/navigator_build.dart';
+import 'package:typed_navigator/src/page/navigator_observers.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/page/page_request.dart';
 import 'package:typed_navigator/src/page/route_pages.dart';
@@ -17,18 +18,21 @@ import 'package:typed_navigator/src/state/shell_level.dart';
 /// deeper. A state whose redirects failed becomes the error screen alone.
 final class NavigatorPages {
   /// Creates the pages with [_routePages] for routes, [_levelPages] for
-  /// shells and tabs, and the router's [_pageFactory] for the error screen,
-  /// which [_errorBuilder] builds (a plain one when it is `null`).
+  /// shells and tabs, the router's [_pageFactory] for the error screen,
+  /// which [_errorBuilder] builds (a plain one when it is `null`), and the
+  /// nested navigators' [_observers].
   NavigatorPages({
     required this._routePages,
     required this._levelPages,
     required this._pageFactory,
+    required this._observers,
     this._errorBuilder,
   });
 
   final RoutePages _routePages;
   final LevelPages _levelPages;
   final PageFactory _pageFactory;
+  final NavigatorObservers _observers;
   final Widget Function(BuildContext context, Object error)? _errorBuilder;
 
   /// The pages of the root navigator for [state], bottom to top. Every
@@ -43,6 +47,7 @@ final class NavigatorPages {
       levelPages: _levelPages,
       state: state,
       onDidRemovePage: onDidRemovePage,
+      observers: _observers,
     ).pagesAt(state.entries, 0),
   };
 

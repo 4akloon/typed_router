@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 import 'package:typed_navigator_example/scenarios/back_button_scenario.dart';
 import 'package:typed_navigator_example/scenarios/exit_confirmation_scenario.dart';
+import 'package:typed_navigator_example/scenarios/observers_scenario.dart';
 import 'package:typed_navigator_example/scenarios/redirect_error_scenario.dart';
 import 'package:typed_navigator_example/scenarios/sign_in_guard_scenario.dart';
 import 'package:typed_navigator_example/scenarios/typed_results_scenario.dart';
@@ -108,5 +109,17 @@ void main() {
 
     await tapLabel(tester, 'Repair');
     expect(shownState(tester), 'HomeRoute()');
+  });
+
+  testWidgets('the observer hears the shell and the router reports the '
+      'typed top', (tester) async {
+    await startScenario(tester, observersScenario);
+
+    await tapLabel(tester, 'push RoomsRoute()');
+    await tapLabel(tester, 'push RoomRoute()');
+
+    expect(find.text('observer: push home'), findsOneWidget);
+    expect(find.text('observer: push room'), findsOneWidget);
+    expect(find.text('router: RoomRoute()'), findsOneWidget);
   });
 }

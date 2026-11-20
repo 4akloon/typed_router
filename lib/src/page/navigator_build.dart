@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/page/level_pages.dart';
+import 'package:typed_navigator/src/page/navigator_observers.dart';
 import 'package:typed_navigator/src/page/nested_hero_controller.dart';
 import 'package:typed_navigator/src/page/on_screen_level.dart';
 import 'package:typed_navigator/src/page/route_pages.dart';
@@ -17,12 +18,14 @@ final class NavigatorBuild {
     required this._levelPages,
     required this._state,
     required this._onDidRemovePage,
+    required this._observers,
   });
 
   final RoutePages _routePages;
   final LevelPages _levelPages;
   final NavigationState _state;
   final void Function(Page<Object?> page) _onDidRemovePage;
+  final NavigatorObservers _observers;
   final StackParts _parts = const StackParts();
 
   /// The pages of the navigator holding [entries], whose levels above
@@ -90,6 +93,7 @@ final class NavigatorBuild {
           key: level.navigatorKey,
           pages: pagesAt(entries, depth),
           onDidRemovePage: _onDidRemovePage,
+          observers: _observers.of(level),
         ),
       ),
     ),

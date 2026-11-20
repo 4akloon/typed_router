@@ -25,6 +25,7 @@ final class RoutePages {
     final node = _tree.nodeFor(route);
     final request = PageRequest(
       key: ValueKey(entry),
+      name: node.name,
       child: KeyedSubtree(
         key: entry.screenKey,
         child: OnScreenGate(
@@ -35,11 +36,15 @@ final class RoutePages {
         ),
       ),
     );
-    return created(node.pageFactoryOr(_pageFactory), request, '$route');
+    return created(
+      node.pageFactoryOr(_pageFactory),
+      request,
+      node.describe(route),
+    );
   }
 
   /// The page [factory] creates for [request], which shows [description];
-  /// throws [StateError] when the factory dropped the request's key.
+  /// throws [StateError] when the factory dropped the request's key or name.
   Page<Object?> created(
     PageFactory factory,
     PageRequest request,
@@ -50,6 +55,12 @@ final class RoutePages {
       throw StateError(
         '${factory.runtimeType} created a page for $description without '
         'request.key. Pass `key: request.key` to the page.',
+      );
+    }
+    if (page.name != request.name) {
+      throw StateError(
+        '${factory.runtimeType} created a page for $description without '
+        'request.name. Pass `name: request.name` to the page.',
       );
     }
     return page;

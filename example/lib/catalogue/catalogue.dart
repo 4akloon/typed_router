@@ -4,6 +4,7 @@ import 'package:typed_navigator_example/scenarios/cupertino_scenario.dart';
 import 'package:typed_navigator_example/scenarios/exit_confirmation_scenario.dart';
 import 'package:typed_navigator_example/scenarios/initial_route_scenario.dart';
 import 'package:typed_navigator_example/scenarios/navigator_slots_scenario.dart';
+import 'package:typed_navigator_example/scenarios/observers_scenario.dart';
 import 'package:typed_navigator_example/scenarios/page_factories_scenario.dart';
 import 'package:typed_navigator_example/scenarios/predictive_back_scenario.dart';
 import 'package:typed_navigator_example/scenarios/redirect_error_scenario.dart';
@@ -46,6 +47,10 @@ const List<ScenarioSection> catalogue = [
       tabsPageViewScenario,
       navigatorSlotsScenario,
     ],
+  ),
+  ScenarioSection(
+    title: '0.7 Observability',
+    scenarios: [observersScenario],
   ),
   ScenarioSection(
     title: 'Page factories',

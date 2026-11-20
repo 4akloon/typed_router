@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.7.1 - 2026-11-20
+
+- `TypedRouter(observers:)`: `NavigatorObserver`s of the root navigator
+  that also hear the navigators of shells and tabs branches, as go_router's
+  do. `RouteNode.name` (optional, not unique) names the node's pages
+  (`Page.name`, so `RouteSettings.name` for Sentry and analytics) and the
+  node in the router's errors. For typed events, listen to the router and
+  read `state`.
+- **Breaking:** `PageRequest` gained `name`. **Migration:** a page factory
+  of your own must pass `name: request.name` to its page, as it passes
+  `key`, or the router throws `StateError` (a factory that sets a name of
+  its own, too).
+
 ## 0.4.3 - 2026-11-20
 
 - Heroes fly inside a shell's navigator and inside every tabs branch:

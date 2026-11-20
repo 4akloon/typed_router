@@ -127,16 +127,18 @@ final class TreeWalk {
     final slot = node.parentNavigatorSlot;
     if (slot == null) return path;
     if (path.placedIn(slot) case final placed?) return placed;
+    // Named by its name when it has one.
+    final label = node.name ?? '${node.routeType}';
     if (path.isBelowShown(slot)) {
       throw ArgumentError(
-        "${node.routeType}'s parentNavigatorSlot names a navigator deeper "
+        "$label's parentNavigatorSlot names a navigator deeper "
         'than the one its parent route is shown in. A route shows in its '
         "parent's navigator or further out: use that navigator's slot or an "
         'outer one.',
       );
     }
     throw ArgumentError(
-      "${node.routeType}'s parentNavigatorSlot is neither the root nor the "
+      "$label's parentNavigatorSlot is neither the root nor the "
       'slot of a shell or branch above it. Use NavigatorSlot.root or the '
       'slot of an enclosing ShellNode or BranchNode.',
     );

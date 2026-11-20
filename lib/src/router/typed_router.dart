@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 import 'package:typed_navigator/src/operation/stack_operations.dart';
+import 'package:typed_navigator/src/page/navigator_observers.dart';
 import 'package:typed_navigator/src/page/navigator_pages.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/redirect/router_mount.dart';
@@ -61,6 +62,12 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
   /// [errorBuilder]'s screen (a plain one without it) and [state] carries
   /// the error.
   ///
+  /// [observers] observe the root navigator and, as go_router's do, the
+  /// navigators of shells and tabs branches too (Sentry, analytics); for
+  /// every event their `navigator` is the root one. Pages carry their
+  /// node's `RouteNode.name`. For typed events, listen to the router itself
+  /// and read [state].
+  ///
   /// Needs no widgets binding. Throws [ArgumentError] when [routes] is
   /// empty, a route type has two nodes, [initialRoute]'s type has no node,
   /// or [redirectLimit] is negative.
@@ -73,6 +80,7 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
     Listenable? refreshListenable,
     int redirectLimit = 5,
     Widget Function(BuildContext context, Object error)? errorBuilder,
+    List<NavigatorObserver> observers = const [],
   }) => TypedRouter._(
     RouterParts(
       routes: routes,
@@ -81,6 +89,7 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
       redirect: redirect,
       redirectLimit: redirectLimit,
       errorBuilder: errorBuilder,
+      observers: observers,
     ),
     refreshListenable,
   );
@@ -90,7 +99,8 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
       _operations = parts.operations,
       _recheck = parts.recheck,
       _pages = parts.pages,
-      _mount = parts.mount {
+      _mount = parts.mount,
+      _observers = parts.observers {
     _refreshListenable?.addListener(_recheck.recheck);
   }
 
@@ -98,6 +108,7 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
   final StackOperations _operations;
   final StackRecheck _recheck;
   final NavigatorPages _pages;
+  final NavigatorObservers _observers;
   final RouterMount _mount;
   final Listenable? _refreshListenable;
   final BackButtonDispatcher _backButtonDispatcher = RootBackButtonDispatcher();
@@ -107,6 +118,7 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
     pages: _pages,
     mount: _mount,
     recheck: _recheck,
+    observers: _observers.root,
   );
 
   /// The router of the `MaterialApp.router` (or `WidgetsApp.router`) above
@@ -188,11 +200,12 @@ final class TypedRouter implements RouterConfig<Object>, Listenable {
   @override
   RouterDelegate<Object> get routerDelegate => _delegate;
 
-  /// `null` until URLs (0.5).
+  /// `null`: the router neither reads nor reports URLs; routes are
+  /// values, and the app turns its own links into `go` or `push`.
   @override
   RouteInformationParser<Object>? get routeInformationParser => null;
 
-  /// `null` until URLs (0.5).
+  /// `null`: the router neither reads nor reports URLs.
   @override
   RouteInformationProvider? get routeInformationProvider => null;
 

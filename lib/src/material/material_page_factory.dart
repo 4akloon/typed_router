@@ -24,6 +24,7 @@ final class MaterialPageFactory implements PageFactory {
   @override
   Page<Object?> createPage(PageRequest request) => MaterialPage<Object?>(
     key: request.key,
+    name: request.name,
     fullscreenDialog: fullscreenDialog,
     child: request.child,
   );

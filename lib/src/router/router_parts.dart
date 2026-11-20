@@ -6,6 +6,7 @@ import 'package:typed_navigator/src/operation/navigation_planner.dart';
 import 'package:typed_navigator/src/operation/shell_path.dart';
 import 'package:typed_navigator/src/operation/stack_operations.dart';
 import 'package:typed_navigator/src/page/level_pages.dart';
+import 'package:typed_navigator/src/page/navigator_observers.dart';
 import 'package:typed_navigator/src/page/navigator_pages.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/page/route_pages.dart';
@@ -39,7 +40,9 @@ final class RouterParts {
     required RouterRedirect? redirect,
     required int redirectLimit,
     required Widget Function(BuildContext context, Object error)? errorBuilder,
+    required List<NavigatorObserver> observers,
   }) {
+    final navigatorObservers = NavigatorObservers(observers);
     final tree = RouteTree(routes);
     final mount = RouterMount();
     final redirects = Redirects(
@@ -77,9 +80,11 @@ final class RouterParts {
           currentNavigators: const CurrentNavigators(),
         ),
         pageFactory: pageFactory,
+        observers: navigatorObservers,
         errorBuilder: errorBuilder,
       ),
       mount: mount,
+      observers: navigatorObservers,
     );
   }
 
@@ -89,7 +94,11 @@ final class RouterParts {
     required this.recheck,
     required this.pages,
     required this.mount,
+    required this.observers,
   });
+
+  /// The observers of the root navigator and of the nested ones.
+  final NavigatorObservers observers;
 
   /// Owns the state.
   final NavigationController controller;

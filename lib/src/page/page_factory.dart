@@ -8,11 +8,12 @@ import 'package:typed_navigator/src/page/page_request.dart';
 /// `MaterialPageFactory` from `package:typed_navigator/material.dart` or
 /// `CupertinoPageFactory` from `package:typed_navigator/cupertino.dart`.
 ///
-/// The page must use [PageRequest.key]; the router throws [StateError]
-/// otherwise. Its route must show the child of the page it currently holds,
-/// as `MaterialPage` and `CupertinoPage` do: the router updates a page in
-/// place (a shell's page gets a new navigator on every navigation), and a
-/// route that keeps the first child shows a stale screen. A factory does
+/// The page must use [PageRequest.key] and [PageRequest.name]; the router
+/// throws [StateError] otherwise. Its route must show the child of the page
+/// it currently holds, as `MaterialPage` and `CupertinoPage` do: the router
+/// updates a page in place (a shell's page gets a new navigator on every
+/// navigation), and a route that keeps the first child shows a stale
+/// screen. A factory does
 /// not decide whether a page takes back gestures: the router does.
 ///
 /// ```dart
@@ -20,8 +21,11 @@ import 'package:typed_navigator/src/page/page_request.dart';
 ///   const FadePageFactory();
 ///
 ///   @override
-///   Page<Object?> createPage(PageRequest request) =>
-///       FadePage(key: request.key, child: request.child);
+///   Page<Object?> createPage(PageRequest request) => FadePage(
+///     key: request.key,
+///     name: request.name,
+///     child: request.child,
+///   );
 /// }
 /// ```
 abstract interface class PageFactory {

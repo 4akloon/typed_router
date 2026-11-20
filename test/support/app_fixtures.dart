@@ -54,7 +54,7 @@ Widget _editNoteScreen(BuildContext context, EditNoteRoute route) =>
 
 /// A page that needs nothing but widgets.dart.
 class TestPage extends Page<Object?> {
-  const TestPage({required this.child, super.key});
+  const TestPage({required this.child, super.key, super.name});
 
   final Widget child;
 
@@ -75,7 +75,7 @@ class TestPage extends Page<Object?> {
 
 /// The kind of page [SheetPageFactory] creates.
 final class SheetPage extends TestPage {
-  const SheetPage({required super.child, super.key});
+  const SheetPage({required super.child, super.key, super.name});
 }
 
 /// The router's factory in tests: [TestPage]s.
@@ -84,7 +84,7 @@ final class TestPageFactory implements PageFactory {
 
   @override
   Page<Object?> createPage(PageRequest request) =>
-      TestPage(key: request.key, child: request.child);
+      TestPage(key: request.key, name: request.name, child: request.child);
 }
 
 /// A node's own factory: [SheetPage]s.
@@ -93,7 +93,7 @@ final class SheetPageFactory implements PageFactory {
 
   @override
   Page<Object?> createPage(PageRequest request) =>
-      SheetPage(key: request.key, child: request.child);
+      SheetPage(key: request.key, name: request.name, child: request.child);
 }
 
 /// A factory that forgets to pass the request key.

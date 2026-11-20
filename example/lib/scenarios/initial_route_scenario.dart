@@ -15,8 +15,8 @@ const initialRouteScenario = Scenario(
         'Topics and the topic below it, so back walks up the tree.',
     'On Topics, the link buttons stand in for a link the app received: '
         'go(ArticleRoute(...)) builds the routes above the article.',
-    'URLs (parsing a link into a route) come in 0.5; the router takes '
-        'typed routes only for now.',
+    'The router takes typed routes, not URLs: the app turns a link it '
+        'receives into go or push.',
   ],
   build: _build,
 );

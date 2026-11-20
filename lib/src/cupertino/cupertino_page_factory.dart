@@ -23,6 +23,7 @@ final class CupertinoPageFactory implements PageFactory {
   @override
   Page<Object?> createPage(PageRequest request) => CupertinoPage<Object?>(
     key: request.key,
+    name: request.name,
     fullscreenDialog: fullscreenDialog,
     child: request.child,
   );

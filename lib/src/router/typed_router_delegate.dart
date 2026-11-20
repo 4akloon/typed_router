@@ -24,6 +24,7 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
     required this._pages,
     required this._mount,
     required this._recheck,
+    required this._observers,
   });
 
   final TypedRouter _router;
@@ -31,6 +32,7 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
   final NavigatorPages _pages;
   final RouterMount _mount;
   final StackRecheck _recheck;
+  final List<NavigatorObserver> _observers;
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey();
   final CurrentNavigators _currentNavigators = const CurrentNavigators();
 
@@ -66,6 +68,7 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
               onDidRemovePage: _removePage,
             ),
             onDidRemovePage: _removePage,
+            observers: _observers,
           ),
         ),
       ),
@@ -99,8 +102,8 @@ final class TypedRouterDelegate extends RouterDelegate<Object> {
     return false;
   }
 
-  /// Not called: the router has no route information parser until URLs
-  /// (0.5).
+  /// Not called: the router has no route information parser; it does not
+  /// read URLs.
   @override
   Future<void> setNewRoutePath(Object configuration) => SynchronousFuture(null);
 }

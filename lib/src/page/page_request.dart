@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 final class PageRequest {
   /// Creates a request for one stack entry. Only the router creates them.
   @internal
-  const PageRequest({required this.key, required this.child});
+  const PageRequest({required this.key, required this.child, this.name});
 
   /// Identifies the stack entry while it lives; pass it to the page as its
   /// key, so the navigator matches the page to its route.
@@ -17,14 +17,21 @@ final class PageRequest {
   /// The screen built by the route's node.
   final Widget child;
 
+  /// The name of the route's node (`RouteNode.name`), or `null`; pass it to the
+  /// page as its `name`, so navigator observers see it.
+  final String? name;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PageRequest && other.key == key && other.child == child;
+      other is PageRequest &&
+          other.key == key &&
+          other.child == child &&
+          other.name == name;
 
   @override
-  int get hashCode => Object.hash(key, child);
+  int get hashCode => Object.hash(key, child, name);
 
   @override
-  String toString() => 'PageRequest(key: $key)';
+  String toString() => 'PageRequest(key: $key, name: $name)';
 }

@@ -2,7 +2,7 @@ name: typed_navigator
 description: >-
   Statically typed, tree-based navigation for Flutter on Navigator 2.0.
   Routes are Dart values; URLs are an optional adapter.
-version: 0.4.3
+version: 0.7.1
 publish_to: none
 
 environment:

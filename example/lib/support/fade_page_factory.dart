@@ -7,12 +7,12 @@ final class FadePageFactory implements PageFactory {
 
   @override
   Page<Object?> createPage(PageRequest request) =>
-      _FadePage(key: request.key, child: request.child);
+      _FadePage(key: request.key, name: request.name, child: request.child);
 }
 
 /// A page that fades its [child] in and out.
 final class _FadePage extends Page<Object?> {
-  const _FadePage({required this.child, super.key});
+  const _FadePage({required this.child, super.key, super.name});
 
   final Widget child;
 

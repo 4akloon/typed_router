@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
 import 'package:typed_navigator_example/catalogue/system_back.dart';

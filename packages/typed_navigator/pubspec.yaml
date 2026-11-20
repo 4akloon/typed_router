@@ -1,0 +1,27 @@
+name: typed_navigator
+description: >-
+  Statically typed, tree-based navigation for Flutter on Navigator 2.0.
+  Routes are Dart values; URLs are an optional adapter.
+version: 0.7.1
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ">=3.12.0 <4.0.0"
+  flutter: ">=3.44.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Already pinned by the Flutter SDK; used for `@internal`.
+  meta: ^1.15.0
+
+# Design systems only for the tests' own page factories: the library imports
+# none.
+dev_dependencies:
+  cupertino_ui: ^1.0.0
+  flutter_test:
+    sdk: flutter
+  material_ui: ^1.0.1
+  typed_navigator_test:
+    path: ../typed_navigator_test

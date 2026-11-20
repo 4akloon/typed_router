@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
 /// The tabs' bar: tapping the active tab resets it to its initial route.

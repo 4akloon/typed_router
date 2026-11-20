@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A screen of a demo: an app bar with [title], a short [text] and the
 /// [actions] to try, one under another.

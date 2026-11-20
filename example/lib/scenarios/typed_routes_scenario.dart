@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:typed_navigator/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 import 'package:typed_navigator_example/catalogue/scenario.dart';
 import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
 import 'package:typed_navigator_example/support/demo_button.dart';
 import 'package:typed_navigator_example/support/demo_page.dart';
+import 'package:typed_navigator_example/support/material_page_factory.dart';
 import 'package:typed_navigator_example/support/router_demo.dart';
 import 'package:typed_navigator_example/support/tap_counter.dart';
 

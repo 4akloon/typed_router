@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 import 'package:typed_navigator_example/scenarios/back_button_scenario.dart';
 import 'package:typed_navigator_example/scenarios/exit_confirmation_scenario.dart';

@@ -26,13 +26,7 @@ Future<TypedRouter> _pumpMaterialSplit(
   );
   addTearDown(router.dispose);
   await tester.pumpWidget(
-    // The theme keeps the platform of its first use: only on Android.
-    MaterialApp.router(
-      routerConfig: router,
-      theme: defaultTargetPlatform == TargetPlatform.android
-          ? predictiveBackTheme
-          : null,
-    ),
+    MaterialApp.router(routerConfig: router, theme: predictiveBackTheme),
   );
   await tester.pumpAndSettle();
   return router;

@@ -1,0 +1,114 @@
+// A shell or a split pushed over another root page gives the back gesture to
+// its own navigators while they can pop; only then does the gesture close the
+// whole level (flutter/flutter#152323).
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:typed_navigator/testing.dart';
+import 'package:typed_navigator/typed_navigator.dart';
+
+import '../support/back_fixtures.dart';
+import '../support/shell_fixtures.dart';
+import '../support/split_fixtures.dart';
+
+final android = TargetPlatformVariant.only(TargetPlatform.android);
+final iOS = TargetPlatformVariant.only(TargetPlatform.iOS);
+
+List<TreeNode<NoParentRoute>> _splitRoutes() => [
+  roomsSplit(ScreenLog()),
+  RouteNode<AccountRoute>(build: (context, account) => const Text('Account')),
+];
+
+void main() {
+  testWidgets('predictive back in a pushed shell closes its top page', (
+    tester,
+  ) async {
+    final router = await pumpPushedOverAccount(
+      tester,
+      shellRoutes(FrameLog()),
+      [users, user1],
+    );
+    expect(
+      router.state.toString(),
+      'AccountRoute() > [UsersRoute() > UserRoute(u1)]',
+    );
+
+    await tester.predictiveBack();
+
+    expect(router.state.toString(), 'AccountRoute() > [UsersRoute()]');
+    expect(find.text('Users'), findsOneWidget);
+  }, variant: android);
+
+  testWidgets('predictive back closes a pushed shell that cannot pop', (
+    tester,
+  ) async {
+    final router = await pumpPushedOverAccount(
+      tester,
+      shellRoutes(FrameLog()),
+      [users],
+    );
+
+    await tester.predictiveBack();
+
+    expect(router.state.toString(), 'AccountRoute()');
+  }, variant: android);
+
+  for (final width in [400.0, 1200.0]) {
+    testWidgets('predictive back in a pushed split $width wide closes its '
+        'top page', (tester) async {
+      setWindowWidth(tester, width);
+      final router = await pumpPushedOverAccount(tester, _splitRoutes(), [
+        rooms,
+        room1,
+      ]);
+      expect(
+        router.state.toString(),
+        'AccountRoute() > [RoomsRoute() > RoomRoute(RoomId(1))]',
+      );
+
+      await tester.predictiveBack();
+
+      expect(router.state.toString(), 'AccountRoute() > [RoomsRoute()]');
+      expect(find.text('Rooms:0'), findsOneWidget);
+    }, variant: android);
+
+    testWidgets('predictive back closes a pushed split $width wide that '
+        'cannot pop', (tester) async {
+      setWindowWidth(tester, width);
+      final router = await pumpPushedOverAccount(tester, _splitRoutes(), [
+        rooms,
+      ]);
+
+      await tester.predictiveBack();
+
+      expect(router.state.toString(), 'AccountRoute()');
+    }, variant: android);
+  }
+
+  testWidgets('the iOS swipe in a pushed narrow split closes its top '
+      'page', (tester) async {
+    setWindowWidth(tester, 400);
+    final router = await pumpPushedOverAccount(tester, _splitRoutes(), [
+      rooms,
+      room1,
+    ]);
+
+    await tester.iosEdgeSwipe();
+
+    expect(router.state.toString(), 'AccountRoute() > [RoomsRoute()]');
+  }, variant: iOS);
+
+  testWidgets('the iOS swipe in a pushed shell closes its top page', (
+    tester,
+  ) async {
+    final router = await pumpPushedOverAccount(
+      tester,
+      shellRoutes(FrameLog()),
+      [users, user1],
+    );
+
+    await tester.iosEdgeSwipe();
+
+    expect(router.state.toString(), 'AccountRoute() > [UsersRoute()]');
+  }, variant: iOS);
+}

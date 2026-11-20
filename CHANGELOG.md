@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Fix: a predictive back gesture over a shell, tabs or split pushed above
+  another page closed the whole level; it now closes the page on top inside
+  it, or nothing when that page refuses with `PopScope`, as
+  `NavigatorPopHandler` does. A level nested under another page no longer
+  takes the gesture with it. A `maybePop` from a level's frame goes to the
+  navigators inside, the deepest first.
+
+- Example: the rooms list of the split demos highlights the room open beside
+  it after every selection (it listens to the router).
+
 - Split view: `SplitNode` shows one stack side by side in columns while it is
   wide (rooms | room, or Miller columns) and as an ordinary stack while it is
   narrow; `maximumColumns(size)` gets the split's own size. Screens keep their

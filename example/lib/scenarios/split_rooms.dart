@@ -103,26 +103,33 @@ Widget _roomPage(BuildContext context, RoomRoute room) {
 }
 
 /// The rooms list; a tap selects a room with `go`, so the next column is
-/// replaced, not stacked.
+/// replaced, not stacked. The room open beside it is highlighted.
 final class _RoomsList extends StatelessWidget {
   const _RoomsList();
 
   @override
   Widget build(BuildContext context) {
     final router = TypedRouter.of(context);
-    final selected = router.state.find<RoomRoute>();
     return Scaffold(
       appBar: AppBar(title: const Text('Rooms')),
-      body: ListView(
-        children: [
-          const Padding(padding: EdgeInsets.all(8), child: TapCounter()),
-          for (final number in [1, 2, 3, 4, 5])
-            ListTile(
-              title: Text('Room $number'),
-              selected: selected?.number == number,
-              onTap: () => router.go(RoomRoute(number)),
-            ),
-        ],
+      // TypedRouter.of does not rebuild on navigation, and this const page
+      // is not rebuilt by the router either: listen to the router.
+      body: ListenableBuilder(
+        listenable: router,
+        builder: (context, child) {
+          final selected = router.state.find<RoomRoute>();
+          return ListView(
+            children: [
+              const Padding(padding: EdgeInsets.all(8), child: TapCounter()),
+              for (final number in [1, 2, 3, 4, 5])
+                ListTile(
+                  title: Text('Room $number'),
+                  selected: selected?.number == number,
+                  onTap: () => router.go(RoomRoute(number)),
+                ),
+            ],
+          );
+        },
       ),
     );
   }

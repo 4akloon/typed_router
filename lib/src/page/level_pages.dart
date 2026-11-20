@@ -1,7 +1,10 @@
 import 'package:flutter/widgets.dart';
+import 'package:typed_navigator/src/page/level_inside.dart';
+import 'package:typed_navigator/src/page/level_pop_gate.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/page/page_request.dart';
 import 'package:typed_navigator/src/page/route_pages.dart';
+import 'package:typed_navigator/src/router/current_navigators.dart';
 import 'package:typed_navigator/src/split/blank_page_key.dart';
 import 'package:typed_navigator/src/split/split_part.dart';
 import 'package:typed_navigator/src/split/split_projection.dart';
@@ -15,17 +18,20 @@ import 'package:typed_navigator/src/tabs/stateful_shell.dart';
 /// from the node's factory or the router's and is keyed by the instance.
 final class LevelPages {
   /// Creates the pages with [_routePages] checking the factories, the
-  /// router's [_pageFactory] for nodes without their own, and
-  /// [_switchingFor] giving each tabs instance its branch switching.
+  /// router's [_pageFactory] for nodes without their own,
+  /// [_switchingFor] giving each tabs instance its branch switching, and
+  /// [_currentNavigators] finding the navigators inside a level for back.
   LevelPages({
     required this._routePages,
     required this._pageFactory,
     required this._switchingFor,
+    required this._currentNavigators,
   });
 
   final RoutePages _routePages;
   final PageFactory _pageFactory;
   final BranchSwitching Function(TabsEntry tabs) _switchingFor;
+  final CurrentNavigators _currentNavigators;
 
   /// The page of [shell], whose builder frames [navigator].
   Page<Object?> shellPage(
@@ -38,10 +44,14 @@ final class LevelPages {
       key: ObjectKey(shell),
       // Keyed, so the frame keeps its state when a split moves the page to
       // another navigator.
-      child: KeyedSubtree(
-        key: shell.frameKey,
-        child: Builder(
-          builder: (context) => shell.node.builder(context, state, navigator),
+      child: _gated(
+        shell,
+        state,
+        KeyedSubtree(
+          key: shell.frameKey,
+          child: Builder(
+            builder: (context) => shell.node.builder(context, state, navigator),
+          ),
         ),
       ),
     ),
@@ -66,10 +76,14 @@ final class LevelPages {
       tabs.node.pageFactoryOr(_pageFactory),
       PageRequest(
         key: ObjectKey(tabs),
-        child: KeyedSubtree(
-          key: tabs.frameKey,
-          child: Builder(
-            builder: (context) => tabs.node.builder(context, state, shell),
+        child: _gated(
+          active,
+          state,
+          KeyedSubtree(
+            key: tabs.frameKey,
+            child: Builder(
+              builder: (context) => tabs.node.builder(context, state, shell),
+            ),
           ),
         ),
       ),
@@ -91,19 +105,30 @@ final class LevelPages {
     split.node.pageFactoryOr(_pageFactory),
     PageRequest(
       key: ObjectKey(split),
-      child: SplitProjection(
-        split: split,
-        state: state,
-        parts: parts,
-        blankPage: _internalPage(const BlankPageKey(), const SizedBox()),
-        rowPage: (row) =>
-            _internalPage(ObjectKey(split.columnsNavigatorKey), row),
-        onDidRemovePage: onDidRemovePage,
-        onDidRemoveColumn: onDidRemoveColumn,
+      child: _gated(
+        split,
+        state,
+        SplitProjection(
+          split: split,
+          state: state,
+          parts: parts,
+          blankPage: _internalPage(const BlankPageKey(), const SizedBox()),
+          rowPage: (row) =>
+              _internalPage(ObjectKey(split.columnsNavigatorKey), row),
+          onDidRemovePage: onDidRemovePage,
+          onDidRemoveColumn: onDidRemoveColumn,
+        ),
       ),
     ),
     'a split',
   );
+
+  /// [frame] of [level], giving back to what is inside while it handles back.
+  Widget _gated(ShellLevel level, NavigationState state, Widget frame) =>
+      LevelPopGate(
+        inside: LevelInside(level, state, _currentNavigators),
+        child: frame,
+      );
 
   /// A page of the router's own: the row of a split's columns, the empty
   /// page under a column.

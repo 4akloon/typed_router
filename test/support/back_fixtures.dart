@@ -1,6 +1,7 @@
 // Apps for the back tests: guarded screens, Material rooms, dialogs opened
 // imperatively.
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/material.dart';
@@ -63,10 +64,15 @@ Future<TypedRouter> pumpGuarded(
   return router;
 }
 
-/// A theme whose Android pages take predictive back gestures.
-final ThemeData predictiveBackTheme = ThemeData(
+/// A theme whose Android pages take predictive back gestures and whose iOS
+/// pages keep the Cupertino back swipe. Made on each read: a theme takes
+/// the test's platform when it is made.
+ThemeData get predictiveBackTheme => ThemeData(
   pageTransitionsTheme: const PageTransitionsTheme(
-    builders: {TargetPlatform.android: PredictiveBackPageTransitionsBuilder()},
+    builders: {
+      TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+    },
   ),
 );
 
@@ -106,4 +112,27 @@ Future<ResultProbe<Object?>> pushAndSettle(
   final probe = ResultProbe(router.push(route));
   await tester.pumpAndSettle();
   return probe;
+}
+
+/// A Material app over [routes] with [predictiveBackTheme], started at the
+/// account page with [pushed] pushed over it in order.
+Future<TypedRouter> pumpPushedOverAccount(
+  WidgetTester tester,
+  List<TreeNode<NoParentRoute>> routes,
+  List<TypedRoute<Object?>> pushed,
+) async {
+  final router = TypedRouter(
+    routes: routes,
+    initialRoute: const AccountRoute(),
+    pageFactory: const MaterialPageFactory(),
+  );
+  addTearDown(router.dispose);
+  await tester.pumpWidget(
+    MaterialApp.router(routerConfig: router, theme: predictiveBackTheme),
+  );
+  for (final route in pushed) {
+    router.push(route).ignore();
+    await tester.pumpAndSettle();
+  }
+  return router;
 }

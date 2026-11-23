@@ -24,7 +24,7 @@ class RoutePages {
     final route = entry.route;
     final node = _tree.nodeFor(route);
     final request = PageRequest(
-      key: ValueKey(entry),
+      key: ValueKey(entry.page),
       name: node.name,
       child: KeyedSubtree(
         key: entry.screenKey,

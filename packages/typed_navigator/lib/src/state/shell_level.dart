@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:typed_navigator/src/tree/navigator_slot.dart';
 import 'package:typed_navigator/src/tree/nesting.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
 
@@ -17,6 +18,9 @@ sealed class ShellLevel {
 
   /// The key of this level's navigator.
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  /// The slot the tree gives this level's navigator, or `null`.
+  NavigatorSlot? get slot;
 
   /// Whether this level is an instance of [nesting] from the tree.
   bool isInstanceOf(Nesting nesting);

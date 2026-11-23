@@ -8,6 +8,7 @@ import 'package:typed_navigator/src/page/route_pages.dart';
 import 'package:typed_navigator/src/redirect/redirect_error_screen.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/page_identity.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
 
 /// Turns a [NavigationState] into the pages of the root navigator, with a
@@ -56,10 +57,10 @@ class NavigatorPages {
   /// not on screen; none for a page this router did not create.
   List<NavigationEntry> entriesOf(Page<Object?> page, NavigationState state) =>
       switch (page.key) {
-        // An entry that already left the state stands for nothing.
-        ValueKey<NavigationEntry>(:final value)
-            when state.allEntries.contains(value) =>
-          [value],
+        // The entry with that page now; none when it already left the state.
+        ValueKey<PageIdentity>(:final value) => [
+          ...state.allEntries.where((entry) => identical(entry.page, value)),
+        ],
         ObjectKey(value: final ShellEntry shell) => [
           for (final entry in state.allEntries)
             if (entry.isIn(shell)) entry,

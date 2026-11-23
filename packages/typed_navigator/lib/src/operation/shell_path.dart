@@ -37,6 +37,28 @@ class ShellPath {
     ];
   }
 
+  /// The levels for [route] pushed right above an entry inside [below], as
+  /// go_router's push: where [below] stands in a branch of the tabs the route's
+  /// branch belongs to, the route joins the branch on screen rather than
+  /// starting new tabs. Throws [ArgumentError] when [route]'s type has no node.
+  List<ShellLevel> levelsPushedAbove(
+    TypedRoute<Object?> route, {
+    required List<ShellLevel> below,
+  }) {
+    final nestings = _tree.nestingsOf(route);
+    final reused = _joined(nestings, below);
+    final depth = reused.length;
+    if (depth < nestings.length &&
+        depth < below.length &&
+        below[depth].takenOverFor(nestings[depth]) != null) {
+      reused.add(below[depth]);
+    }
+    return [
+      ...reused,
+      for (final nesting in nestings.skip(reused.length)) _new(nesting),
+    ];
+  }
+
   /// The levels of [levels] that are instances of [nestings], from the
   /// outer one, until the first that is not.
   List<ShellLevel> _joined(List<Nesting> nestings, List<ShellLevel> levels) =>

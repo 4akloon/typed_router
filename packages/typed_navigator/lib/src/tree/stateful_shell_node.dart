@@ -5,11 +5,10 @@ part of 'tree_node.dart';
 /// ([BranchNode]), never by index.
 ///
 /// The builder frames [StatefulShell], which shows the active branch and
-/// switches branches. A branch is built when it is first visited and keeps
-/// its stack while another one is shown. `go` to a route of another branch
-/// switches to it; `push` of a route of the active branch goes into it,
-/// and `push` of a route of another branch opens these tabs again above,
-/// on that branch.
+/// switches branches. A branch is built when it is first visited and keeps its
+/// stack while another one is shown. `go` to a route of another branch switches
+/// to it; `push` goes into the active branch, a route of another branch too, as
+/// go_router's push.
 ///
 /// The children of the branches start their own chains: the tabs pass no
 /// parent route down, and they fit anywhere in the tree.

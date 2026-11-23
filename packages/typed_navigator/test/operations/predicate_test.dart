@@ -1,6 +1,4 @@
-// Replace, popUntil, pushAndRemoveUntil.
-
-import 'dart:async';
+// Replace, popUntil, pushAndRemoveUntil: pushAndRemoveUntil that keeps nothing.
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/typed_navigator.dart';
@@ -71,15 +69,18 @@ void main() {
     expect(note.isCompleted, isFalse);
   });
 
-  test('pushAndRemoveUntil without a match throws and changes nothing', () {
+  test('pushAndRemoveUntil that keeps nothing leaves the route alone, as '
+      'Navigator does', () async {
     final router = appRouter(rooms);
-    unawaited(router.push(room7));
-    final stateBefore = router.state;
+    final room = ResultProbe(router.push(room7));
 
-    expect(
-      () => router.pushAndRemoveUntil(editNote, isProfile),
-      throwsStateError,
+    final note = ResultProbe(
+      router.pushAndRemoveUntil(editNote, (route) => false),
     );
-    expect(router.state, stateBefore);
+    await pumpEventQueue();
+
+    expect(router.state.routes, const [editNote]);
+    expect(room.completions, [null]);
+    expect(note.isCompleted, isFalse);
   });
 }

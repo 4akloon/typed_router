@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/operation/branch_switch.dart';
 import 'package:typed_navigator/src/operation/entry_chain.dart';
 import 'package:typed_navigator/src/operation/go_plan.dart';
+import 'package:typed_navigator/src/operation/in_place_update.dart';
 import 'package:typed_navigator/src/operation/navigation_planner.dart';
 import 'package:typed_navigator/src/operation/shell_path.dart';
 import 'package:typed_navigator/src/operation/stack_operations.dart';
@@ -52,11 +53,13 @@ class RouterParts {
     );
     final entryChain = EntryChain(ShellPath(tree));
     final goPlan = GoPlan(tree, entryChain);
+    final routePages = RoutePages(tree: tree, pageFactory: pageFactory);
     final planner = NavigationPlanner(
       tree,
       entryChain,
       goPlan,
       BranchSwitch(tree, entryChain, goPlan),
+      InPlaceUpdate(routePages),
     );
     final controller = NavigationController(
       initialState: planner.startingAt(initialRoute),
@@ -66,7 +69,6 @@ class RouterParts {
       ]),
     );
     final operations = StackOperations(controller, planner, redirects);
-    final routePages = RoutePages(tree: tree, pageFactory: pageFactory);
     return RouterParts._(
       controller: controller,
       operations: operations,

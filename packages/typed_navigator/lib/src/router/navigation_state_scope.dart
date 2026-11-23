@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:typed_navigator/src/router/typed_router_scope.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 
 /// Puts the router's state above its navigator, so a screen that reads it with
@@ -16,13 +17,18 @@ class NavigationStateScope extends InheritedWidget {
   /// The router's state.
   final NavigationState state;
 
-  /// The state above [context], which rebuilds when it changes.
+  /// The state above [context], which rebuilds when it changes; without one,
+  /// the state of a router an app put above with `TypedRouterScope`, read once.
   ///
   /// Throws [FlutterError] when there is none.
   static NavigationState stateOf(BuildContext context) {
     if (context.dependOnInheritedWidgetOfExactType<NavigationStateScope>()
         case final scope?) {
       return scope.state;
+    }
+    if (context.getInheritedWidgetOfExactType<TypedRouterScope>()
+        case final routerScope?) {
+      return routerScope.router.state;
     }
     throw FlutterError(
       'NavigationState.of() found no router above this context.\n'

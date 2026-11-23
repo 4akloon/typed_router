@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
+import 'package:typed_navigator/src/state/page_identity.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
 
 /// One page on a stack: a route together with the identity of its page,
@@ -19,14 +20,26 @@ class NavigationEntry {
     this.route, {
     List<ShellLevel> levels = const [],
     this._pendingResult,
-  }) : levels = List.unmodifiable(levels);
+  }) : levels = List.unmodifiable(levels),
+       page = PageIdentity();
+
+  /// [fresh] shown in [replaced]'s page: the same page and screen keys, so the
+  /// navigator updates that page in place.
+  NavigationEntry.inPlaceOf(NavigationEntry replaced, NavigationEntry fresh)
+    : route = fresh.route,
+      levels = fresh.levels,
+      _pendingResult = fresh._pendingResult,
+      page = replaced.page;
 
   /// The route shown by this page.
   final TypedRoute<Object?> route;
 
+  /// The identity of this entry's page: its key and its screen's key.
+  final PageIdentity page;
+
   /// Keys the screen of this page, so the page of a level can ask how the route
   /// on top answers a pop.
-  final GlobalKey screenKey = GlobalKey();
+  GlobalKey get screenKey => page.screenKey;
 
   /// The levels of navigators this page stands in (shell instances, branches of
   /// tabs), from the outer one in; empty for a page of the root navigator.

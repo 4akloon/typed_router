@@ -40,7 +40,10 @@ class TypedRouterDelegate extends RouterDelegate<Object> {
   final RenewedPage _renewedPage = const RenewedPage();
 
   /// The root navigator, or `null` while it is not mounted.
-  NavigatorState? get navigator => _navigatorKey.currentState;
+  NavigatorState? get navigator =>
+      // Not shown: no widget tree to look in (and, in a plain test, no
+      // binding for a GlobalKey to ask).
+      _mount.context == null ? null : _navigatorKey.currentState;
 
   @override
   void addListener(VoidCallback listener) => _controller.addListener(listener);

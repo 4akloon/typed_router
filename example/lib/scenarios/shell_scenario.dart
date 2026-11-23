@@ -15,8 +15,9 @@ const shellScenario = Scenario(
         '(blue bar and the list on the left) is the shell; State shows its '
         'navigator in brackets.',
     'Tap letters in the list: the first is pushed into the shell\'s '
-        'navigator, the next replaces it; the frame stays and reads the '
-        'selected letter from the state.',
+        'navigator, the next replaces it in place (no transition, the '
+        'letter page is updated); the frame stays and reads the selected '
+        'letter from the state.',
     'Back pops inside the shell first; on the inbox it leaves the shell '
         '(after push) or closes the app (after go).',
   ],

@@ -1,9 +1,11 @@
 // Go, push, pop and back with tabs.
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:typed_navigator/typed_navigator.dart';
 import 'package:typed_navigator_test/typed_navigator_test.dart';
 
 import '../support/operation_fixtures.dart';
+import '../support/route_fixtures.dart';
 import '../support/tabs_fixtures.dart';
 
 void main() {
@@ -28,7 +30,7 @@ void main() {
   });
 
   testWidgets('push goes into the active branch, a route of another branch '
-      'starts new tabs', (tester) async {
+      'too, as go_router', (tester) async {
     final router = await pumpTabsApp(tester, rooms);
 
     await settled(tester, () => router.push(room7).ignore());
@@ -40,10 +42,15 @@ void main() {
     await settled(tester, () => router.push(ann).ignore());
     expect(
       router.state.toString(),
-      '{*RoomsBranch: [RoomsRoute() > RoomRoute(RoomId(7))]} > '
-      '{*FriendsBranch: [FriendRoute(ann)]}',
+      '{*RoomsBranch: [RoomsRoute() > RoomRoute(RoomId(7)) > '
+      'FriendRoute(ann)]}',
     );
     expect(find.text('Friend ann'), findsOneWidget);
+    expect(find.text('Tab 0'), findsOneWidget);
+    expect(find.byType(StatefulShell), findsOneWidget);
+
+    await settled(tester, router.pop);
+    expect(find.text('Room 7'), findsOneWidget);
   });
 
   testWidgets('pop and back work in the active branch only', (tester) async {
@@ -60,5 +67,20 @@ void main() {
       'FriendsBranch: [FriendsRoute() > FriendRoute(ann)]}',
     );
     expect(find.text('Rooms'), findsOneWidget);
+  });
+
+  testWidgets('a route of another tab pushed into the active tab goes through '
+      'its redirects', (tester) async {
+    final router = await pumpTabsApp(
+      tester,
+      rooms,
+      redirect: (context, target) =>
+          target.top is FriendRoute ? const AccountRoute() : null,
+    );
+
+    await settled(tester, () => router.push(ann).ignore());
+
+    expect(router.state.top, const AccountRoute());
+    expect(find.text('Account'), findsOneWidget);
   });
 }

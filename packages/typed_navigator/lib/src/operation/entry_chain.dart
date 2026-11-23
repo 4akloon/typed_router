@@ -32,6 +32,19 @@ class EntryChain {
     return entries;
   }
 
+  /// A new entry for [route] pushed right above an entry inside [below]: in the
+  /// branch on screen when the route is of another branch of the same tabs;
+  /// [pendingResult] when a push awaits it.
+  NavigationEntry entryPushedAbove(
+    List<ShellLevel> below,
+    TypedRoute<Object?> route, {
+    PendingResult<Object?>? pendingResult,
+  }) => NavigationEntry(
+    route,
+    levels: _shellPath.levelsPushedAbove(route, below: below),
+    pendingResult: pendingResult,
+  );
+
   /// A new entry for [route] right above an entry inside [below];
   /// [pendingResult] when a push awaits it.
   NavigationEntry entryAbove(

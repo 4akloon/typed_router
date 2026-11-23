@@ -1,30 +1,26 @@
 import 'package:typed_navigator/src/operation/navigation_planner.dart';
-import 'package:typed_navigator/src/redirect/redirect_check.dart';
+import 'package:typed_navigator/src/operation/operation_redirects.dart';
 import 'package:typed_navigator/src/redirect/redirects.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
-import 'package:typed_navigator/src/transaction/navigation_step.dart';
 
 /// Carries out the router's stack operations: checks what must hold
 /// before, asks the planner for the candidate and hands it to the
 /// controller with the navigation's redirects.
 ///
-/// `go`, `push`, `replace` and `pushAndRemoveUntil` run the redirects of the
-/// route they go to; a redirect re-plans the same operation for its target.
-/// `pop` and `popUntil` run none. On the error screen every operation checks
-/// the whole stack it leads to, as `refresh` does: only a stack the redirects
-/// let through leaves it.
+/// Which redirects each operation runs: [OperationRedirects].
 class StackOperations {
   /// Creates operations that plan with [_planner], redirect with
   /// [_redirects] and commit through [_controller].
-  StackOperations(this._controller, this._planner, this._redirects);
+  StackOperations(this._controller, this._planner, Redirects redirects)
+    : _redirects = OperationRedirects(redirects, _planner);
 
   final NavigationController _controller;
   final NavigationPlanner _planner;
-  final Redirects _redirects;
+  final OperationRedirects _redirects;
 
   NavigationState get _state => _controller.state;
 
@@ -78,11 +74,18 @@ class StackOperations {
   /// See `TypedRouter.popUntil`.
   void popUntil(RoutePredicate predicate) => _controller.navigate(
     _planner.poppedUntil(_state, predicate),
-    steps: _state.error == null ? const [] : _wholeStackSteps(),
+    steps: _redirects.toRemainingRoutes(_state),
   );
 
   /// See `TypedRouter.replace`.
   Future<T?> replace<T>(TypedRoute<T> route) => _navigateWithNew(
+    route,
+    (planned, pendingResult) =>
+        _planner.withTopUpdated(_state, planned, pendingResult: pendingResult),
+  );
+
+  /// See `TypedRouter.pushReplacement`.
+  Future<T?> pushReplacement<T>(TypedRoute<T> route) => _navigateWithNew(
     route,
     (planned, pendingResult) =>
         _planner.withTopReplaced(_state, planned, pendingResult: pendingResult),
@@ -131,15 +134,7 @@ class StackOperations {
     NavigationState Function(TypedRoute<Object?> redirected) replan,
   ) => _controller.navigate(
     candidate,
-    steps: _state.error == null
-        ? _redirects.stepsFor(replan, const NewRouteCheck())
-        : _wholeStackSteps(),
-  );
-
-  /// The redirects over the whole candidate, as on `refresh`.
-  List<NavigationStep> _wholeStackSteps() => _redirects.stepsFor(
-    (redirected) => _planner.goTo(_state, redirected),
-    const WholeStackCheck(),
+    steps: _redirects.toNewRoute(_state, replan),
   );
 
   String get _nothingToPop => _state.error == null

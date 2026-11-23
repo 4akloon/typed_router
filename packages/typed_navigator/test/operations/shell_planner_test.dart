@@ -6,12 +6,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator/src/operation/branch_switch.dart';
 import 'package:typed_navigator/src/operation/entry_chain.dart';
 import 'package:typed_navigator/src/operation/go_plan.dart';
+import 'package:typed_navigator/src/operation/in_place_update.dart';
 import 'package:typed_navigator/src/operation/navigation_planner.dart';
 import 'package:typed_navigator/src/operation/shell_path.dart';
+import 'package:typed_navigator/src/page/route_pages.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
+import '../support/app_fixtures.dart';
 import '../support/route_fixtures.dart';
 import '../support/tree_fixtures.dart';
 
@@ -46,6 +49,7 @@ NavigationPlanner _plannerOver(RouteTree tree) {
     entryChain,
     goPlan,
     BranchSwitch(tree, entryChain, goPlan),
+    InPlaceUpdate(RoutePages(tree: tree, pageFactory: const TestPageFactory())),
   );
 }
 

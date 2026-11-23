@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+- Operations as in `Navigator` and go_router:
+  - **Breaking:** `replace` now updates the top page in place (same page,
+    no transition, the screen keeps its state; navigator observers hear
+    nothing), as go_router's. The former `replace` is `pushReplacement`.
+    With nothing below the top entry, both go to the route as `go` does.
+    **Migration:** where a new page with a transition is wanted, call
+    `pushReplacement`.
+  - **Breaking:** `pop` closes what is above the top page first — a dialog
+    (a route without a page) or a drawer (local history) — as
+    `Navigator.pop` and go_router's; `canPop` counts them. Before, the page
+    went with the dialog.
+  - **Breaking:** `push` of a route of another tab of the tabs on screen
+    goes into the active tab, as go_router's, instead of opening the tabs
+    again.
+  - `pushAndRemoveUntil` whose predicate keeps nothing leaves the route
+    alone, as `Navigator.pushAndRemoveUntil`, instead of throwing.
+  - `TypedRouter.navigatorOf(slot)` gives the navigator of a shell's or
+    branch's slot, for code outside the shell's widgets.
+  - `TypedRouterScope` is public: put a router (a fake one in a widget
+    test) above widgets for `TypedRouter.of` and `NavigationState.of`.
+  - A predictive back gesture over a shell or tabs closes a drawer (a
+    local history entry) opened inside first.
+
 - Fixes:
   - A native `Navigator.pop` of the only page of a navigator no longer
     leaves it empty: the page comes back made anew (its screen state

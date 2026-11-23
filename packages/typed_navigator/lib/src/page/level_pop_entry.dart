@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:typed_navigator/src/page/level_can_pop.dart';
 import 'package:typed_navigator/src/page/level_inside.dart';
 
 /// The pop entry of a level's page (a shell's or a tabs instance's), as
@@ -14,10 +15,10 @@ import 'package:typed_navigator/src/page/level_inside.dart';
 /// inside, where the system back button goes too.
 class LevelPopEntry extends PopEntry<Object?> {
   /// Creates the entry; [_inside] gives what is inside the level now.
-  LevelPopEntry(this._inside);
+  LevelPopEntry(this._inside) : _canPop = LevelCanPop(_inside);
 
   final LevelInside Function() _inside;
-  final ValueNotifier<bool> _canPop = ValueNotifier(true);
+  final LevelCanPop _canPop;
 
   @override
   ValueListenable<bool> get canPopNotifier => _canPop;
@@ -25,7 +26,7 @@ class LevelPopEntry extends PopEntry<Object?> {
   /// Reads again what is inside, with the level [isOnScreen] or not, as
   /// the navigators inside hold it now.
   void refresh({required bool isOnScreen}) =>
-      _canPop.value = isOnScreen && !_inside().canHandlePop();
+      _canPop.refresh(isOnScreen: isOnScreen);
 
   @override
   void onPopInvokedWithResult(bool didPop, Object? result) {

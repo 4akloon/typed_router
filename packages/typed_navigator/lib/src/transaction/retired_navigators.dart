@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:typed_navigator/src/router/navigator_top.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
@@ -18,6 +19,8 @@ class RetiredNavigators implements EntryLifecycle {
   /// Creates the lifecycle.
   const RetiredNavigators();
 
+  final NavigatorTop _top = const NavigatorTop();
+
   @override
   void entriesLeft(List<NavigationEntry> left, NavigationState remains) {
     final inUse = {
@@ -36,22 +39,10 @@ class RetiredNavigators implements EntryLifecycle {
   }
 
   void _removeAboveFirst(NavigatorState navigator) {
-    for (var top = _topOf(navigator); top != null && !top.isFirst;) {
+    for (var top = _top.of(navigator); top != null && !top.isFirst;) {
       navigator.removeRoute(top);
-      top = _topOf(navigator);
+      top = _top.of(navigator);
     }
-  }
-
-  /// The route on top of [navigator]. `NavigatorState` has no getter for
-  /// it; `popUntil` hands its predicate the top route first, and a
-  /// predicate that holds there pops nothing.
-  Route<Object?>? _topOf(NavigatorState navigator) {
-    Route<Object?>? top;
-    navigator.popUntil((route) {
-      top = route;
-      return true;
-    });
-    return top;
   }
 
   /// Nothing: the router is gone, and its navigators go with the widget

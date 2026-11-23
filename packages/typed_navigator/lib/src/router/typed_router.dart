@@ -7,10 +7,13 @@ import 'package:typed_navigator/src/redirect/router_mount.dart';
 import 'package:typed_navigator/src/redirect/stack_recheck.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/router/router_parts.dart';
+import 'package:typed_navigator/src/router/slot_navigators.dart';
+import 'package:typed_navigator/src/router/top_route_pop.dart';
 import 'package:typed_navigator/src/router/typed_router_delegate.dart';
 import 'package:typed_navigator/src/router/typed_router_scope.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
+import 'package:typed_navigator/src/tree/navigator_slot.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
 
@@ -41,6 +44,20 @@ import 'package:typed_navigator/src/tree/tree_node.dart';
 ///   pageFactory: const MaterialPageFactory(),
 ///   redirect: (context, target) => session.isBanned ? const BannedRoute() : null,
 ///   refreshListenable: session,
+/// );
+/// ```
+///
+/// Operations change [state] at once; the navigator shows it in the next frame,
+/// as a declarative `Navigator` does. Unlike `Navigator.push`, a dialog shown
+/// or a `Navigator.pop` called in the same callback as an operation reaches the
+/// old page (go_router has the same, flutter/flutter#146578). Take the
+/// navigator first and wait for the frame:
+///
+/// ```dart
+/// final navigator = Navigator.of(context);
+/// router.push(const RoomRoute(RoomId(7)));
+/// WidgetsBinding.instance.addPostFrameCallback(
+///   (_) => showDialog(context: navigator.context, builder: buildWelcome),
 /// );
 /// ```
 class TypedRouter implements RouterConfig<Object>, Listenable {
@@ -112,6 +129,12 @@ class TypedRouter implements RouterConfig<Object>, Listenable {
   final RouterMount _mount;
   final Listenable? _refreshListenable;
   final BackButtonDispatcher _backButtonDispatcher = RootBackButtonDispatcher();
+  final SlotNavigators _slotNavigators = const SlotNavigators();
+  late final TopRoutePop _topRoutePop = TopRoutePop(
+    () => _delegate.navigator,
+    _operations,
+    () => _controller.state,
+  );
   late final TypedRouterDelegate _delegate = TypedRouterDelegate(
     router: this,
     controller: _controller,
@@ -136,38 +159,64 @@ class TypedRouter implements RouterConfig<Object>, Listenable {
   /// redirects check it when the router is shown.
   NavigationState get state => _controller.state;
 
-  /// Replaces the stack with [route] and the routes above it in the tree.
+  /// Replaces the stack with [route] and the routes above it in the tree;
+  /// shown in the next frame (a dialog after it: see [TypedRouter]).
   /// Entries of the common prefix that hold equal routes stay, with their
   /// screens' state; the pushes of removed entries complete with `null`.
   void go(TypedRoute<Object?> route) => _operations.go(route);
 
-  /// Puts [route] on top as a new entry, without its ancestors. Completes
+  /// Puts [route] on top as a new entry, without its ancestors, shown in
+  /// the next frame (a dialog after it: see [TypedRouter]). In tabs on
+  /// screen, a route of another tab goes into the active one, as with
+  /// go_router. Completes
   /// with the result the page is popped with ([pop] or a native
   /// `Navigator.pop(context, result)`), or `null` when it leaves another
   /// way. Throws [ArgumentError] when [route]'s type has no node.
   Future<T?> push<T>(TypedRoute<T> route) => _operations.push(route);
 
-  /// Removes the top entry and completes its [push] with [result].
+  /// Closes the top route, as `Navigator.pop` and go_router's `pop`: a
+  /// dialog (or another route pushed without a page) above the top page
+  /// closes first, with [result]; else the top entry leaves and its [push]
+  /// completes with [result]. The deepest navigator on screen that can pop
+  /// goes first: a dialog in a shell's navigator too. `PopScope` is not
+  /// asked, as with `Navigator.pop`.
   ///
-  /// Throws [StateError] on the last entry (see [canPop]) and
+  /// Throws [StateError] when nothing can close (see [canPop]) and
   /// [ArgumentError] when the top route's [push] awaits another type.
   @optionalTypeArgs
-  void pop<T>([T? result]) => _operations.pop(result);
+  void pop<T>([T? result]) => _topRoutePop.pop(result);
 
-  /// Whether [pop] can remove an entry: the stack has more than one, and
-  /// the error screen is not shown.
-  bool get canPop => _operations.canPop;
+  /// Whether [pop] can close something: a dialog on screen, or a page above
+  /// another while the error screen is not shown.
+  bool get canPop => _topRoutePop.canPop;
 
   /// Removes entries from the top until [predicate] holds for the top
   /// route; throws [StateError] and changes nothing when none matches.
   void popUntil(bool Function(TypedRoute<Object?> route) predicate) =>
       _operations.popUntil(predicate);
 
-  /// Replaces the top entry with [route]; the replaced push completes with
-  /// `null`. Returns the push of [route], as [push] does.
+  /// Shows [route] in the top page, updated in place, as go_router's
+  /// `replace`: the same page, no transition, and the screen keeps its
+  /// state (give the screen `key: ValueKey(route)` for a fresh one). When
+  /// [route] stands in other levels or its node makes another kind of page,
+  /// it gets a new page, as with [pushReplacement]. The replaced push
+  /// completes with `null`. Returns the push of [route], as [push] does.
+  ///
+  /// The navigator only updates the page, so its observers hear nothing,
+  /// as with go_router's `replace`; the router's listeners hear the change
+  /// (`Navigator.replace` tells observers `didReplace`). With nothing below
+  /// the top entry, [route] and the routes above it come, as [go].
   Future<T?> replace<T>(TypedRoute<T> route) => _operations.replace(route);
 
-  /// [popUntil] [predicate], then [push] [route], as one navigation.
+  /// Shows [route] in a new page in place of the top one, with a
+  /// transition, as `Navigator.pushReplacement`; the replaced push completes
+  /// with `null`. Returns the push of [route], as [push] does.
+  Future<T?> pushReplacement<T>(TypedRoute<T> route) =>
+      _operations.pushReplacement(route);
+
+  /// [popUntil] [predicate], then [push] [route], as one navigation. When
+  /// [predicate] holds for no route, [route] stays alone, as with
+  /// `Navigator.pushAndRemoveUntil` (where [popUntil] throws).
   Future<T?> pushAndRemoveUntil<T>(
     TypedRoute<T> route,
     bool Function(TypedRoute<Object?> route) predicate,
@@ -216,6 +265,21 @@ class TypedRouter implements RouterConfig<Object>, Listenable {
   /// widget tree. For code outside the widget tree that shows dialogs or
   /// overlays: `router.navigator?.overlay`.
   NavigatorState? get navigator => _delegate.navigator;
+
+  /// The navigator of [slot] (a `ShellNode`'s or `BranchNode`'s
+  /// `navigatorSlot`) on the active path, nearest the top: for code outside
+  /// the shell's widgets that shows a dialog in it, as go_router apps use a
+  /// shell's navigator key. [NavigatorSlot.root] gives [navigator]. `null`
+  /// while the router is not shown, or when no shell of [slot] is on the
+  /// active path. Inside the shell, `Navigator.of(context)` is that
+  /// navigator already.
+  ///
+  /// ```dart
+  /// final navigator = router.navigatorOf(roomsSlot);
+  /// if (navigator != null) showDialog(context: navigator.context, ...);
+  /// ```
+  NavigatorState? navigatorOf(NavigatorSlot slot) =>
+      _slotNavigators.of(slot, navigator, _controller.state);
 
   /// For [Router]; not meant to be called by the app.
   @override

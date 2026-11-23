@@ -1,7 +1,5 @@
 // Results when the navigator itself closes a page.
 
-import 'dart:async';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:typed_navigator/typed_navigator.dart';
@@ -52,10 +50,10 @@ void main() {
     variant: TargetPlatformVariant.only(TargetPlatform.android),
   );
 
-  testWidgets('a dialog above the top page goes with it on pop and '
-      'completes with null', (tester) async {
+  testWidgets('pop closes a dialog above the top page first, then the page '
+      'as Navigator.pop does', (tester) async {
     final router = await pumpRooms(tester);
-    unawaited(router.push(room7));
+    final room = ResultProbe(router.push(room7));
     await tester.pumpAndSettle();
     final dialog = ResultProbe(
       showDialog<String>(
@@ -67,9 +65,14 @@ void main() {
 
     router.pop();
     await tester.pumpAndSettle();
-
     expect(find.text('Dialog'), findsNothing);
-    expect(router.state.routes, const [rooms]);
     expect(dialog.completions, [null]);
+    expect(router.state.routes, const [rooms, room7]);
+    expect(find.text('Room 7'), findsOneWidget);
+
+    router.pop();
+    await tester.pumpAndSettle();
+    expect(router.state.routes, const [rooms]);
+    expect(room.completions, [null]);
   });
 }

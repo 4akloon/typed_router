@@ -69,3 +69,19 @@ final router = TypedRouter(
   pageFactory: const MaterialPageFactory(),
 );
 ```
+
+## Dialogs after a navigation
+
+Operations change `router.state` at once; the navigator shows it in the
+next frame. A dialog shown, or `Navigator.pop` called, in the same callback
+as an operation reaches the old page (unlike `Navigator.push`; go_router
+has the same). Take the navigator first and wait for the frame:
+
+```dart
+final navigator = Navigator.of(context);
+router.push(const RoomRoute(RoomId(7)));
+WidgetsBinding.instance.addPostFrameCallback(
+  (_) => showDialog(context: navigator.context, builder: buildWelcome),
+);
+```
+

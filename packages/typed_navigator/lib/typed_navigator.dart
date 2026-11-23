@@ -10,6 +10,7 @@ export 'src/page/page_request.dart' show PageRequest;
 export 'src/redirect/redirect_chain_error.dart' show RedirectChainError;
 export 'src/route/typed_route.dart' show TypedRoute;
 export 'src/router/typed_router.dart' show TypedRouter;
+export 'src/router/typed_router_scope.dart' show TypedRouterScope;
 export 'src/state/navigation_state.dart' show NavigationState;
 export 'src/tabs/stateful_shell.dart' show StatefulShell;
 export 'src/tree/navigator_slot.dart' show NavigatorSlot;

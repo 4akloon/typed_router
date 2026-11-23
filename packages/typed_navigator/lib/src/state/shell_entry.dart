@@ -13,6 +13,9 @@ class ShellEntry extends ShellLevel {
   final ShellNode<Object?> node;
 
   @override
+  NavigatorSlot? get slot => node.navigatorSlot;
+
+  @override
   bool isInstanceOf(Nesting nesting) =>
       nesting is ShellNesting && identical(nesting.node, node);
 

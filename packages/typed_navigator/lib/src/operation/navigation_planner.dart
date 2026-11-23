@@ -1,6 +1,9 @@
 import 'package:typed_navigator/src/operation/branch_switch.dart';
 import 'package:typed_navigator/src/operation/entry_chain.dart';
 import 'package:typed_navigator/src/operation/go_plan.dart';
+import 'package:typed_navigator/src/operation/in_place_update.dart';
+import 'package:typed_navigator/src/operation/stack_trim.dart';
+import 'package:typed_navigator/src/operation/top_replacement.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
@@ -26,11 +29,15 @@ class NavigationPlanner {
     this._entryChain,
     this._goPlan,
     this._branchSwitch,
-  );
+    InPlaceUpdate inPlaceUpdate,
+  ) : _stackTrim = StackTrim(_entryChain),
+      _topReplacement = TopReplacement(_entryChain, _goPlan, inPlaceUpdate);
 
   final RouteTree _tree;
   final EntryChain _entryChain;
   final GoPlan _goPlan;
+  final TopReplacement _topReplacement;
+  final StackTrim _stackTrim;
   final BranchSwitch _branchSwitch;
 
   /// The chain of [route] from the tree, as the first state of a router.
@@ -52,7 +59,7 @@ class NavigationPlanner {
     PendingResult<Object?>? pendingResult,
   }) => current.showing([
     ...current.entries,
-    _entryChain.entryAbove(
+    _entryChain.entryPushedAbove(
       current.topLevels,
       route,
       pendingResult: pendingResult,
@@ -63,48 +70,36 @@ class NavigationPlanner {
   NavigationState withoutTop(NavigationState current) =>
       current.showing(_belowTop(current));
 
-  /// [current] with [route] in place of its top entry, in the top entry's
-  /// levels where they fit.
+  /// See [TopReplacement.replaced].
   NavigationState withTopReplaced(
     NavigationState current,
     TypedRoute<Object?> route, {
     PendingResult<Object?>? pendingResult,
-  }) => current.showing([
-    ..._belowTop(current),
-    _entryChain.entryAbove(
-      current.topLevels,
-      route,
-      pendingResult: pendingResult,
-    ),
-  ]);
+  }) => _topReplacement.replaced(current, route, pendingResult: pendingResult);
 
-  /// [current] without the entries above the topmost route that matches
-  /// [predicate]. Throws [StateError] when no route matches.
+  /// See [TopReplacement.updated].
+  NavigationState withTopUpdated(
+    NavigationState current,
+    TypedRoute<Object?> route, {
+    PendingResult<Object?>? pendingResult,
+  }) => _topReplacement.updated(current, route, pendingResult: pendingResult);
+
+  /// See [StackTrim.poppedUntil].
   NavigationState poppedUntil(
     NavigationState current,
     RoutePredicate predicate,
-  ) {
-    final entries = current.entries;
-    final matchIndex = entries.lastIndexWhere(
-      (entry) => predicate(entry.route),
-    );
-    if (matchIndex == -1) {
-      throw StateError(
-        'No route on the stack matches the predicate; nothing was removed.',
-      );
-    }
-    return current.showing(entries.take(matchIndex + 1).toList());
-  }
+  ) => _stackTrim.poppedUntil(current, predicate);
 
-  /// [poppedUntil], then [pushedOnto], as one candidate.
+  /// See [StackTrim.pushedAfterPoppingUntil].
   NavigationState pushedAfterPoppingUntil(
     NavigationState current,
     TypedRoute<Object?> route,
     RoutePredicate predicate, {
     PendingResult<Object?>? pendingResult,
-  }) => pushedOnto(
-    poppedUntil(current, predicate),
+  }) => _stackTrim.pushedAfterPoppingUntil(
+    current,
     route,
+    predicate,
     pendingResult: pendingResult,
   );
 

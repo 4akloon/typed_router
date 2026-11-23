@@ -12,6 +12,9 @@ class BranchEntry extends ShellLevel {
   final Type branchType;
 
   @override
+  NavigatorSlot? get slot => tabs.node.branchOf(branchType).navigatorSlot;
+
+  @override
   bool isInstanceOf(Nesting nesting) =>
       nesting is BranchNesting &&
       identical(nesting.node, tabs.node) &&

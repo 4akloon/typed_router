@@ -8,7 +8,7 @@ routes, the route tree, a page factory and the router.
 
 ```yaml
 dependencies:
-  typed_router: ^0.8.0
+  typed_router: ^0.9.0
 
 dev_dependencies:
   typed_router_test: ^0.8.0 # widget test utilities, optional

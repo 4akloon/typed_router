@@ -1,3 +1,4 @@
+import 'package:typed_router/src/exit/confirmed_navigation.dart';
 import 'package:typed_router/src/operation/navigation_planner.dart';
 import 'package:typed_router/src/operation/operation_redirects.dart';
 import 'package:typed_router/src/redirect/redirects.dart';
@@ -8,17 +9,24 @@ import 'package:typed_router/src/state/typed_router_state.dart';
 import 'package:typed_router/src/transaction/navigation_controller.dart';
 
 /// Carries out the router's stack operations: checks what must hold
-/// before, asks the planner for the candidate and hands it to the
-/// controller with the navigation's redirects.
+/// before, asks the planner for the candidate and hands it with the
+/// navigation's redirects to [ConfirmedNavigation], which commits once the
+/// pages it removes agree to leave.
 ///
 /// Which redirects each operation runs: [OperationRedirects].
 class StackOperations {
   /// Creates operations that plan with [_planner], redirect with
-  /// [_redirects] and commit through [_controller].
-  StackOperations(this._controller, this._planner, Redirects redirects)
-    : _redirects = OperationRedirects(redirects, _planner);
+  /// [_redirects] and commit through [_confirmed]; the state is
+  /// [_controller]'s.
+  StackOperations(
+    this._controller,
+    this._confirmed,
+    this._planner,
+    Redirects redirects,
+  ) : _redirects = OperationRedirects(redirects, _planner);
 
   final NavigationController _controller;
+  final ConfirmedNavigation _confirmed;
   final NavigationPlanner _planner;
   final OperationRedirects _redirects;
 
@@ -67,12 +75,14 @@ class StackOperations {
   void pop(Object? result) {
     if (!canPop) throw StateError(_nothingToPop);
     final top = _state.entries.last..checkResult(result);
-    top.recordResult(result);
-    _controller.navigate(_planner.withoutTop(_state));
+    _confirmed.navigate(
+      _planner.withoutTop(_state),
+      beforeCommit: () => top.recordResult(result),
+    );
   }
 
   /// See `TypedRouter.popUntil`.
-  void popUntil(RoutePredicate predicate) => _controller.navigate(
+  void popUntil(RoutePredicate predicate) => _confirmed.navigate(
     _planner.poppedUntil(_state, predicate),
     steps: _redirects.toRemainingRoutes(_state),
   );
@@ -107,9 +117,9 @@ class StackOperations {
 
   /// Navigates to the candidate [plan] builds with a new entry for
   /// [route] that [pendingResult] awaits. When no entry it awaits reaches
-  /// the committed state (redirected or failed), the push completes with
-  /// `null`. A redirect target gets an entry nobody awaits: its result type
-  /// is not [T].
+  /// the committed state (redirected, failed, refused by `onExit` or
+  /// dropped), the push completes with `null`. A redirect target gets an
+  /// entry nobody awaits: its result type is not [T].
   Future<T?> _navigateWithNew<T>(
     TypedRoute<T> route,
     TypedRouterState Function(
@@ -122,19 +132,23 @@ class StackOperations {
     _navigate(
       plan(route, pendingResult),
       (redirected) => plan(redirected, null),
+      afterwards: () {
+        if (!_state.entries.any((entry) => entry.completes(pendingResult))) {
+          pendingResult.complete();
+        }
+      },
     );
-    if (!_state.entries.any((entry) => entry.completes(pendingResult))) {
-      pendingResult.complete();
-    }
     return pendingResult.future;
   }
 
   void _navigate(
     TypedRouterState candidate,
-    TypedRouterState Function(TypedRoute<Object?> redirected) replan,
-  ) => _controller.navigate(
+    TypedRouterState Function(TypedRoute<Object?> redirected) replan, {
+    void Function()? afterwards,
+  }) => _confirmed.navigate(
     candidate,
     steps: _redirects.toNewRoute(_state, replan),
+    afterwards: afterwards,
   );
 
   String get _nothingToPop => _state.error == null

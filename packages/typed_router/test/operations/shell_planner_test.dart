@@ -3,6 +3,8 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:typed_router/src/exit/exit_questions.dart';
+import 'package:typed_router/src/exit/last_page_exit.dart';
 import 'package:typed_router/src/operation/branch_switch.dart';
 import 'package:typed_router/src/operation/entry_chain.dart';
 import 'package:typed_router/src/operation/go_plan.dart';
@@ -49,7 +51,13 @@ NavigationPlanner _plannerOver(RouteTree tree) {
     entryChain,
     goPlan,
     BranchSwitch(tree, entryChain, goPlan),
-    InPlaceUpdate(RoutePages(tree: tree, pageFactory: const TestPageFactory())),
+    InPlaceUpdate(
+      RoutePages(
+        tree: tree,
+        pageFactory: const TestPageFactory(),
+        lastPageExit: LastPageExit(ExitQuestions(tree, () => null)),
+      ),
+    ),
   );
 }
 

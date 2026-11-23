@@ -55,6 +55,7 @@ RouteNode<RoomRoute>(
   build: (context, room) => RoomScreen(id: room.id),
   pageFactory: null, // optional: a sheet, a dialog, a custom transition
   redirect: null, // optional: see Redirects
+  onExit: null, // optional: ask before leaving, see Back and gestures
   parentNavigatorSlot: null, // optional: see Shells and tabs
   children: [/* nodes under RoomRoute */],
 )

@@ -1,4 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:typed_router/src/exit/confirmed_navigation.dart';
+import 'package:typed_router/src/exit/exit_questions.dart';
+import 'package:typed_router/src/exit/last_page_exit.dart';
 import 'package:typed_router/src/operation/branch_switch.dart';
 import 'package:typed_router/src/operation/entry_chain.dart';
 import 'package:typed_router/src/operation/go_plan.dart';
@@ -18,6 +21,7 @@ import 'package:typed_router/src/redirect/stack_recheck.dart';
 import 'package:typed_router/src/result/result_completion.dart';
 import 'package:typed_router/src/route/typed_route.dart';
 import 'package:typed_router/src/router/current_navigators.dart';
+import 'package:typed_router/src/router/root_navigator.dart';
 import 'package:typed_router/src/tabs/tabs_switching.dart';
 import 'package:typed_router/src/transaction/entry_lifecycles.dart';
 import 'package:typed_router/src/transaction/navigation_controller.dart';
@@ -46,6 +50,7 @@ class RouterParts {
     final navigatorObservers = NavigatorObservers(observers);
     final tree = RouteTree(routes);
     final mount = RouterMount();
+    final rootNavigator = RootNavigator(mount);
     final redirects = Redirects(
       resolver: RedirectResolver(tree: tree, routerRedirect: redirect),
       mount: mount,
@@ -53,7 +58,15 @@ class RouterParts {
     );
     final entryChain = EntryChain(ShellPath(tree));
     final goPlan = GoPlan(tree, entryChain);
-    final routePages = RoutePages(tree: tree, pageFactory: pageFactory);
+    final exitQuestions = ExitQuestions(
+      tree,
+      () => rootNavigator.current?.context,
+    );
+    final routePages = RoutePages(
+      tree: tree,
+      pageFactory: pageFactory,
+      lastPageExit: LastPageExit(exitQuestions),
+    );
     final planner = NavigationPlanner(
       tree,
       entryChain,
@@ -68,11 +81,18 @@ class RouterParts {
         RetiredNavigators(),
       ]),
     );
-    final operations = StackOperations(controller, planner, redirects);
+    final recheck = StackRecheck(controller, planner, redirects);
+    final confirmed = ConfirmedNavigation(controller, exitQuestions, recheck);
+    final operations = StackOperations(
+      controller,
+      confirmed,
+      planner,
+      redirects,
+    );
     return RouterParts._(
       controller: controller,
       operations: operations,
-      recheck: StackRecheck(controller, planner, redirects),
+      recheck: recheck,
       pages: NavigatorPages(
         routePages: routePages,
         levelPages: LevelPages(
@@ -87,6 +107,8 @@ class RouterParts {
       ),
       mount: mount,
       observers: navigatorObservers,
+      rootNavigator: rootNavigator,
+      confirmed: confirmed,
     );
   }
 
@@ -97,6 +119,8 @@ class RouterParts {
     required this.pages,
     required this.mount,
     required this.observers,
+    required this.rootNavigator,
+    required this.confirmed,
   });
 
   /// The observers of the root navigator and of the nested ones.
@@ -116,4 +140,10 @@ class RouterParts {
 
   /// Whether the router is shown.
   final RouterMount mount;
+
+  /// The root navigator's key, and the navigator while it is shown.
+  final RootNavigator rootNavigator;
+
+  /// Commits the operations once the pages they remove agree to leave.
+  final ConfirmedNavigation confirmed;
 }

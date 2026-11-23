@@ -45,9 +45,6 @@ Check these before you migrate:
   app turns incoming links into routes itself (see
   [Recipes](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/recipes.md#links-and-notifications)). If your app is a web
   app that relies on URLs, stay on go_router for now.
-- **`onExit`.** Use `PopScope` for back, and confirm before the screen's
-  own navigation (see
-  [Back and gestures](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/back_and_gestures.md#confirming-before-leaving)).
 - **State restoration** of the navigation stack.
 
 ## Concepts side by side
@@ -83,7 +80,7 @@ Check these before you migrate:
 | `StatefulShellRoute(navigatorContainerBuilder:)` | `shell.navigators` laid out in the builder |
 | `parentNavigatorKey: rootNavigatorKey` | `parentNavigatorSlot: NavigatorSlot.root` |
 | `navigatorKey:` on a shell or branch | `navigatorSlot: NavigatorSlot()`; `router.navigatorOf(slot)` |
-| `onExit` | `PopScope`, and a check before the screen's own navigation |
+| `GoRoute(onExit:)` | `RouteNode(onExit:)`, with the target state (see below) |
 | `debugLogDiagnostics` | `router.addListener(() => debugPrint('${router.state}'))` |
 
 ## Step by step
@@ -237,14 +234,36 @@ StatefulShellNode(
 route of the branch) is written out. Navigator keys become
 `NavigatorSlot`s; see [Shells and tabs](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/shells_and_tabs.md).
 
-### 7. Links
+### 7. `onExit`
+
+`GoRoute(onExit:)` becomes `RouteNode(onExit:)`. It also gets the route
+and the state the navigation would show:
+
+```dart
+// go_router
+GoRoute(path: 'draft', onExit: (context, state) => confirmLeaving(context))
+
+// typed_router
+RouteNode<DraftRoute>(
+  build: (context, draft) => const DraftScreen(),
+  onExit: (context, draft, target) => confirmLeaving(context),
+)
+```
+
+It differs where go_router's would surprise: a re-check of the stack
+(`refreshListenable`, `refresh()`) does not ask, so a sign-out is not held;
+the page does not take the back gesture, rather than swiping away and
+coming back; and a newer navigation while a `Future` waits wins. See
+[Back and gestures](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/back_and_gestures.md#confirming-before-leaving-onexit).
+
+### 8. Links
 
 If go_router parsed your deep links, write the mapping from a link to a
 route yourself and call `router.go(route)` (see
 [Recipes](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/recipes.md#links-and-notifications)). The initial link becomes
 `initialRoute`.
 
-### 8. Tests
+### 9. Tests
 
 Assertions on locations become assertions on values:
 

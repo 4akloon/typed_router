@@ -18,4 +18,16 @@ class LeftEntries {
       previous.allEntries.where((entry) => !kept.contains(entry)),
     );
   }
+
+  /// The entries of [previous]'s stack on screen that [next] does not hold,
+  /// from the top down. Entries of branches not on screen are left out.
+  List<NavigationEntry> fromScreen(
+    TypedRouterState previous,
+    TypedRouterState next,
+  ) {
+    final kept = next.allEntries.toSet();
+    return List.unmodifiable(
+      previous.entries.reversed.where((entry) => !kept.contains(entry)),
+    );
+  }
 }

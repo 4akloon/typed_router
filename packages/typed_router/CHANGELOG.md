@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- `RouteNode.onExit`, as go_router's `GoRoute.onExit`: asks before a page
+  leaves the stack on screen, on every operation that removes it (`go`,
+  `replace`, `pushReplacement`, `pop`, `popUntil`, `pushAndRemoveUntil`, a
+  tab reset) and on back (the back button, predictive back,
+  `Navigator.maybePop`). A page with `onExit` does not take the back
+  gesture, as with `PopScope(canPop: false)`; its own `PopScope` decides
+  first. A re-check of the stack, a page in a branch not on screen,
+  `Navigator.pop(context)` and `dispose` do not ask. An `onExit` that
+  returns a `Future` makes the operation wait; a newer navigation
+  meanwhile wins. The guide "Back and gestures" describes it, and the
+  migration guide maps go_router's.
+
 ## 0.8.0 - 2026-11-23
 
 - The packages are named `typed_router` and `typed_router_test`, after

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 import 'package:typed_router/src/page/page_factory.dart';

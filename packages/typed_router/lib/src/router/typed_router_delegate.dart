@@ -7,6 +7,7 @@ import 'package:typed_router/src/redirect/redirect_scope.dart';
 import 'package:typed_router/src/redirect/router_mount.dart';
 import 'package:typed_router/src/redirect/stack_recheck.dart';
 import 'package:typed_router/src/router/current_navigators.dart';
+import 'package:typed_router/src/router/root_navigator.dart';
 import 'package:typed_router/src/router/typed_router.dart';
 import 'package:typed_router/src/router/typed_router_scope.dart';
 import 'package:typed_router/src/router/typed_router_state_scope.dart';
@@ -27,6 +28,7 @@ class TypedRouterDelegate extends RouterDelegate<Object> {
     required this._mount,
     required this._recheck,
     required this._observers,
+    required this._rootNavigator,
   });
 
   final TypedRouter _router;
@@ -35,15 +37,12 @@ class TypedRouterDelegate extends RouterDelegate<Object> {
   final RouterMount _mount;
   final StackRecheck _recheck;
   final List<NavigatorObserver> _observers;
-  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey();
+  final RootNavigator _rootNavigator;
   final CurrentNavigators _currentNavigators = const CurrentNavigators();
   final RenewedPage _renewedPage = const RenewedPage();
 
   /// The root navigator, or `null` while it is not mounted.
-  NavigatorState? get navigator =>
-      // Not shown: no widget tree to look in (and, in a plain test, no
-      // binding for a GlobalKey to ask).
-      _mount.context == null ? null : _navigatorKey.currentState;
+  NavigatorState? get navigator => _rootNavigator.current;
 
   @override
   void addListener(VoidCallback listener) => _controller.addListener(listener);
@@ -67,7 +66,7 @@ class TypedRouterDelegate extends RouterDelegate<Object> {
         TypedRouterStateScope(
           state: _controller.state,
           child: Navigator(
-            key: _navigatorKey,
+            key: _rootNavigator.key,
             pages: _pages.pagesFor(
               _controller.state,
               onDidRemovePage: _removePage,

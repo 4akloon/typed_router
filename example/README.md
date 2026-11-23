@@ -24,7 +24,7 @@ fvm flutter run -d macos   # or any device: flutter run
 | Cupertino app | `CupertinoApp.router` with the Cupertino factory. |
 | System back | The back button, dialogs, `PopScope`. |
 | Predictive back | The Android 14+ back gesture in nested navigators. |
-| Exit confirmation | Confirming before leaving, without `onExit`. |
+| Exit confirmation | `onExit`: back and every `go` ask before the draft leaves. |
 | Observers and names | `NavigatorObserver`s, node names, listening to the router. |
 
 The bottom panel of every demo has:

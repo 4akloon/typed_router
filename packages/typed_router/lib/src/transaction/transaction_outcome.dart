@@ -25,6 +25,27 @@ class TransactionCommitted extends TransactionOutcome {
   String toString() => 'TransactionCommitted($state)';
 }
 
+/// The steps settled on [state], which is not committed yet: the pages it
+/// removes are asked first (`onExit`).
+class TransactionPlanned extends TransactionOutcome {
+  /// Creates the outcome of steps that settled on [state].
+  const TransactionPlanned(this.state);
+
+  /// The state the steps settled on.
+  final TypedRouterState state;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TransactionPlanned && other.state == state;
+
+  @override
+  int get hashCode => state.hashCode;
+
+  @override
+  String toString() => 'TransactionPlanned($state)';
+}
+
 /// The navigation ended on the state already committed; nothing changed
 /// and nobody was notified.
 class TransactionUnchanged extends TransactionOutcome {

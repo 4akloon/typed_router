@@ -49,6 +49,16 @@ class NavigationController extends ChangeNotifier {
   TransactionOutcome navigate(
     TypedRouterState candidate, {
     List<NavigationStep> steps = const [],
+  }) => switch (planned(candidate, steps: steps)) {
+    TransactionPlanned(:final state) => _commit(state),
+    final outcome => outcome,
+  };
+
+  /// Runs [candidate] through [steps] without committing: the state they
+  /// settle on, or [TransactionFailed]. Checks as [navigate] does.
+  TransactionOutcome planned(
+    TypedRouterState candidate, {
+    List<NavigationStep> steps = const [],
   }) {
     _checkUsable();
     assert(
@@ -61,15 +71,20 @@ class NavigationController extends ChangeNotifier {
       'Navigation was requested while widgets build. Navigate from a '
       'callback, or schedule it with addPostFrameCallback.',
     );
-    final TypedRouterState next;
     try {
-      next = _transaction.run(_state, candidate, steps);
+      return TransactionPlanned(_transaction.run(_state, candidate, steps));
     } catch (error, stackTrace) {
       // The one place that catches whatever a user step throws, reports it and
       // leaves the state unchanged.
       _stepFailureReport.report(error, stackTrace, candidate);
       return TransactionFailed(error, stackTrace);
     }
+  }
+
+  /// Commits [next], which [planned] settled on and whose leaving pages
+  /// agreed to go.
+  TransactionOutcome commit(TypedRouterState next) {
+    _checkUsable();
     return _commit(next);
   }
 

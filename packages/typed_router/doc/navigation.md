@@ -28,7 +28,9 @@ the same names doing the same things.
 | `refresh()` | Re-runs the redirects over the whole stack. |
 
 Every operation changes `router.state` at once and is shown in the next
-frame. A navigation whose redirects fail (throw, loop) is reported through
+frame. An operation that removes a page whose node has `onExit` asks it
+first; while an `onExit` that returns a `Future` waits, the state stays as
+it was (see [Back and gestures](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/back_and_gestures.md#confirming-before-leaving-onexit)). A navigation whose redirects fail (throw, loop) is reported through
 `FlutterError.reportError` and leaves the state as it was.
 
 ### `go` or `push`?

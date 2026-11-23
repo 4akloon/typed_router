@@ -127,5 +127,8 @@ void main() {
       '{*RoomsBranch: [RoomsRoute()] | '
       'FriendsBranch: [FriendsRoute() > FriendRoute(ann)]}',
     );
+    expect(find.text('Rooms'), findsOneWidget);
+    expect(find.text('Room 7'), findsNothing);
+    expect(find.text('Friend ann'), findsOneWidget);
   }, variant: TargetPlatformVariant.only(TargetPlatform.android));
 }

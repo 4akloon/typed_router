@@ -1,4 +1,4 @@
-// Listening, independence, dispose.
+// Listening, independence, dispose: a native pop after dispose.
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -76,5 +76,31 @@ void main() {
     addTearDown(router.dispose);
 
     expect('$router', 'TypedRouter(RoomsRoute() > RoomRoute(RoomId(7)))');
+  });
+
+  testWidgets('a native pop after dispose does not throw', (tester) async {
+    final router = TypedRouter(
+      routes: appRoutes,
+      initialRoute: room7,
+      pageFactory: const TestPageFactory(),
+    );
+    await pumpWidgetsRouter(tester, router);
+    final navigator = Navigator.of(tester.element(find.text('Room 7')));
+    router.dispose();
+
+    expect(navigator.pop, returnsNormally);
+    await tester.pumpAndSettle();
+    expect(router.state.routes, const [rooms, room7]);
+  });
+
+  testWidgets('the navigator of a router disposed before it was shown is '
+      'null', (tester) async {
+    final router = TypedRouter(
+      routes: appRoutes,
+      initialRoute: rooms,
+      pageFactory: const TestPageFactory(),
+    )..dispose();
+
+    expect(router.navigator, isNull);
   });
 }

@@ -26,6 +26,8 @@ void main() {
 
     expect(note.completions, ['Buy milk']);
     expect(tester.takeException(), isNull);
+    expect(find.text('Rooms'), findsOneWidget);
+    expect(find.text('Edit note'), findsNothing);
   });
 
   test('dispose completes every pending push with null', () async {

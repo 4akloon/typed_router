@@ -18,6 +18,8 @@ void main() {
     );
     expect(rootPageCount(router), 1);
     expect(navigatorShowing(tester, 'User u2').widget.pages, hasLength(3));
+    expect(find.text('User u2'), findsOneWidget);
+    expect(find.text('User u1'), findsNothing);
   });
 
   testWidgets('push of a route outside the shell goes onto the root above '
@@ -32,6 +34,8 @@ void main() {
     );
     expect(rootPageCount(router), 2);
     expect(navigatorShowing(tester, 'Account'), same(router.navigator));
+    expect(find.text('Account'), findsOneWidget);
+    expect(find.text('User u1'), findsNothing);
   });
 
   testWidgets('push of a child of a shell covered by another page starts a '
@@ -48,6 +52,8 @@ void main() {
     );
     expect(rootPageCount(router), 3);
     expect(navigatorShowing(tester, 'User u2'), isNot(same(firstShell)));
+    expect(find.text('User u2'), findsOneWidget);
+    expect(find.text('Account'), findsNothing);
   });
 
   testWidgets('pop of the last child removes the shell', (tester) async {
@@ -72,9 +78,11 @@ void main() {
       () => router.popUntil((route) => route is UserRoute),
     );
     expect(router.state.toString(), '[UsersRoute() > UserRoute(u1)]');
+    expect(find.text('User u1'), findsOneWidget);
 
     await settleAfter(tester, () => router.replace(user2).ignore());
     expect(router.state.toString(), '[UsersRoute() > UserRoute(u2)]');
+    expect(find.text('User u2'), findsOneWidget);
 
     await settleAfter(
       tester,

@@ -79,6 +79,8 @@ void main() {
     await tester.predictiveBack();
 
     expect(router.state.toString(), _tabsAfter);
+    expect(find.text('Rooms'), findsOneWidget);
+    expect(find.text('Room 7'), findsNothing);
   }, variant: android);
 
   testWidgets('predictive back with a dialog over a shell page closes the '
@@ -96,6 +98,8 @@ void main() {
 
     expect(dialog.completions, [null]);
     expect(router.state.toString(), '[UsersRoute() > UserRoute(u1)]');
+    expect(find.text('Dialog'), findsNothing);
+    expect(find.text('User u1'), findsOneWidget);
   }, variant: android);
 
   testWidgets('predictive back closes the shell page on screen', (
@@ -106,6 +110,8 @@ void main() {
     await tester.predictiveBack();
 
     expect(router.state.toString(), '[UsersRoute()]');
+    expect(find.text('Users'), findsOneWidget);
+    expect(find.text('User u1'), findsNothing);
   }, variant: android);
 
   testWidgets('an app PopScope on screen still blocks predictive back', (
@@ -120,15 +126,18 @@ void main() {
       router.state.toString(),
       '[UsersRoute() > UserRoute(u1) > EditNoteRoute()]',
     );
+    expect(find.text('Edit note'), findsOneWidget);
   }, variant: android);
 
   testWidgets('the iOS swipe closes only the page on screen', (tester) async {
     final shell = await _shellUnderAccount(tester);
     await tester.iosEdgeSwipe();
     expect(shell.state.toString(), '[UsersRoute() > UserRoute(u1)]');
+    expect(find.text('User u1'), findsOneWidget);
 
     final tabs = await _tabsWithDeeperFriends(tester);
     await tester.iosEdgeSwipe();
     expect(tabs.state.toString(), _tabsAfter);
+    expect(find.text('Rooms'), findsOneWidget);
   }, variant: iOS);
 }

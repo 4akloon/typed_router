@@ -31,6 +31,8 @@ void main() {
     expect(router.state.toString(), '[UsersRoute() > UserRoute(u2)]');
     expect(navigatorShowing(tester, 'User u2'), same(shellNavigator));
     expect(log.createdFrames, 1);
+    expect(find.text('User u2'), findsOneWidget);
+    expect(find.text('Selected: u2'), findsOneWidget);
   });
 
   testWidgets('go outside a shell removes it and completes its pushes with '

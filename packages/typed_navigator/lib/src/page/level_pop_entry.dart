@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/page/level_inside.dart';
@@ -20,15 +22,17 @@ class LevelPopEntry extends PopEntry<Object?> {
   @override
   ValueListenable<bool> get canPopNotifier => _canPop;
 
-  /// Reads again what is inside, with the level [isOnScreen] or not. Call
-  /// it outside a build: the navigators may be moving in the tree.
+  /// Reads again what is inside, with the level [isOnScreen] or not, as
+  /// the navigators inside hold it now.
   void refresh({required bool isOnScreen}) =>
       _canPop.value = isOnScreen && !_inside().canHandlePop();
 
   @override
   void onPopInvokedWithResult(bool didPop, Object? result) {
     // Off screen, nothing inside is current, so this gives back to no one.
-    if (!didPop) _inside().maybePop().ignore();
+    // Unawaited, not ignored: an error of an app's PopScope inside reaches the
+    // zone, as through system back.
+    if (!didPop) unawaited(_inside().maybePop());
   }
 
   /// Releases the listeners of the route.

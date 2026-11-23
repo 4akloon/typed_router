@@ -49,6 +49,8 @@ void main() {
     expect(router.state.toString(), 'UsersRoute() > [UserRoute(u1)]');
     expect(rootPageCount(router), 2);
     expect(navigatorShowing(tester, 'User u1'), isNot(same(router.navigator)));
+    expect(find.text('User u1'), findsOneWidget);
+    expect(find.text('Users'), findsNothing);
   });
 
   testWidgets('the shell builder sees the selected route', (tester) async {

@@ -32,6 +32,7 @@ void main() {
 
     expect(router.state.routes, const [rooms]);
     expect(note.completions, ['Buy milk']);
+    expect(find.text('Rooms'), findsOneWidget);
   });
 
   testWidgets(
@@ -45,6 +46,8 @@ void main() {
 
       expect(router.state.routes, const [rooms]);
       expect(room.completions, [null]);
+      expect(find.text('Rooms'), findsOneWidget);
+      expect(find.text('Room 7'), findsNothing);
     },
     variant: TargetPlatformVariant.only(TargetPlatform.android),
   );

@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+- Fixes:
+  - A native `Navigator.pop` of the only page of a navigator no longer
+    leaves it empty: the page comes back made anew (its screen state
+    reset), as the state says; listeners hear one change.
+  - A native pop of a shell's page in a hidden tab leaves its kept stack.
+  - Tabs on their roots tell Android the app does not handle back; a
+    hidden branch no longer counts.
+  - An operation on the error screen checks the whole stack it leads to;
+    only one the redirects let through leaves the error screen.
+  - `TypedRouter.of(context)` works inside a redirect.
+  - A native pop after `dispose` no longer throws.
+  - An error of an app's `PopScope` inside a pushed shell is no longer
+    swallowed.
+  - When a shell's or tab's navigator leaves, observers hear `didRemove`
+    for its routes, not `didPop`.
+  - The root navigator of a `WidgetsApp` flies heroes (straight), as
+    go_router's does.
+- **Breaking (build-time checks):** a `RouteNode` without a route type, a
+  `BranchNode` without a branch type, a branch whose `initial` is shown
+  outside its navigator, and a `withParent` that returns `Never` now fail
+  with `ArgumentError` when the router is built. **Migration:** add the
+  type argument, or show the initial route inside its branch.
+
 - Public classes are open: `TypedRouter`, `NavigationState`, the tree
   nodes, `PageRequest`, `NavigatorSlot`, `RedirectChainError` and
   `StatefulShell` are no longer `final`, as go_router's classes are not.

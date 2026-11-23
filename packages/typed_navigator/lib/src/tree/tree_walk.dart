@@ -4,6 +4,7 @@ import 'package:typed_navigator/src/tree/nesting.dart';
 import 'package:typed_navigator/src/tree/nesting_path.dart';
 import 'package:typed_navigator/src/tree/route_placement.dart';
 import 'package:typed_navigator/src/tree/route_registry.dart';
+import 'package:typed_navigator/src/tree/slot_placement.dart';
 import 'package:typed_navigator/src/tree/tabs_validation.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
 
@@ -25,6 +26,7 @@ class TreeWalk {
 
   final RouteRegistry _registry;
   final TabsValidation _tabsValidation = const TabsValidation();
+  final SlotPlacement _slotPlacement = const SlotPlacement();
   final Set<NavigatorSlot> _usedSlots = {NavigatorSlot.root};
 
   /// Places [nodes] under [parent], at [path].
@@ -103,7 +105,10 @@ class TreeWalk {
     NestingPath path,
   ) => switch ((node, parent)) {
     (final RouteNode<TypedRoute<Object?>> routeNode, _) =>
-      RoutePlacement.topLevel(routeNode, path: _placed(routeNode, path)),
+      RoutePlacement.topLevel(
+        routeNode,
+        path: _slotPlacement.placed(routeNode, path),
+      ),
     (
       final ParentedRouteNode<TypedRoute<Object?>, TypedRoute<Object?>>
       parentedNode,
@@ -113,34 +118,24 @@ class TreeWalk {
         parentedNode.node,
         parent: parent,
         buildParent: parentedNode.buildParent,
-        path: _placed(parentedNode.node, path),
+        path: _slotPlacement.placed(parentedNode.node, path),
+      ),
+    // WithParent((route) => throw...) infers Never, and a TreeNode<Never> fits
+    // where no route is above.
+    (
+      final ParentedRouteNode<TypedRoute<Object?>, TypedRoute<Object?>>
+      parentedNode,
+      null,
+    ) =>
+      throw ArgumentError(
+        '${parentedNode.node.name ?? parentedNode.node.routeType} is placed '
+        'with withParent where no route is above it: its withParent builds '
+        'Never (a closure that only throws). Name the parent type, '
+        'withParent<ParentRoute>(...), or drop withParent.',
       ),
     _ => throw StateError(
-      'A node that places no route, or a node placed with withParent where '
-      'no route is above it, reached the placement of routes; the types of '
-      'TreeNode and the walk should make this impossible.',
+      'A node that places no route reached the placement of routes; the '
+      'types of TreeNode and the walk should make this impossible.',
     ),
   };
-
-  /// [path] shown where [node]'s `parentNavigatorSlot` says.
-  NestingPath _placed(RouteNode<TypedRoute<Object?>> node, NestingPath path) {
-    final slot = node.parentNavigatorSlot;
-    if (slot == null) return path;
-    if (path.placedIn(slot) case final placed?) return placed;
-    // Named by its name when it has one.
-    final label = node.name ?? '${node.routeType}';
-    if (path.isBelowShown(slot)) {
-      throw ArgumentError(
-        "$label's parentNavigatorSlot names a navigator deeper "
-        'than the one its parent route is shown in. A route shows in its '
-        "parent's navigator or further out: use that navigator's slot or an "
-        'outer one.',
-      );
-    }
-    throw ArgumentError(
-      "$label's parentNavigatorSlot is neither the root nor the "
-      'slot of a shell or branch above it. Use NavigatorSlot.root or the '
-      'slot of an enclosing ShellNode or BranchNode.',
-    );
-  }
 }

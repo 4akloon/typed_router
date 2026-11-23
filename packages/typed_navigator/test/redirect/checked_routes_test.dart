@@ -39,6 +39,8 @@ void main() {
 
     router.push(editNote).ignore();
     expect(calls, ['router: EditNoteRoute()']);
+    await tester.pumpAndSettle();
+    expect(find.text('Edit note'), findsOneWidget);
   });
 
   testWidgets('operations do not re-check routes already on the stack', (
@@ -57,5 +59,7 @@ void main() {
 
     expect(calls, ['router: AccountRoute()']);
     expect(router.state.routes, const [rooms, room7, AccountRoute()]);
+    await tester.pumpAndSettle();
+    expect(find.text('Account'), findsOneWidget);
   });
 }

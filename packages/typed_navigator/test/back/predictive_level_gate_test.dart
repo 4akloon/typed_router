@@ -24,6 +24,7 @@ void main() {
     await tester.predictiveBack();
 
     expect(router.state.toString(), 'AccountRoute() > [EditNoteRoute()]');
+    expect(find.text('Edit note'), findsOneWidget);
   }, variant: android);
 
   testWidgets('predictive back over a covered nested shell closes only the '
@@ -35,6 +36,8 @@ void main() {
     await tester.predictiveBack();
 
     expect(router.state.toString(), '[UsersRoute() > [UserRoute(u1)]]');
+    expect(find.text('User u1'), findsOneWidget);
+    expect(find.text('Account'), findsNothing);
   }, variant: android);
 
   testWidgets('maybePop from the frame of a covered nested shell closes '
@@ -51,5 +54,6 @@ void main() {
       router.state.toString(),
       '[UsersRoute() > [UserRoute(u1)]] > AccountRoute()',
     );
+    expect(find.text('Account'), findsOneWidget);
   });
 }

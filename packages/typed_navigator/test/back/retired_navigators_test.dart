@@ -36,6 +36,8 @@ void main() {
 
     expect(pageless.completions, [null]);
     expect(router.state.toString(), 'AccountRoute()');
+    expect(find.text('Account'), findsOneWidget);
+    expect(find.text('Pageless over User u1'), findsNothing);
   });
 
   testWidgets('go that removes tabs completes pageless routes in every branch '
@@ -49,6 +51,8 @@ void main() {
 
     expect(inRooms.completions, [null]);
     expect(inFriends.completions, [null]);
+    expect(find.text('Account'), findsOneWidget);
+    expect(find.textContaining('Pageless', skipOffstage: false), findsNothing);
   });
 
   testWidgets('switching branches keeps a pageless route of the branch it '
@@ -81,6 +85,11 @@ void main() {
     expect(
       router.state.toString(),
       '{*RoomsBranch: [RoomsRoute()] | FriendsBranch: [FriendsRoute()]}',
+    );
+    expect(find.text('Rooms'), findsOneWidget);
+    expect(
+      find.text('Pageless over Friends', skipOffstage: false),
+      findsOneWidget,
     );
   });
 }

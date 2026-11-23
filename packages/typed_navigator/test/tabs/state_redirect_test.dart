@@ -22,6 +22,8 @@ void main() {
       '{*RoomsBranch: [RoomsRoute() > RoomRoute(RoomId(7))] | '
       'FriendsBranch: [FriendsRoute() > FriendRoute(ann)]}',
     );
+    expect(find.text('Room 7'), findsOneWidget);
+    expect(find.text('Friend ann'), findsNothing);
   });
 
   testWidgets('tab redirects guard the branches and run on a switch', (
@@ -48,5 +50,7 @@ void main() {
 
     await settled(tester, () => shellOf(tester).goBranch<FriendsBranch>());
     expect(router.state.toString(), 'AccountRoute()');
+    expect(find.text('Account'), findsOneWidget);
+    expect(find.text('Friend ann', skipOffstage: false), findsNothing);
   });
 }

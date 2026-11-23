@@ -1,4 +1,5 @@
-// A shell redirect guards its subtree before the nodes below.
+// A shell redirect guards its subtree before the nodes below, once per
+// chain.
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -57,5 +58,47 @@ void main() {
     isGuest = true;
     session.value++;
     expect(router.state.toString(), 'AccountRoute()');
+    await tester.pumpAndSettle();
+    expect(find.text(''), findsOneWidget);
+    expect(find.text('Users', skipOffstage: false), findsNothing);
+  });
+
+  testWidgets('a shell redirect runs once for a chain of routes inside it', (
+    tester,
+  ) async {
+    final calls = <String>[];
+    final router = TypedRouter(
+      routes: [
+        ShellNode<NoParentRoute>(
+          builder: (context, state, navigator) => navigator,
+          redirect: (context, target) {
+            calls.add('shell');
+            return null;
+          },
+          children: [
+            RouteNode<UsersRoute>(
+              build: (context, users) => const Text('Users'),
+              children: [
+                RouteNode<UserRoute>(
+                  build: (context, user) => Text('User ${user.userId}'),
+                ).withParent((user) => users),
+              ],
+            ),
+          ],
+        ),
+        RouteNode<AccountRoute>(build: (context, account) => const Text('')),
+      ],
+      initialRoute: account,
+      pageFactory: const TestPageFactory(),
+    );
+    addTearDown(router.dispose);
+    await pumpWidgetsRouter(tester, router);
+    calls.clear();
+
+    router.go(user1);
+    await tester.pumpAndSettle();
+
+    expect(calls, ['shell']);
+    expect(find.text('User u1'), findsOneWidget);
   });
 }

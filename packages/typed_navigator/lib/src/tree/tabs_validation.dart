@@ -24,6 +24,14 @@ class TabsValidation {
     final seen = <Type>{};
     for (final branch in tabs.branches) {
       final branchType = branch.branchType;
+      // An inferred branch type tells branches apart from nothing, so goBranch
+      // cannot reach the branch.
+      if (branchType == dynamic || branchType == _AnyObject) {
+        throw ArgumentError(
+          'A BranchNode has no branch type, so goBranch cannot name it. '
+          'Write BranchNode<YourBranch>(...) with a class of its own.',
+        );
+      }
       if (!seen.add(branchType)) {
         throw ArgumentError(
           'Branch $branchType appears twice in a StatefulShellNode. Give '
@@ -46,14 +54,24 @@ class TabsValidation {
     RouteRegistry registry,
   ) {
     final initial = branch.initial;
-    final isInBranch =
-        registry.hasNodeFor(initial) &&
-        registry.placementOf(initial).guardingNestings.contains(level);
-    if (!isInBranch) {
+    if (!registry.hasNodeFor(initial) ||
+        !registry.placementOf(initial).guardingNestings.contains(level)) {
       throw ArgumentError(
         'The initial route $initial of branch ${branch.branchType} is not '
         "in that branch. Use a route of the branch's subtree.",
       );
     }
+    // Shown in another navigator, the initial route would take the tabs off
+    // screen on goBranch.
+    if (!registry.placementOf(initial).nestings.contains(level)) {
+      throw ArgumentError(
+        'The initial route $initial of branch ${branch.branchType} is shown '
+        "outside the branch's navigator (its parentNavigatorSlot). The "
+        'first screen of a branch must show inside it.',
+      );
+    }
   }
 }
+
+/// `Object?`, the type an unconstrained `B` can be inferred as.
+typedef _AnyObject = Object?;

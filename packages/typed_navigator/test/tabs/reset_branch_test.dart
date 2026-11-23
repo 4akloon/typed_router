@@ -50,6 +50,7 @@ void main() {
 
     expect(router.state.routes, const [rooms]);
     expect(log.created, ['Rooms']);
+    expect(find.text('Rooms'), findsOneWidget);
   });
 
   testWidgets('resetting the active branch keeps the screen of its initial '
@@ -61,6 +62,8 @@ void main() {
 
     expect(router.state.routes, const [rooms]);
     expect(log.created, ['Rooms', 'Room 7']);
+    expect(find.text('Rooms'), findsOneWidget);
+    expect(find.text('Room 7', skipOffstage: false), findsNothing);
   });
 
   testWidgets('resetting another branch keeps the screen of its initial '
@@ -73,6 +76,8 @@ void main() {
 
     expect(router.state.routes, const [friends]);
     expect(log.created.where((text) => text == 'Friends'), hasLength(1));
+    expect(find.text('Friends'), findsOneWidget);
+    expect(find.text('Friend ann', skipOffstage: false), findsNothing);
   });
 
   testWidgets('resetting to a deeper initial route keeps the shared screens '
@@ -84,6 +89,8 @@ void main() {
 
     expect(router.state.routes, const [rooms, room7]);
     expect(log.created, ['Rooms', 'Room 8', 'Room 7']);
+    expect(find.text('Room 7'), findsOneWidget);
+    expect(find.text('Room 8', skipOffstage: false), findsNothing);
   });
 
   testWidgets('resetting a branch that starts in nested tabs keeps them, as '
@@ -100,5 +107,7 @@ void main() {
       '{*OuterRooms: [{*RoomsBranch: [RoomsRoute()] | '
       'FriendsBranch: [FriendsRoute() > FriendRoute(ann)]}]}',
     );
+    expect(find.text('Rooms'), findsOneWidget);
+    expect(find.text('Account'), findsNothing);
   });
 }

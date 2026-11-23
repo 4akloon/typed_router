@@ -24,6 +24,9 @@ void main() {
     expect(router.state.routes, const [
       SignInRoute(returnTo: AccountSettingsRoute()),
     ]);
+    await tester.pumpAndSettle();
+    expect(find.text('Sign in'), findsOneWidget);
+    expect(find.textContaining('Account', skipOffstage: false), findsNothing);
   });
 
   testWidgets('sign-in returns to the guarded target', (tester) async {

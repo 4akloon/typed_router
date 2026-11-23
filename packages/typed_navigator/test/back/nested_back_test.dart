@@ -69,6 +69,8 @@ void main() {
     await tester.systemBack();
     expect(router.state.top, const RoomsRoute());
     expect(platform.closedApp, isFalse);
+    expect(find.text('Rooms'), findsOneWidget);
+    expect(find.text('Friends'), findsNothing);
 
     await tester.systemBack();
     expect(platform.closedApp, isTrue);
@@ -105,6 +107,7 @@ void main() {
     expect(platform.closedApp, isFalse);
     expect(attempts, [false]);
     expect(router.state.top, const RoomsRoute());
+    expect(find.text('Rooms'), findsOneWidget);
   }, variant: android);
 
   testWidgets('the iOS swipe on the first page of a shell above a root page '
@@ -133,5 +136,6 @@ void main() {
     await tester.iosEdgeSwipe();
 
     expect(router.state.toString(), '{*RoomsBranch: [RoomsRoute()]}');
+    expect(find.text('Rooms'), findsOneWidget);
   }, variant: iOS);
 }

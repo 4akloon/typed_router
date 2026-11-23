@@ -51,18 +51,21 @@ class NavigatorPages {
     ).pagesAt(state.entries, 0),
   };
 
-  /// The entries a page of [pagesFor] stands for: one for a route page,
-  /// every entry of the instance for a shell or tabs page; none for a page
-  /// this router did not create.
+  /// The entries a page of [pagesFor] stands for: one for a route page, every
+  /// entry of the instance for a shell or tabs page, on screen or in a branch
+  /// not on screen; none for a page this router did not create.
   List<NavigationEntry> entriesOf(Page<Object?> page, NavigationState state) =>
       switch (page.key) {
-        ValueKey<NavigationEntry>(:final value) => [value],
+        // An entry that already left the state stands for nothing.
+        ValueKey<NavigationEntry>(:final value)
+            when state.allEntries.contains(value) =>
+          [value],
         ObjectKey(value: final ShellEntry shell) => [
-          for (final entry in state.entries)
+          for (final entry in state.allEntries)
             if (entry.isIn(shell)) entry,
         ],
         ObjectKey(value: final TabsEntry tabs) => [
-          for (final entry in state.entries)
+          for (final entry in state.allEntries)
             if (entry.standsIn(tabs)) entry,
         ],
         _ => const [],

@@ -46,6 +46,9 @@ void main() {
     expect(room.completions, [null]);
     router.pop();
     expect(router.state.routes, const [HomeRoute()]);
+    await tester.pumpAndSettle();
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Sign in'), findsNothing);
   });
 
   testWidgets('replace and pushAndRemoveUntil put the redirect target in '
@@ -68,6 +71,8 @@ void main() {
     ]);
     await tester.pumpAndSettle();
     expect([...replaced.completions, ...pushed.completions], [null, null]);
+    expect(find.text('Sign in'), findsOneWidget);
+    expect(find.text('Edit note', skipOffstage: false), findsNothing);
   });
 
   testWidgets('a redirect returning null or the target lets the navigation '
@@ -82,6 +87,8 @@ void main() {
     banned.go(const BannedRoute());
     expect(banned.state.routes, const [BannedRoute()]);
     expect(tester.takeException(), isNull);
+    await tester.pump();
+    expect(find.text('Banned'), findsOneWidget);
   });
 
   testWidgets('pop, popUntil and platform back run no redirects', (
@@ -111,5 +118,6 @@ void main() {
 
     expect(router.state.routes, const [rooms]);
     expect(calls, isEmpty);
+    expect(find.text('Rooms'), findsOneWidget);
   });
 }

@@ -25,8 +25,11 @@ void main() {
       'RoomRoute(RoomId(8))]}',
     );
     expect(room.isCompleted, isFalse);
+    expect(find.text('Room 8'), findsOneWidget);
+    expect(find.text('Account', skipOffstage: false), findsNothing);
     await settled(tester, () => shellOf(tester).goBranchAt(0));
     expect(router.state.top, room8);
+    expect(find.text('Room 8'), findsOneWidget);
   });
 
   testWidgets('dispose ends the pushes waiting in branches not on screen', (

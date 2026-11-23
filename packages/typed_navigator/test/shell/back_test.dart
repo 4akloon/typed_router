@@ -36,10 +36,12 @@ void main() {
 
     await tester.systemBack();
     expect(router.state.toString(), 'AccountRoute() > [UserRoute(u1)]');
+    expect(find.text('User u1'), findsOneWidget);
 
     await tester.systemBack();
     expect(router.state.toString(), 'AccountRoute()');
     expect(platform.closedApp, isFalse);
+    expect(find.text('Account'), findsOneWidget);
 
     await tester.systemBack();
     expect(platform.closedApp, isTrue);
@@ -68,6 +70,7 @@ void main() {
       router.state.toString(),
       '[UsersRoute() > UserRoute(u1) > EditNoteRoute()]',
     );
+    expect(find.text('Edit note'), findsOneWidget);
   });
 
   testWidgets('Navigator.pop inside a shell removes the page and completes '
@@ -80,6 +83,8 @@ void main() {
 
     expect(router.state.toString(), '[UsersRoute() > UserRoute(u1)]');
     expect(note.completions, ['Buy milk']);
+    expect(find.text('User u1'), findsOneWidget);
+    expect(find.text('Edit note'), findsNothing);
   });
 
   testWidgets('a pageless route in the shell navigator follows the native '
@@ -100,6 +105,7 @@ void main() {
     await tester.systemBack();
     expect(first.completions, [null]);
     expect(router.state.toString(), '[UsersRoute() > UserRoute(u1)]');
+    expect(find.text('User u1'), findsOneWidget);
 
     // go removes the page the route was opened over; the shell stays.
     final second = await openPageless();
@@ -107,5 +113,6 @@ void main() {
     expect(second.completions, [null]);
     expect(find.text('Pageless', skipOffstage: false), findsNothing);
     expect(router.state.toString(), '[UsersRoute() > UserRoute(u2)]');
+    expect(find.text('User u2'), findsOneWidget);
   });
 }

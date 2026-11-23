@@ -7,7 +7,9 @@ part of 'tree_node.dart';
 /// The builder frames [StatefulShell], which shows the active branch and
 /// switches branches. A branch is built when it is first visited and keeps
 /// its stack while another one is shown. `go` to a route of another branch
-/// switches to it; `push` goes into the active branch.
+/// switches to it; `push` of a route of the active branch goes into it,
+/// and `push` of a route of another branch opens these tabs again above,
+/// on that branch.
 ///
 /// The children of the branches start their own chains: the tabs pass no
 /// parent route down, and they fit anywhere in the tree.
@@ -15,7 +17,11 @@ part of 'tree_node.dart';
 /// To lay out the branches yourself (a cross-fade, a `PageView`), as
 /// go_router's `navigatorContainerBuilder`, put [StatefulShell.navigators]
 /// in your container instead of the shell, and keep the container and the
-/// shell in step (see [StatefulShell.navigators]):
+/// shell in step (see [StatefulShell.navigators]). The outline below shows
+/// the parts; a `PageView` also has to keep `onPageChanged` from switching
+/// to the branches an `animateToPage` passes on its way, which takes a
+/// stateful widget around it (the example app's tabs in a `PageView`
+/// scenario has one):
 ///
 /// ```dart
 /// builder: (context, state, shell) => PageView(

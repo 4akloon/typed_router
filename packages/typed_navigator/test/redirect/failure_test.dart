@@ -28,12 +28,16 @@ void main() {
     expect(router.state.error, isNull);
     expect(step.completions, [null]);
     expect(notifications.count, 0);
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Step 0', skipOffstage: false), findsNothing);
 
     final lost = stepRouter(next: (number) => routeWithoutNode);
     await pumpWidgetsRouter(tester, lost);
     lost.go(const StepRoute(0));
     expect(tester.takeException(), isA<ArgumentError>());
     expect(lost.state.routes, const [HomeRoute()]);
+    await tester.pump();
+    expect(find.text('Home'), findsOneWidget);
   });
 
   testWidgets('a redirect failing on mount or refresh shows the error '
@@ -75,6 +79,7 @@ void main() {
 
     expect(platform.closedApp, isTrue);
     expect(router.state.error, same(serviceDown));
+    expect(find.textContaining('rooms service is down'), findsOneWidget);
   });
 
   testWidgets('without errorBuilder the built-in error screen shows the '

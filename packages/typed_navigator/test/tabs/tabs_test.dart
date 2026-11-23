@@ -58,9 +58,11 @@ void main() {
 
     await settled(tester, () => shellOf(tester).goBranchAt(1));
     expect(router.state.top, friends);
+    expect(find.text('Friends'), findsOneWidget);
 
     await settled(tester, () => shellOf(tester).goBranchAt(0));
     expect(router.state.top, rooms);
+    expect(find.text('Rooms'), findsOneWidget);
   });
 
   testWidgets('resetBranch returns the branch to its initial route', (
@@ -73,10 +75,14 @@ void main() {
     await settled(tester, () => shellOf(tester).resetBranch<RoomsBranch>());
     expect(router.state.routes, const [rooms]);
     expect(room.completions, [null]);
+    expect(find.text('Rooms'), findsOneWidget);
+    expect(find.text('Room 8', skipOffstage: false), findsNothing);
 
     await settled(tester, () => router.go(ann));
     await settled(tester, () => shellOf(tester).resetBranchAt(1));
     expect(router.state.routes, const [friends]);
+    expect(find.text('Friends'), findsOneWidget);
+    expect(find.text('Friend ann', skipOffstage: false), findsNothing);
   });
 
   testWidgets('goBranch removes the root routes above the tabs', (

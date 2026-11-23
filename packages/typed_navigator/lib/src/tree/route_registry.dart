@@ -12,9 +12,17 @@ import 'package:typed_navigator/src/tree/route_placement.dart';
 class RouteRegistry {
   final Map<Type, RoutePlacement> _placements = {};
 
-  /// Records [placement]; a route type may be placed only once.
+  /// Records [placement]; a route type may be placed only once, and a node must
+  /// name its route type.
   void register(RoutePlacement placement) {
     final routeType = placement.routeType;
+    if (routeType == TypedRoute<Object?>) {
+      final name = placement.node.name;
+      throw ArgumentError(
+        'A RouteNode${name == null ? '' : " named '$name'"} has no route '
+        'type, so no route can reach it. Write RouteNode<YourRoute>(...).',
+      );
+    }
     if (_placements.containsKey(routeType)) {
       throw ArgumentError(
         '$routeType has two nodes in the route tree. Each route type has '

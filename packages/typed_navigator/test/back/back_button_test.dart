@@ -46,6 +46,7 @@ void main() {
     expect(router.state.routes, const [rooms, FormRoute()]);
     expect(attempts, [false]);
     expect(platform.closedApp, isFalse);
+    expect(find.text('Form'), findsOneWidget);
   });
 
   testWidgets('the back button on the first page lets the platform close '
@@ -57,6 +58,7 @@ void main() {
 
     expect(platform.closedApp, isTrue);
     expect(router.state.routes, const [rooms]);
+    expect(find.text('Rooms'), findsOneWidget);
   });
 
   testWidgets('PopScope on the first page keeps the app open and hears about '
@@ -69,6 +71,7 @@ void main() {
 
     expect(platform.closedApp, isFalse);
     expect(attempts, [false]);
+    expect(find.text('Guard'), findsOneWidget);
   });
 
   testWidgets('the back button walks a mixed stack in the native order', (

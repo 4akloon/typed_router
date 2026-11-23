@@ -47,6 +47,8 @@ void main() {
 
     expect(router.state.routes, const [rooms, room7]);
     expect(notifications.count, 0);
+    await tester.pumpAndSettle();
+    expect(find.text('Room 7'), findsOneWidget);
   });
 
   testWidgets('router.refresh re-checks the stack like a notification', (
@@ -66,6 +68,8 @@ void main() {
     router.refresh();
 
     expect(router.state.routes, const [BannedRoute()]);
+    await tester.pumpAndSettle();
+    expect(find.text('Banned'), findsOneWidget);
   });
 
   testWidgets('rapid notifications each end in a checked state', (
@@ -84,6 +88,8 @@ void main() {
 
     expect(router.state.routes, const [BannedRoute()]);
     expect(notifications.count, 2);
+    expect(find.text('Banned'), findsOneWidget);
+    expect(find.text('Room 7', skipOffstage: false), findsNothing);
   });
 
   testWidgets('notifications while not shown or after dispose do nothing', (

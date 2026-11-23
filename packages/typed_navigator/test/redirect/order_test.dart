@@ -26,6 +26,8 @@ void main() {
       'Rooms node: RoomsRoute() for RoomRoute(RoomId(7))',
       'router: SignInRoute(RoomRoute(RoomId(7)))',
     ]);
+    await tester.pumpAndSettle();
+    expect(find.text('Sign in'), findsOneWidget);
   });
 
   testWidgets('a redirect target goes through every redirect again', (
@@ -46,6 +48,8 @@ void main() {
 
     expect(router.state.routes, const [rooms, StepRoute(3)]);
     expect(routerRedirects, 4);
+    await tester.pumpAndSettle();
+    expect(find.text('Step 3'), findsOneWidget);
   });
 
   testWidgets('a chain of redirectLimit redirects succeeds and one more '
@@ -75,6 +79,8 @@ void main() {
         [for (var number = 0; number <= 6; number++) StepRoute(number)],
       ),
     );
+    await tester.pump();
+    expect(find.text('Home'), findsOneWidget);
   });
 
   testWidgets('a redirect loop fails with the chain', (tester) async {
@@ -86,11 +92,15 @@ void main() {
     expect(router.state.routes, const [HomeRoute()]);
     expect(
       tester.takeException(),
-      isA<RedirectChainError>().having(
-        (error) => error.toString(),
-        'message',
-        contains('StepRoute(0) > StepRoute(1) > StepRoute(2) > StepRoute(0)'),
-      ),
+      // Stopped at the first repeat, not by the limit.
+      isA<RedirectChainError>()
+          .having((error) => error.chain, 'chain', const [
+            StepRoute(0),
+            StepRoute(1),
+            StepRoute(2),
+            StepRoute(0),
+          ])
+          .having((error) => '$error', 'message', contains('Redirects loop')),
     );
   });
 }

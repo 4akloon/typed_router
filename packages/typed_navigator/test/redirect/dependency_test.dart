@@ -1,5 +1,5 @@
 // A redirect gets the Router's context, and an inherited widget it depends on
-// re-runs it.
+// re-runs it: one it does not depend on re-runs nothing.
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,6 +17,43 @@ void main() {
 
     expect(watching.state.routes, const [BannedRoute()]);
     expect(reading.state.routes, const [rooms, room7]);
+  });
+
+  testWidgets("replacing the app's hero controller runs no redirects", (
+    tester,
+  ) async {
+    var calls = 0;
+    final router = TypedRouter(
+      routes: sessionRoutes(Session(isSignedIn: true), []),
+      initialRoute: room7,
+      pageFactory: const TestPageFactory(),
+      redirect: (context, target) {
+        calls++;
+        return null;
+      },
+    );
+    addTearDown(router.dispose);
+    final controllers = [HeroController(), HeroController()];
+    addTearDown(() {
+      for (final controller in controllers) {
+        controller.dispose();
+      }
+    });
+    Widget app(HeroController controller) => HeroControllerScope(
+      controller: controller,
+      child: WidgetsApp.router(
+        routerConfig: router,
+        color: const Color(0xFF000000),
+      ),
+    );
+    await tester.pumpWidget(app(controllers.first));
+    final callsWhenShown = calls;
+
+    await tester.pumpWidget(app(controllers.last));
+    await tester.pumpAndSettle();
+
+    expect(calls, callsWhenShown);
+    expect(find.text('Room 7'), findsOneWidget);
   });
 }
 

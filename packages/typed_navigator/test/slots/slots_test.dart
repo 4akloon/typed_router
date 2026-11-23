@@ -1,4 +1,5 @@
-// Routes shown in another navigator than the nearest one.
+// Routes shown in another navigator than the nearest one; their redirects
+// are in slot_redirects_test.dart.
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -38,6 +39,7 @@ void main() {
 
     expect(router.state.toString(), _onRoot);
     expect(_rootPages(router), 2);
+    expect(find.text('Create room'), findsOneWidget);
   });
 
   testWidgets('children of a placed route stay in its navigator', (
@@ -49,6 +51,7 @@ void main() {
 
     expect(router.state.toString(), '$_onRoot > EditNoteRoute()');
     expect(_rootPages(router), 3);
+    expect(find.text('Edit note'), findsOneWidget);
   });
 
   testWidgets('a route placed in a branch shows above the shell inside it', (
@@ -63,6 +66,7 @@ void main() {
       '{*RoomsBranch: [RoomsRoute() > [RoomRoute(RoomId(1))] > '
       'AccountRoute()]}',
     );
+    expect(find.text('Account'), findsOneWidget);
   });
 
   testWidgets('a route placed in an outer shell shows above the inner '
@@ -121,29 +125,5 @@ void main() {
     await tester.systemBack();
     expect(router.state.toString(), '{*RoomsBranch: [RoomsRoute()]}');
     expect(find.text('Rooms'), findsOneWidget);
-  });
-
-  testWidgets('tab redirects guard routes placed above the tabs', (
-    tester,
-  ) async {
-    final calls = <String>[];
-    var isBlocked = false;
-    final router = await pumpSlotsApp(
-      tester,
-      calls: calls,
-      isPlacedBlocked: () => isBlocked,
-    );
-    isBlocked = true;
-    calls.clear();
-
-    await settled(tester, () => router.push(const CreateRoomRoute()).ignore());
-    expect(calls.first, 'tabs: CreateRoomRoute()');
-    expect(router.state.top, isNot(isA<CreateRoomRoute>()));
-
-    calls.clear();
-    const profile = ProfileRoute('u1', 'games');
-    await settled(tester, () => router.push(profile).ignore());
-    expect(calls.first, 'tabs: ProfileRoute(u1, games)');
-    expect(router.state.top, isNot(profile));
   });
 }

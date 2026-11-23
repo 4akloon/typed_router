@@ -79,6 +79,7 @@ void main() {
       router.state.toString(),
       '[UsersRoute() > [UserRoute(u1) > [UserGamesRoute(u1)]]]',
     );
+    expect(find.text('Games'), findsOneWidget);
 
     await settled(tester, () => router.go(const EditNoteRoute()));
     expect(
@@ -86,12 +87,15 @@ void main() {
       '[UsersRoute() > [UserRoute(u1)] > RoomRoute(RoomId(1)) > '
       'EditNoteRoute()]',
     );
+    expect(find.text('Note'), findsOneWidget);
 
     await tester.systemBack();
     await tester.systemBack();
     expect(router.state.toString(), '[UsersRoute() > [UserRoute(u1)]]');
+    expect(find.text('User u1'), findsOneWidget);
     await tester.systemBack();
     expect(router.state.toString(), '[UsersRoute()]');
+    expect(find.text('Users'), findsOneWidget);
   });
 
   test('a child of a placed route asking for a deeper navigator fails when '

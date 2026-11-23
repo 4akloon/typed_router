@@ -44,6 +44,8 @@ void main() {
     await tester.predictiveBack();
 
     expect(router.state.toString(), 'AccountRoute()');
+    expect(find.text('Account'), findsOneWidget);
+    expect(find.text('Users'), findsNothing);
   }, variant: android);
 
   testWidgets('the iOS swipe in a pushed shell closes its top page', (
@@ -58,5 +60,7 @@ void main() {
     await tester.iosEdgeSwipe();
 
     expect(router.state.toString(), 'AccountRoute() > [UsersRoute()]');
+    expect(find.text('Users'), findsOneWidget);
+    expect(find.text('User u1'), findsNothing);
   }, variant: iOS);
 }

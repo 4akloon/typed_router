@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/page/level_pages.dart';
+import 'package:typed_navigator/src/page/navigator_hero_controller.dart';
 import 'package:typed_navigator/src/page/navigator_observers.dart';
-import 'package:typed_navigator/src/page/nested_hero_controller.dart';
 import 'package:typed_navigator/src/page/on_screen_level.dart';
 import 'package:typed_navigator/src/page/route_pages.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
@@ -87,13 +87,13 @@ class NavigatorBuild {
       // Heroes fly inside the navigator, as go_router's. Keyed by the level, so
       // the controller moves with the navigator when a frame moves it in the
       // tree, mid-flight too.
-      child: NestedHeroController(
+      child: NavigatorHeroController(
         key: GlobalObjectKey(level.navigatorKey),
         child: Navigator(
           key: level.navigatorKey,
           pages: pagesAt(entries, depth),
           onDidRemovePage: _onDidRemovePage,
-          observers: _observers.of(level),
+          observers: _observers.nested(),
         ),
       ),
     ),

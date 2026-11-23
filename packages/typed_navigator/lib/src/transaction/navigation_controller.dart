@@ -5,6 +5,8 @@ import 'package:typed_navigator/src/transaction/frame_phase.dart';
 import 'package:typed_navigator/src/transaction/left_entries.dart';
 import 'package:typed_navigator/src/transaction/navigation_step.dart';
 import 'package:typed_navigator/src/transaction/navigation_transaction.dart';
+import 'package:typed_navigator/src/transaction/notification_after_frame.dart';
+import 'package:typed_navigator/src/transaction/step_failure_report.dart';
 import 'package:typed_navigator/src/transaction/transaction_outcome.dart';
 
 /// The single owner of the committed [NavigationState].
@@ -18,19 +20,24 @@ class NavigationController extends ChangeNotifier {
     required NavigationState initialState,
     this._framePhase = const FramePhase.scheduler(),
     this._entryLifecycle = const EntryLifecycle.ignoring(),
-  }) : _state = initialState;
+  }) : _state = initialState,
+       _afterFrame = NotificationAfterFrame(_framePhase);
 
   final NavigationTransaction _transaction = NavigationTransaction();
   final LeftEntries _leftEntries = const LeftEntries();
+  final StepFailureReport _stepFailureReport = const StepFailureReport();
   final FramePhase _framePhase;
+  final NotificationAfterFrame _afterFrame;
   final EntryLifecycle _entryLifecycle;
   NavigationState _state;
   bool _isDisposed = false;
   bool _isChangingWhileBuilding = false;
-  bool _hasNotificationAfterFrame = false;
 
   /// The committed state.
   NavigationState get state => _state;
+
+  /// Whether [dispose] was called.
+  bool get isDisposed => _isDisposed;
 
   /// Runs [candidate] through the [steps] of this navigation and commits
   /// the result before returning.
@@ -60,7 +67,7 @@ class NavigationController extends ChangeNotifier {
     } catch (error, stackTrace) {
       // The one place that catches whatever a user step throws, reports it and
       // leaves the state unchanged.
-      _reportStepFailure(error, stackTrace, candidate);
+      _stepFailureReport.report(error, stackTrace, candidate);
       return TransactionFailed(error, stackTrace);
     }
     return _commit(next);
@@ -117,10 +124,7 @@ class NavigationController extends ChangeNotifier {
 
   void _notify() {
     if (!_isChangingWhileBuilding) return notifyListeners();
-    if (_hasNotificationAfterFrame) return;
-    _hasNotificationAfterFrame = true;
-    _framePhase.afterFrame(() {
-      _hasNotificationAfterFrame = false;
+    _afterFrame.schedule(() {
       if (!_isDisposed) notifyListeners();
     });
   }
@@ -129,20 +133,5 @@ class NavigationController extends ChangeNotifier {
     if (_isDisposed) {
       throw StateError('The navigation controller was used after dispose.');
     }
-  }
-
-  void _reportStepFailure(
-    Object error,
-    StackTrace stackTrace,
-    NavigationState candidate,
-  ) {
-    FlutterError.reportError(
-      FlutterErrorDetails(
-        exception: error,
-        stack: stackTrace,
-        library: 'typed_navigator',
-        context: ErrorDescription('while navigating to ${candidate.top}'),
-      ),
-    );
   }
 }

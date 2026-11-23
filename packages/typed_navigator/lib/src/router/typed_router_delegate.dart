@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/page/hero_flight_scope.dart';
+import 'package:typed_navigator/src/page/navigator_hero_controller.dart';
 import 'package:typed_navigator/src/page/navigator_pages.dart';
 import 'package:typed_navigator/src/redirect/redirect_scope.dart';
 import 'package:typed_navigator/src/redirect/router_mount.dart';
@@ -9,6 +10,7 @@ import 'package:typed_navigator/src/router/current_navigators.dart';
 import 'package:typed_navigator/src/router/navigation_state_scope.dart';
 import 'package:typed_navigator/src/router/typed_router.dart';
 import 'package:typed_navigator/src/router/typed_router_scope.dart';
+import 'package:typed_navigator/src/state/renewed_page.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 
 /// Shows the router's state in the root navigator and brings back the
@@ -35,6 +37,7 @@ class TypedRouterDelegate extends RouterDelegate<Object> {
   final List<NavigatorObserver> _observers;
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey();
   final CurrentNavigators _currentNavigators = const CurrentNavigators();
+  final RenewedPage _renewedPage = const RenewedPage();
 
   /// The root navigator, or `null` while it is not mounted.
   NavigatorState? get navigator => _navigatorKey.currentState;
@@ -47,19 +50,18 @@ class TypedRouterDelegate extends RouterDelegate<Object> {
       _controller.removeListener(listener);
 
   @override
-  Widget build(BuildContext context) => RedirectScope(
-    key: ObjectKey(_router),
-    mount: _mount,
-    recheckWhileBuilding: _recheck.recheckWhileBuilding,
-    // Reads the state on every build: a re-check while building shows in the
-    // same frame.
-    builder: (context) => TypedRouterScope(
-      router: _router,
-      child: HeroFlightScope(
-        // The app's controller stands above the root navigator, which hides it
-        // from the navigators inside.
-        createRectTween: HeroControllerScope.maybeOf(context)?.createRectTween,
-        child: NavigationStateScope(
+  Widget build(BuildContext context) => TypedRouterScope(
+    // Above the redirects' context: a redirect finds the router through it.
+    router: _router,
+    child: RedirectScope(
+      key: ObjectKey(_router),
+      mount: _mount,
+      recheckWhileBuilding: _recheck.recheckWhileBuilding,
+      // Reads the state on every build: a re-check while building shows in the
+      // same frame.
+      builder: (context) => _withHeroes(
+        context.getInheritedWidgetOfExactType<HeroControllerScope>(),
+        NavigationStateScope(
           state: _controller.state,
           child: Navigator(
             key: _navigatorKey,
@@ -75,20 +77,43 @@ class TypedRouterDelegate extends RouterDelegate<Object> {
     ),
   );
 
+  /// [navigator] with the app's hero controller, read once and without a
+  /// dependency: the flight path stays fixed, and replacing the controller must
+  /// not re-run the redirects. The app's controller stands above the root
+  /// navigator, which hides it from the navigators inside; without one, the
+  /// root navigator gets its own. `HeroControllerScope. none` is the app's
+  /// choice, and stays.
+  Widget _withHeroes(HeroControllerScope? appScope, Widget navigator) =>
+      HeroFlightScope(
+        createRectTween: appScope?.controller?.createRectTween,
+        child: appScope == null
+            ? NavigatorHeroController(child: navigator)
+            : navigator,
+      );
+
   /// A page some navigator popped by itself (back in an app bar, a swipe, a
   /// predictive back gesture, `Navigator.pop`):; in a shell's or a branch's
-  /// navigator. A page in a branch not on screen leaves its kept stack.
+  /// navigator. A page in a branch not on screen leaves its kept stack. A pop
+  /// that would leave nothing on screen brings the page back, made anew. After
+  /// dispose the router no longer answers for the screen.
   void _removePage(Page<Object?> page) {
+    if (_controller.isDisposed) return;
     final state = _controller.state;
     final removed = _pages.entriesOf(page, state);
     if (removed.isEmpty) return;
-    _controller.applyExternalChange(state.withoutEntries(removed));
+    _controller.applyExternalChange(
+      state.entries.every(removed.contains)
+          ? _renewedPage.renewing(state, page.key, removed)
+          : state.withoutEntries(removed),
+    );
   }
 
   /// The system back button: `maybePop` on the current navigators, the deepest
-  /// first, until one handles it. A dialog closes first and `PopScope` can
-  /// refuse, as with the native navigator; `false` lets the platform close the
-  /// app.
+  /// first, until one handles it, as go_router's `_findCurrentNavigators`. A
+  /// dialog closes first and `PopScope` can refuse, as with the native
+  /// navigator; a page inside a level closes without asking the level's frame
+  /// (its `PopScope`), and a drawer or a local history entry inside closes
+  /// first. `false` lets the platform close the app.
   @override
   Future<bool> popRoute() async {
     final root = navigator;

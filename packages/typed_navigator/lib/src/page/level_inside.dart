@@ -17,8 +17,8 @@ class LevelInside {
 
   /// Whether back inside is handled there, as Flutter's
   /// `NavigatorPopHandler` counts it: a navigator inside can pop, or the
-  /// route on top of one refuses (an app's `PopScope(canPop: false)`).
-  /// Reads routes: call it outside a build.
+  /// route on top of one refuses (an app's `PopScope(canPop: false)`), as
+  /// the navigators hold it now.
   bool canHandlePop() {
     final navigators = _currentNavigators.insideDeepestFirst(_level, _state);
     if (navigators.isEmpty) return false;

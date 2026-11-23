@@ -21,6 +21,8 @@ void main() {
 
     expect(router.state.routes, const [rooms, room8]);
     expect(log.created.where((text) => text == 'Rooms'), hasLength(1));
+    expect(find.text('Room 8'), findsOneWidget);
+    expect(find.text('Friends'), findsNothing);
   });
 
   testWidgets('go reuses the tabs wherever they stand on the active path', (
@@ -37,6 +39,8 @@ void main() {
       '{RoomsBranch: [RoomRoute(RoomId(7))] | '
       '*FriendsBranch: [FriendsRoute() > FriendRoute(bob)]}',
     );
+    expect(find.text('Friend bob'), findsOneWidget);
+    expect(find.text('Account', skipOffstage: false), findsNothing);
   });
 
   testWidgets('nested tabs keep their stacks when the outer tabs switch', (

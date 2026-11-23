@@ -6,6 +6,7 @@ import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
+import 'package:typed_navigator/src/transaction/navigation_step.dart';
 
 /// Carries out the router's stack operations: checks what must hold
 /// before, asks the planner for the candidate and hands it to the
@@ -13,7 +14,9 @@ import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 ///
 /// `go`, `push`, `replace` and `pushAndRemoveUntil` run the redirects of the
 /// route they go to; a redirect re-plans the same operation for its target.
-/// `pop` and `popUntil` run none.
+/// `pop` and `popUntil` run none. On the error screen every operation checks
+/// the whole stack it leads to, as `refresh` does: only a stack the redirects
+/// let through leaves it.
 class StackOperations {
   /// Creates operations that plan with [_planner], redirect with
   /// [_redirects] and commit through [_controller].
@@ -66,19 +69,17 @@ class StackOperations {
 
   /// See `TypedRouter.pop`.
   void pop(Object? result) {
-    if (!canPop) {
-      throw StateError(
-        'Nothing to pop: the stack has one entry. Check canPop or use go.',
-      );
-    }
+    if (!canPop) throw StateError(_nothingToPop);
     final top = _state.entries.last..checkResult(result);
     top.recordResult(result);
     _controller.navigate(_planner.withoutTop(_state));
   }
 
   /// See `TypedRouter.popUntil`.
-  void popUntil(RoutePredicate predicate) =>
-      _controller.navigate(_planner.poppedUntil(_state, predicate));
+  void popUntil(RoutePredicate predicate) => _controller.navigate(
+    _planner.poppedUntil(_state, predicate),
+    steps: _state.error == null ? const [] : _wholeStackSteps(),
+  );
 
   /// See `TypedRouter.replace`.
   Future<T?> replace<T>(TypedRoute<T> route) => _navigateWithNew(
@@ -130,6 +131,19 @@ class StackOperations {
     NavigationState Function(TypedRoute<Object?> redirected) replan,
   ) => _controller.navigate(
     candidate,
-    steps: _redirects.stepsFor(replan, const NewRouteCheck()),
+    steps: _state.error == null
+        ? _redirects.stepsFor(replan, const NewRouteCheck())
+        : _wholeStackSteps(),
   );
+
+  /// The redirects over the whole candidate, as on `refresh`.
+  List<NavigationStep> _wholeStackSteps() => _redirects.stepsFor(
+    (redirected) => _planner.goTo(_state, redirected),
+    const WholeStackCheck(),
+  );
+
+  String get _nothingToPop => _state.error == null
+      ? 'Nothing to pop: the stack has one entry. Check canPop or use go.'
+      : 'Nothing to pop: the error screen is shown because the redirects '
+            'failed. Use go, or refresh once they pass.';
 }

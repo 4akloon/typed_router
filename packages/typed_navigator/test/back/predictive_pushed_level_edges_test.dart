@@ -33,6 +33,8 @@ void main() {
 
     expect(sheet.completions, [null]);
     expect(router.state.toString(), 'AccountRoute() > [UsersRoute()]');
+    expect(find.text('Sheet'), findsNothing);
+    expect(find.text('Users'), findsOneWidget);
   }, variant: android);
 
   testWidgets('predictive back closes pushed tabs whose shown branch '
@@ -55,6 +57,8 @@ void main() {
     await tester.predictiveBack();
 
     expect(router.state.toString(), 'AccountRoute()');
+    expect(find.text('Account'), findsOneWidget);
+    expect(find.text('Friends'), findsNothing);
   }, variant: android);
 
   testWidgets('maybePop from the frame of a pushed shell closes its top '
@@ -69,5 +73,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(router.state.toString(), 'AccountRoute() > [UsersRoute()]');
+    expect(find.text('Users'), findsOneWidget);
+    expect(find.text('User u1'), findsNothing);
   });
 }

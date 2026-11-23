@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:typed_navigator/typed_navigator.dart';
-import 'package:typed_navigator_example/catalogue/framed_scenario.dart';
-import 'package:typed_navigator_example/catalogue/scenario.dart';
+import 'package:typed_router/typed_router.dart';
+import 'package:typed_router_example/catalogue/framed_scenario.dart';
+import 'package:typed_router_example/catalogue/scenario.dart';
 
 /// What the catalogue gives a running demo: its scenario and the way back
 /// to the catalogue.

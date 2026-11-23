@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:typed_navigator/typed_navigator.dart';
-import 'package:typed_navigator_example/support/demo_button.dart';
-import 'package:typed_navigator_example/support/demo_page.dart';
+import 'package:typed_router/typed_router.dart';
+import 'package:typed_router_example/support/demo_button.dart';
+import 'package:typed_router_example/support/demo_page.dart';
 
 /// The rooms of the navigator slots scenario: rooms open in a room shell,
 /// creating a room goes to the root navigator, members to [roomsSlot].

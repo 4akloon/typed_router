@@ -38,13 +38,13 @@ jobs:
         if: matrix.flutter == '3.50.1'
         run: dart analyze --fatal-infos
 
-      - name: Test typed_navigator
+      - name: Test typed_router
         run: flutter test
-        working-directory: packages/typed_navigator
+        working-directory: packages/typed_router
 
-      - name: Test typed_navigator_test
+      - name: Test typed_router_test
         run: flutter test
-        working-directory: packages/typed_navigator_test
+        working-directory: packages/typed_router_test
 
       - name: Test example
         run: flutter test
@@ -65,10 +65,10 @@ jobs:
       - name: Install dependencies (workspace)
         run: flutter pub get
 
-      - name: Dry-run typed_navigator_test
+      - name: Dry-run typed_router_test
         run: flutter pub publish --dry-run
-        working-directory: packages/typed_navigator_test
+        working-directory: packages/typed_router_test
 
-      - name: Dry-run typed_navigator
+      - name: Dry-run typed_router
         run: flutter pub publish --dry-run
-        working-directory: packages/typed_navigator
+        working-directory: packages/typed_router

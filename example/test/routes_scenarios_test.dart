@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:typed_navigator/typed_navigator.dart';
-import 'package:typed_navigator_example/scenarios/back_button_scenario.dart';
-import 'package:typed_navigator_example/scenarios/exit_confirmation_scenario.dart';
-import 'package:typed_navigator_example/scenarios/observers_scenario.dart';
-import 'package:typed_navigator_example/scenarios/redirect_error_scenario.dart';
-import 'package:typed_navigator_example/scenarios/sign_in_guard_scenario.dart';
-import 'package:typed_navigator_example/scenarios/typed_results_scenario.dart';
-import 'package:typed_navigator_example/scenarios/typed_routes_scenario.dart';
+import 'package:typed_router/typed_router.dart';
+import 'package:typed_router_example/scenarios/back_button_scenario.dart';
+import 'package:typed_router_example/scenarios/exit_confirmation_scenario.dart';
+import 'package:typed_router_example/scenarios/observers_scenario.dart';
+import 'package:typed_router_example/scenarios/redirect_error_scenario.dart';
+import 'package:typed_router_example/scenarios/sign_in_guard_scenario.dart';
+import 'package:typed_router_example/scenarios/typed_results_scenario.dart';
+import 'package:typed_router_example/scenarios/typed_routes_scenario.dart';
 
 import 'support/catalogue_driver.dart';
 
@@ -53,7 +53,7 @@ void main() {
     await tapLabel(tester, 'Close demo');
 
     expect(tester.takeException(), isNull);
-    expect(find.text('typed_navigator scenarios'), findsOneWidget);
+    expect(find.text('typed_router scenarios'), findsOneWidget);
   });
 
   testWidgets('system back on the first page reports that nothing popped', (

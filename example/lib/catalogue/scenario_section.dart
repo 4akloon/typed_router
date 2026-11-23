@@ -1,4 +1,4 @@
-import 'package:typed_navigator_example/catalogue/scenario.dart';
+import 'package:typed_router_example/catalogue/scenario.dart';
 
 /// A heading of the catalogue and the scenarios under it.
 ///

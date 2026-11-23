@@ -1,6 +1,6 @@
-# typed_navigator example
+# typed_router example
 
-A catalogue of small apps, one per way to navigate with `typed_navigator`.
+A catalogue of small apps, one per way to navigate with `typed_router`.
 Open an entry, follow the tips at the bottom of the screen, and watch the
 router's `State:` line change.
 

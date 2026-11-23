@@ -1,0 +1,119 @@
+import 'package:flutter/widgets.dart';
+import 'package:typed_router/src/operation/branch_switch.dart';
+import 'package:typed_router/src/operation/entry_chain.dart';
+import 'package:typed_router/src/operation/go_plan.dart';
+import 'package:typed_router/src/operation/in_place_update.dart';
+import 'package:typed_router/src/operation/navigation_planner.dart';
+import 'package:typed_router/src/operation/shell_path.dart';
+import 'package:typed_router/src/operation/stack_operations.dart';
+import 'package:typed_router/src/page/level_pages.dart';
+import 'package:typed_router/src/page/navigator_observers.dart';
+import 'package:typed_router/src/page/navigator_pages.dart';
+import 'package:typed_router/src/page/page_factory.dart';
+import 'package:typed_router/src/page/route_pages.dart';
+import 'package:typed_router/src/redirect/redirect_resolver.dart';
+import 'package:typed_router/src/redirect/redirects.dart';
+import 'package:typed_router/src/redirect/router_mount.dart';
+import 'package:typed_router/src/redirect/stack_recheck.dart';
+import 'package:typed_router/src/result/result_completion.dart';
+import 'package:typed_router/src/route/typed_route.dart';
+import 'package:typed_router/src/router/current_navigators.dart';
+import 'package:typed_router/src/tabs/tabs_switching.dart';
+import 'package:typed_router/src/transaction/entry_lifecycles.dart';
+import 'package:typed_router/src/transaction/navigation_controller.dart';
+import 'package:typed_router/src/transaction/retired_navigators.dart';
+import 'package:typed_router/src/tree/no_parent_route.dart';
+import 'package:typed_router/src/tree/route_tree.dart';
+import 'package:typed_router/src/tree/tree_node.dart';
+
+/// The collaborators of one `TypedRouter`, wired from its constructor's
+/// arguments, so the router itself only delegates.
+///
+/// Validates while wiring: the tree, the initial route and the redirect limit
+/// throw [ArgumentError] here.
+class RouterParts {
+  /// Wires the collaborators of a router; see `TypedRouter.new` for the
+  /// arguments.
+  factory RouterParts({
+    required List<TreeNode<NoParentRoute>> routes,
+    required TypedRoute<Object?> initialRoute,
+    required PageFactory pageFactory,
+    required RouterRedirect? redirect,
+    required int redirectLimit,
+    required Widget Function(BuildContext context, Object error)? errorBuilder,
+    required List<NavigatorObserver> observers,
+  }) {
+    final navigatorObservers = NavigatorObservers(observers);
+    final tree = RouteTree(routes);
+    final mount = RouterMount();
+    final redirects = Redirects(
+      resolver: RedirectResolver(tree: tree, routerRedirect: redirect),
+      mount: mount,
+      redirectLimit: redirectLimit,
+    );
+    final entryChain = EntryChain(ShellPath(tree));
+    final goPlan = GoPlan(tree, entryChain);
+    final routePages = RoutePages(tree: tree, pageFactory: pageFactory);
+    final planner = NavigationPlanner(
+      tree,
+      entryChain,
+      goPlan,
+      BranchSwitch(tree, entryChain, goPlan),
+      InPlaceUpdate(routePages),
+    );
+    final controller = NavigationController(
+      initialState: planner.startingAt(initialRoute),
+      entryLifecycle: const EntryLifecycles([
+        ResultCompletion(),
+        RetiredNavigators(),
+      ]),
+    );
+    final operations = StackOperations(controller, planner, redirects);
+    return RouterParts._(
+      controller: controller,
+      operations: operations,
+      recheck: StackRecheck(controller, planner, redirects),
+      pages: NavigatorPages(
+        routePages: routePages,
+        levelPages: LevelPages(
+          routePages: routePages,
+          pageFactory: pageFactory,
+          switchingFor: (tabs) => TabsSwitching(operations, tabs),
+          currentNavigators: const CurrentNavigators(),
+        ),
+        pageFactory: pageFactory,
+        observers: navigatorObservers,
+        errorBuilder: errorBuilder,
+      ),
+      mount: mount,
+      observers: navigatorObservers,
+    );
+  }
+
+  RouterParts._({
+    required this.controller,
+    required this.operations,
+    required this.recheck,
+    required this.pages,
+    required this.mount,
+    required this.observers,
+  });
+
+  /// The observers of the root navigator and of the nested ones.
+  final NavigatorObservers observers;
+
+  /// Owns the state.
+  final NavigationController controller;
+
+  /// Carries out `go`, `push`, `pop` and the rest.
+  final StackOperations operations;
+
+  /// Runs the redirects over the whole stack.
+  final StackRecheck recheck;
+
+  /// Turns the state into the navigator's pages.
+  final NavigatorPages pages;
+
+  /// Whether the router is shown.
+  final RouterMount mount;
+}

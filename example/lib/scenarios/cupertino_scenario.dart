@@ -1,8 +1,8 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:typed_navigator/typed_navigator.dart';
-import 'package:typed_navigator_example/catalogue/scenario.dart';
-import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
-import 'package:typed_navigator_example/support/cupertino_page_factory.dart';
+import 'package:typed_router/typed_router.dart';
+import 'package:typed_router_example/catalogue/scenario.dart';
+import 'package:typed_router_example/catalogue/scenario_frame.dart';
+import 'package:typed_router_example/support/cupertino_page_factory.dart';
 
 const cupertinoScenario = Scenario(
   title: 'Cupertino app',

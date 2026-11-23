@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:typed_navigator/typed_navigator.dart';
+import 'package:typed_router/typed_router.dart';
 
 /// The tabs' bar: tapping the active tab resets it to its initial route.
 class TabsNavigationBar extends StatelessWidget {

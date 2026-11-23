@@ -1,20 +1,20 @@
-import 'package:typed_navigator_example/catalogue/scenario_section.dart';
-import 'package:typed_navigator_example/scenarios/back_button_scenario.dart';
-import 'package:typed_navigator_example/scenarios/cupertino_scenario.dart';
-import 'package:typed_navigator_example/scenarios/exit_confirmation_scenario.dart';
-import 'package:typed_navigator_example/scenarios/initial_route_scenario.dart';
-import 'package:typed_navigator_example/scenarios/navigator_slots_scenario.dart';
-import 'package:typed_navigator_example/scenarios/observers_scenario.dart';
-import 'package:typed_navigator_example/scenarios/page_factories_scenario.dart';
-import 'package:typed_navigator_example/scenarios/predictive_back_scenario.dart';
-import 'package:typed_navigator_example/scenarios/redirect_error_scenario.dart';
-import 'package:typed_navigator_example/scenarios/shell_scenario.dart';
-import 'package:typed_navigator_example/scenarios/sign_in_guard_scenario.dart';
-import 'package:typed_navigator_example/scenarios/stack_operations_scenario.dart';
-import 'package:typed_navigator_example/scenarios/tabs_page_view_scenario.dart';
-import 'package:typed_navigator_example/scenarios/tabs_scenario.dart';
-import 'package:typed_navigator_example/scenarios/typed_results_scenario.dart';
-import 'package:typed_navigator_example/scenarios/typed_routes_scenario.dart';
+import 'package:typed_router_example/catalogue/scenario_section.dart';
+import 'package:typed_router_example/scenarios/back_button_scenario.dart';
+import 'package:typed_router_example/scenarios/cupertino_scenario.dart';
+import 'package:typed_router_example/scenarios/exit_confirmation_scenario.dart';
+import 'package:typed_router_example/scenarios/initial_route_scenario.dart';
+import 'package:typed_router_example/scenarios/navigator_slots_scenario.dart';
+import 'package:typed_router_example/scenarios/observers_scenario.dart';
+import 'package:typed_router_example/scenarios/page_factories_scenario.dart';
+import 'package:typed_router_example/scenarios/predictive_back_scenario.dart';
+import 'package:typed_router_example/scenarios/redirect_error_scenario.dart';
+import 'package:typed_router_example/scenarios/shell_scenario.dart';
+import 'package:typed_router_example/scenarios/sign_in_guard_scenario.dart';
+import 'package:typed_router_example/scenarios/stack_operations_scenario.dart';
+import 'package:typed_router_example/scenarios/tabs_page_view_scenario.dart';
+import 'package:typed_router_example/scenarios/tabs_scenario.dart';
+import 'package:typed_router_example/scenarios/typed_results_scenario.dart';
+import 'package:typed_router_example/scenarios/typed_routes_scenario.dart';
 
 /// Every scenario of the example, by the version that built it.
 const List<ScenarioSection> catalogue = [

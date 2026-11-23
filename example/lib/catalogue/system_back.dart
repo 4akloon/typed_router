@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:typed_navigator/typed_navigator.dart';
+import 'package:typed_router/typed_router.dart';
 
 /// The platform's back button, sent from a button of the demo so it can be
 /// tried on desktop and the web, where there is none.

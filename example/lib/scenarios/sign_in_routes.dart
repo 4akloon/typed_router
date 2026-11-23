@@ -1,7 +1,7 @@
-import 'package:typed_navigator/typed_navigator.dart';
-import 'package:typed_navigator_example/scenarios/sign_in_session.dart';
-import 'package:typed_navigator_example/support/demo_button.dart';
-import 'package:typed_navigator_example/support/demo_page.dart';
+import 'package:typed_router/typed_router.dart';
+import 'package:typed_router_example/scenarios/sign_in_session.dart';
+import 'package:typed_router_example/support/demo_button.dart';
+import 'package:typed_router_example/support/demo_page.dart';
 
 /// Routes only a signed-in user may see: a marker the redirect asks about
 /// with `state.contains<AuthArea>()`.

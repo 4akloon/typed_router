@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:typed_navigator_example/catalogue/catalogue.dart';
-import 'package:typed_navigator_example/example_app.dart';
+import 'package:typed_router_example/catalogue/catalogue.dart';
+import 'package:typed_router_example/example_app.dart';
 
 import 'support/catalogue_driver.dart';
 
@@ -21,7 +21,7 @@ void main() {
         await tester.tap(find.text('Close demo'));
         await tester.pumpAndSettle();
 
-        expect(find.text('typed_navigator scenarios'), findsOneWidget);
+        expect(find.text('typed_router scenarios'), findsOneWidget);
       });
     }
   }

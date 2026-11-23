@@ -1,6 +1,6 @@
-name: typed_navigator_example
+name: typed_router_example
 description: >-
-  A catalogue of typed_navigator scenarios to try every navigation approach
+  A catalogue of typed_router scenarios to try every navigation approach
   by hand.
 publish_to: none
 resolution: workspace
@@ -15,7 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   material_ui: ^1.0.1
-  typed_navigator: ^0.8.0
+  typed_router: ^0.8.0
 
 dev_dependencies:
   flutter_lints: ^6.0.0

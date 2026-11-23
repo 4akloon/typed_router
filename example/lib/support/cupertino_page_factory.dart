@@ -1,8 +1,8 @@
-// The Cupertino factory recipe from typed_navigator's README, with ==, hashCode
+// The Cupertino factory recipe from typed_router's README, with ==, hashCode
 // and toString: the app's own code.
 
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:typed_navigator/typed_navigator.dart';
+import 'package:typed_router/typed_router.dart';
 
 /// Creates a [CupertinoPage] for every screen: iOS transitions and the swipe
 /// back from the edge.

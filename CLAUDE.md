@@ -5,7 +5,7 @@ with more detail, is [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## What this is
 
-`typed_navigator`: a Flutter navigation library on Navigator 2.0 with
+`typed_router`: a Flutter navigation library on Navigator 2.0 with
 go_router's model (a declarative route tree, redirects, shells, stateful
 tabs) where **a route is a typed Dart value**, identified by its type and
 fields, not by a URL path.
@@ -15,12 +15,12 @@ fields, not by a URL path.
 A pub workspace; `pubspec.yaml` at the root lists the members, and
 `analysis_options.yaml` is shared.
 
-- `packages/typed_navigator`: the library. One entry point
-  (`lib/typed_navigator.dart`, explicit `show` lists), the rest in
+- `packages/typed_router`: the library. One entry point
+  (`lib/typed_router.dart`, explicit `show` lists), the rest in
   `lib/src/`. Depends on `flutter` and `meta` only; its tests use
   `material_ui` / `cupertino_ui` and their own page factories
   (`test/support/`). User guides in `doc/`.
-- `packages/typed_navigator_test`: widget test utilities (platform back)
+- `packages/typed_router_test`: widget test utilities (platform back)
   on `flutter_test`; independent of the core.
 - `example`: the scenario catalogue; its page factories are the README
   recipes.
@@ -36,9 +36,9 @@ at the root; tests run inside a member.
 fvm flutter pub get
 fvm dart analyze
 fvm dart format .
-(cd packages/typed_navigator && fvm flutter test)
-(cd packages/typed_navigator && fvm flutter test test/path/to/some_test.dart)
-(cd packages/typed_navigator_test && fvm flutter test)
+(cd packages/typed_router && fvm flutter test)
+(cd packages/typed_router && fvm flutter test test/path/to/some_test.dart)
+(cd packages/typed_router_test && fvm flutter test)
 (cd example && fvm flutter test)
 ```
 
@@ -51,7 +51,7 @@ Analyze and every member's tests are clean before a commit.
   silently breaks (a lost result, an empty navigator), and document it.
 - **Test first, through the public API**: widget tests pump a real
   `MaterialApp.router` and assert on `router.state` and on screen.
-  Platform back is tested with `typed_navigator_test`
+  Platform back is tested with `typed_router_test`
   (`tester.systemBack()`, `startPredictiveBack()`, `iosEdgeSwipe()`) and
   `TargetPlatformVariant`. No wall-clock waits.
 - **Names in full**: no abbreviations, closure parameters included.

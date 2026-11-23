@@ -1,14 +1,14 @@
 # The workspace: one `pub get` here resolves every package. Not a package of
 # its own.
-name: typed_navigator_workspace
+name: typed_router_workspace
 publish_to: none
 
 environment:
   sdk: ">=3.12.0 <4.0.0"
 
 workspace:
-  - packages/typed_navigator
-  - packages/typed_navigator_test
+  - packages/typed_router
+  - packages/typed_router_test
   - example
 
 dev_dependencies:

@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:typed_navigator/typed_navigator.dart';
-import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
+import 'package:typed_router/typed_router.dart';
+import 'package:typed_router_example/catalogue/scenario_frame.dart';
 
 /// A Material demo app over the router [createRouter] makes: created when
 /// the demo opens, disposed when it closes, as an app keeps its router.

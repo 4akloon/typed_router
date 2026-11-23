@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:typed_navigator/typed_navigator.dart';
-import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
-import 'package:typed_navigator_example/catalogue/system_back.dart';
+import 'package:typed_router/typed_router.dart';
+import 'package:typed_router_example/catalogue/scenario_frame.dart';
+import 'package:typed_router_example/catalogue/system_back.dart';
 
 /// The bottom panel of a running demo: what to try, the router's state as
 /// it changes, a system back button for desktop and web, and the way back

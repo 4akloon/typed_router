@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:typed_navigator_example/catalogue/catalogue.dart';
-import 'package:typed_navigator_example/catalogue/catalogue_page.dart';
-import 'package:typed_navigator_example/catalogue/scenario.dart';
-import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
+import 'package:typed_router_example/catalogue/catalogue.dart';
+import 'package:typed_router_example/catalogue/catalogue_page.dart';
+import 'package:typed_router_example/catalogue/scenario.dart';
+import 'package:typed_router_example/catalogue/scenario_frame.dart';
 
 /// The example: the catalogue of scenarios, or the one scenario opened.
 ///
@@ -31,7 +31,7 @@ class _ExampleAppState extends State<ExampleApp> {
       child: scenario.build(ScenarioFrame(scenario: scenario, onClose: _close)),
     ),
     null => MaterialApp(
-      title: 'typed_navigator',
+      title: 'typed_router',
       debugShowCheckedModeBanner: false,
       home: CataloguePage(sections: catalogue, onOpen: _open),
     ),

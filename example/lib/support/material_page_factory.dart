@@ -1,8 +1,8 @@
-// The Material factory recipe from typed_navigator's README, with ==, hashCode
+// The Material factory recipe from typed_router's README, with ==, hashCode
 // and toString: the app's own code.
 
 import 'package:material_ui/material_ui.dart';
-import 'package:typed_navigator/typed_navigator.dart';
+import 'package:typed_router/typed_router.dart';
 
 /// Creates a [MaterialPage] for every screen: the platform's Material
 /// transitions, the iOS swipe back and Android predictive back where the

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:typed_navigator_example/catalogue/scenario.dart';
-import 'package:typed_navigator_example/example_app.dart';
+import 'package:typed_router_example/catalogue/scenario.dart';
+import 'package:typed_router_example/example_app.dart';
 
 /// Scrolls the catalogue to [scenario] and opens it.
 Future<void> openScenario(WidgetTester tester, Scenario scenario) async {

@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
+import 'package:typed_router_example/catalogue/scenario_frame.dart';
 
 /// One entry of the catalogue: a small app showing one way to navigate.
 ///

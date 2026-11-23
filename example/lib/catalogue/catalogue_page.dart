@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:typed_navigator_example/catalogue/scenario.dart';
-import 'package:typed_navigator_example/catalogue/scenario_section.dart';
+import 'package:typed_router_example/catalogue/scenario.dart';
+import 'package:typed_router_example/catalogue/scenario_section.dart';
 
 /// The home screen: every scenario, grouped by the version that built it.
 class CataloguePage extends StatelessWidget {
@@ -16,7 +16,7 @@ class CataloguePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('typed_navigator scenarios')),
+    appBar: AppBar(title: const Text('typed_router scenarios')),
     body: ListView(
       children: [
         for (final section in sections) ...[

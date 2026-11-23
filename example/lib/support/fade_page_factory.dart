@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:typed_navigator/typed_navigator.dart';
+import 'package:typed_router/typed_router.dart';
 
 /// A page factory of the app's own: screens fade in instead of sliding.
 class FadePageFactory implements PageFactory {

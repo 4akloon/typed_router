@@ -1,6 +1,6 @@
 {
-    "name": "typed_navigator_example",
-    "short_name": "typed_navigator_example",
+    "name": "typed_router_example",
+    "short_name": "typed_router_example",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

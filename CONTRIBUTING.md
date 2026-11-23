@@ -1,6 +1,6 @@
-# Contributing to typed_navigator
+# Contributing to typed_router
 
-Thanks for helping build typed_navigator! This guide is about developing
+Thanks for helping build typed_router! This guide is about developing
 the project itself: setup, commands, the architecture and the conventions.
 The package READMEs and `doc/` guides stay user-facing.
 [CLAUDE.md](CLAUDE.md) is the short version of this file for AI coding
@@ -33,8 +33,8 @@ The repository is a pub workspace: one `pub get` at the root resolves
 every member against a single lockfile.
 
 ```sh
-git clone https://github.com/4akloon/typed_navigator.git
-cd typed_navigator
+git clone https://github.com/4akloon/typed_router.git
+cd typed_router
 fvm install
 fvm flutter pub get
 ```
@@ -43,9 +43,9 @@ fvm flutter pub get
 
 | Path | What it is |
 |---|---|
-| `packages/typed_navigator` | The library. One entry point, `lib/typed_navigator.dart`; everything else in `lib/src/`. Depends on `flutter` and `meta` only. |
-| `packages/typed_navigator/doc` | The user guides (also dartdoc categories). |
-| `packages/typed_navigator_test` | Widget test utilities for apps: platform back. Depends on `flutter_test`, not on the core: it sends what the platform sends. |
+| `packages/typed_router` | The library. One entry point, `lib/typed_router.dart`; everything else in `lib/src/`. Depends on `flutter` and `meta` only. |
+| `packages/typed_router/doc` | The user guides (also dartdoc categories). |
+| `packages/typed_router_test` | Widget test utilities for apps: platform back. Depends on `flutter_test`, not on the core: it sends what the platform sends. |
 | `example` | A catalogue of scenarios to try by hand; its page factories are the README recipes. |
 
 `analysis_options.yaml` at the root applies to every member.
@@ -57,9 +57,9 @@ fvm flutter pub get                      # resolve the workspace
 fvm dart analyze                         # analyze every member
 fvm dart format .                        # format (line length 80)
 
-(cd packages/typed_navigator && fvm flutter test)
-(cd packages/typed_navigator && fvm flutter test test/operations/go_test.dart)
-(cd packages/typed_navigator_test && fvm flutter test)
+(cd packages/typed_router && fvm flutter test)
+(cd packages/typed_router && fvm flutter test test/operations/go_test.dart)
+(cd packages/typed_router_test && fvm flutter test)
 (cd example && fvm flutter test)
 
 (cd example && fvm flutter run -d macos)  # the scenario catalogue
@@ -107,7 +107,7 @@ rebuilds the navigators from the state.
   when the router is built, with an `ArgumentError` naming the node.
   Broken internal invariants are `StateError`. Errors of app callbacks are
   reported through `FlutterError.reportError` with
-  `library: 'typed_navigator'`, and the navigation fails safely.
+  `library: 'typed_router'`, and the navigation fails safely.
 - **No `print`** or logging in `lib/`.
 - **Public API:** one entry point per package with explicit `show` lists;
   dartdoc on every public member; the core imports
@@ -129,7 +129,7 @@ rebuilds the navigators from the state.
 - **Assert on state and on screen.** `router.state` and what is visible.
 - **Platform behaviour is tested, not assumed:** the back button,
   predictive back, the iOS swipe, with `TargetPlatformVariant` and the
-  utilities of `typed_navigator_test`.
+  utilities of `typed_router_test`.
 - **No wall-clock waits:** `pump`, `pumpAndSettle`, completers.
 - Test names are sentences about behaviour:
   `'go builds the ancestors of a nested route'`.
@@ -156,5 +156,5 @@ each case.
 Each package is versioned and released on its own. Bump the version in
 its `pubspec.yaml`, move the CHANGELOG's `Unreleased` entries under the
 new version, and push a tag `<package>-v<version>`
-(`typed_navigator-v0.8.0`); the Publish workflow publishes that package
+(`typed_router-v0.8.0`); the Publish workflow publishes that package
 to pub.dev.

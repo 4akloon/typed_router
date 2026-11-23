@@ -1,22 +1,22 @@
 # Publishes one package to pub.dev when its release tag is pushed.
 #
-# Tag convention: <package>-v<version> (`typed_navigator-v0.8.0`,
-# `typed_navigator_test-v0.8.0`): only the tagged package is published.
+# Tag convention: <package>-v<version> (`typed_router-v0.8.0`,
+# `typed_router_test-v0.8.0`): only the tagged package is published.
 #
 # Auth is pub.dev's GitHub Actions OIDC flow (no secrets). Each package must
 # have automated publishing enabled on pub.dev (Admin → Automated
-# publishing): repository `4akloon/typed_navigator`, tag pattern
+# publishing): repository `4akloon/typed_router`, tag pattern
 # `<package>-v{{version}}`, and the `pub.dev` GitHub environment required.
 # pub.dev allows this only for existing packages: the first version of each
-# package is published by hand (`flutter pub publish`), typed_navigator_test
-# first, since typed_navigator's tests depend on it.
+# package is published by hand (`flutter pub publish`), typed_router_test
+# first, since typed_router's tests depend on it.
 name: Publish
 
 on:
   push:
     tags:
-      - 'typed_navigator-v*'
-      - 'typed_navigator_test-v*'
+      - 'typed_router-v*'
+      - 'typed_router_test-v*'
 
 jobs:
   publish:

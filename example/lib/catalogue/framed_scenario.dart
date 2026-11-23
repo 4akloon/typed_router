@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:typed_navigator/typed_navigator.dart';
-import 'package:typed_navigator_example/catalogue/instructions_panel.dart';
-import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
+import 'package:typed_router/typed_router.dart';
+import 'package:typed_router_example/catalogue/instructions_panel.dart';
+import 'package:typed_router_example/catalogue/scenario_frame.dart';
 
 /// A running demo above its instructions panel.
 class FramedScenario extends StatelessWidget {

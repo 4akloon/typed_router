@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  analyze-test:
+    name: Analyze & test (Flutter ${{ matrix.flutter }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The version pinned in .fvmrc, and the minimum the packages support.
+        flutter: ['3.50.1', '3.44.x']
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ matrix.flutter }}
+          cache: true
+
+      - name: Install dependencies (workspace)
+        run: flutter pub get
+
+      # Formatting and lints follow the pinned SDK; older SDKs may format
+      # differently.
+      - name: Verify formatting
+        if: matrix.flutter == '3.50.1'
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        if: matrix.flutter == '3.50.1'
+        run: dart analyze --fatal-infos
+
+      - name: Test typed_navigator
+        run: flutter test
+        working-directory: packages/typed_navigator
+
+      - name: Test typed_navigator_test
+        run: flutter test
+        working-directory: packages/typed_navigator_test
+
+      - name: Test example
+        run: flutter test
+        working-directory: example
+
+  publish-dry-run:
+    name: Publish dry-run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.50.1'
+          cache: true
+
+      - name: Install dependencies (workspace)
+        run: flutter pub get
+
+      - name: Dry-run typed_navigator_test
+        run: flutter pub publish --dry-run
+        working-directory: packages/typed_navigator_test
+
+      - name: Dry-run typed_navigator
+        run: flutter pub publish --dry-run
+        working-directory: packages/typed_navigator

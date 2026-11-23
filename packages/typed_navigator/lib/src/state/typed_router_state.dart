@@ -21,6 +21,8 @@ import 'package:typed_navigator/src/state/stack_description.dart';
 /// if (state.contains<AuthArea>() && !session.isSignedIn) { ... }
 /// final RoomRoute? room = state.find<RoomRoute>();
 /// ```
+///
+/// {@category navigation}
 class TypedRouterState {
   /// Creates a state from the entries on the active path, bottom to top.
   ///

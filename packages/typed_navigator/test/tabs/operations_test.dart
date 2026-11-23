@@ -49,7 +49,7 @@ void main() {
     expect(find.text('Tab 0'), findsOneWidget);
     expect(find.byType(StatefulShell), findsOneWidget);
 
-    await settled(tester, router.pop);
+    await settled(tester, router.pop<Object?>);
     expect(find.text('Room 7'), findsOneWidget);
   });
 

@@ -8,8 +8,9 @@ import 'package:typed_navigator/src/tree/slot_placement.dart';
 import 'package:typed_navigator/src/tree/tabs_validation.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
 
-// Messages name route types; type names are readable in debug builds, where
-// these errors are met.
+// A node without a name is named by its route type (a branch by its type)
+// in these messages; type names are readable in debug builds, where these
+// errors are met.
 // ignore_for_file: avoid_type_to_string
 
 /// Walks the nodes of a tree and registers a placement for every route

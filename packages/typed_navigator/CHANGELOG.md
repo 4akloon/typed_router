@@ -1,11 +1,17 @@
 # Changelog
 
-## Unreleased
+## 0.8.0 - 2026-11-23
 
-- **Breaking:** `TypedRouterState` is renamed `TypedRouterState`, after
+- Documentation: guides for every part of the router (getting started,
+  routes and the tree, navigation, redirects, shells and tabs, back and
+  gestures, page factories, observers, testing), recipes, and a migration
+  guide from go_router. A dialog or `Navigator.pop` right after an
+  operation reaches the old page; the recipe is in the navigation guide.
+
+- **Breaking:** `NavigationState` is renamed `TypedRouterState`, after
   go_router's `GoRouterState`, as `TypedRouter` follows `GoRouter`.
   **Migration:** rename the type; `TypedRouterState.of(context)` replaces
-  `TypedRouterState.of(context)`, and `router.state` is a
+  `NavigationState.of(context)`, and `router.state` is a
   `TypedRouterState`.
 
 - Operations as in `Navigator` and go_router:
@@ -107,9 +113,9 @@
 
 ## 0.3.10 - 2026-11-20
 
-- `TypedRouterState.of(context)` reads the router's state and rebuilds the
+- `NavigationState.of(context)` reads the router's state and rebuilds the
   screen on every navigation, as `GoRouterState.of`.
-- `TypedRouterState.routeAfter(route)` answers the route right above
+- `NavigationState.routeAfter(route)` answers the route right above
   `route`'s entry nearest to the top: the item a list opened, which the
   list highlights while a back gesture reveals it.
 - Fix: a predictive back gesture over a shell or tabs pushed above another
@@ -191,7 +197,7 @@
   navigator)`, optional `pageFactory` and `redirect`. `go` keeps the shell
   while the navigation stays in it; `push` goes into the shell on screen or
   starts a new one; the back button pops the deepest current navigator
-  first. `TypedRouterState.toString` marks shell navigators with brackets.
+  first. `NavigationState.toString` marks shell navigators with brackets.
 - A `PageFactory`'s route must show the child of its current page, as
   `MaterialPage` does: the router updates a shell's page in place.
 
@@ -214,7 +220,7 @@
   whole stack. `redirectLimit` (5) and loops end in `RedirectChainError`.
   When the redirects fail as the router is shown or re-checks the stack,
   `errorBuilder` (or a plain built-in screen) is shown and
-  `TypedRouterState.error` holds the error.
+  `NavigationState.error` holds the error.
 
 ## 0.1.9 - 2026-11-19
 
@@ -279,7 +285,7 @@
 
 ## 0.1.3 - 2026-11-19
 
-- `TypedRouterState`: an immutable, never-empty snapshot of the active path
+- `NavigationState`: an immutable, never-empty snapshot of the active path
   with `routes`, `top`, `find<R>()` and `contains<T>()`; equal when it holds
   the same pages.
 

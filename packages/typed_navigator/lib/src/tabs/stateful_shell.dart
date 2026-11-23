@@ -11,6 +11,8 @@ import 'package:typed_navigator/src/tabs/branch_switching.dart';
 /// branch not visited yet has no navigator. To reset a branch, as
 /// go_router's `goBranch(index, initialLocation: true)`, use
 /// [resetBranch] or [resetBranchAt].
+///
+/// {@category shells-and-tabs}
 class StatefulShell extends StatelessWidget {
   /// Created by the router for every build of the tabs.
   @internal

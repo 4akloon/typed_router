@@ -65,6 +65,8 @@ part of 'tree_node.dart';
 /// A feature module may declare a node as a class of its own that extends
 /// this one and passes everything to the super constructor. Overriding
 /// members is not supported: the router relies on them.
+///
+/// {@category shells-and-tabs}
 class StatefulShellNode extends TreeNode<NoParentRoute> {
   /// Creates tabs with [branches]; the router throws [ArgumentError] when
   /// there is none, a branch type repeats, a branch is empty or its
@@ -76,8 +78,8 @@ class StatefulShellNode extends TreeNode<NoParentRoute> {
     this.redirect,
   });
 
-  /// Builds the frame (a navigation bar, a rail) around [shell]. Rebuilt
-  /// on every navigation; [state] is the router's whole state.
+  /// Builds the frame (a navigation bar, a rail) around `shell`. Rebuilt
+  /// on every navigation; `state` is the router's whole state.
   final Widget Function(
     BuildContext context,
     TypedRouterState state,

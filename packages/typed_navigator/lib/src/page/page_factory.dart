@@ -29,6 +29,8 @@ import 'package:typed_navigator/src/page/page_request.dart';
 ///   );
 /// }
 /// ```
+///
+/// {@category page-factories}
 abstract interface class PageFactory {
   /// Creates the page that shows [request]'s screen.
   Page<Object?> createPage(PageRequest request);

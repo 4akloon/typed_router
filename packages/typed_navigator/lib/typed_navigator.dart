@@ -1,8 +1,34 @@
 /// Statically typed, tree-based navigation for Flutter on Navigator 2.0.
 ///
-/// Routes are Dart values identified by their type and fields, placed in a
-/// tree declared top-down. URLs are an optional adapter at the platform
-/// boundary.
+/// Routes are Dart values ([TypedRoute]) identified by their type and
+/// fields, placed in a tree declared top-down ([RouteNode], [ShellNode],
+/// [StatefulShellNode]) and shown by a [TypedRouter]:
+///
+/// ```dart
+/// final router = TypedRouter(
+///   routes: [
+///     RouteNode<RoomsRoute>(
+///       build: (context, rooms) => const RoomsScreen(),
+///       children: [
+///         RouteNode<RoomRoute>(
+///           build: (context, room) => RoomScreen(id: room.id),
+///         ).withParent((room) => const RoomsRoute()),
+///       ],
+///     ),
+///   ],
+///   initialRoute: const RoomsRoute(),
+///   pageFactory: const MaterialPageFactory(), // a recipe from the README
+/// );
+///
+/// runApp(MaterialApp.router(routerConfig: router));
+/// ```
+///
+/// The guides (getting started, navigation, redirects, shells and tabs,
+/// recipes, migrating from go_router) are in the package's `doc/` folder.
+///
+/// {@category getting-started}
+/// {@category recipes}
+/// {@category migrating-from-go-router}
 library;
 
 export 'src/page/page_factory.dart' show PageFactory;

@@ -34,6 +34,8 @@ part of 'tree_node.dart';
 /// A feature module may declare a node as a class of its own that extends
 /// this one and passes everything to the super constructor. Overriding
 /// members is not supported: the router relies on them.
+///
+/// {@category shells-and-tabs}
 class ShellNode<P> extends TreeNode<P> {
   /// Creates a shell around [children]; the router throws [ArgumentError]
   /// when it has none.
@@ -49,8 +51,8 @@ class ShellNode<P> extends TreeNode<P> {
   /// `RouteNode.parentNavigatorSlot`. Optional.
   final NavigatorSlot? navigatorSlot;
 
-  /// Builds the frame around [navigator]: the shell's own navigator with
-  /// the pages of its children. Rebuilt on every navigation; [state] is the
+  /// Builds the frame around `navigator`: the shell's own navigator with
+  /// the pages of its children. Rebuilt on every navigation; `state` is the
   /// router's whole state.
   final Widget Function(
     BuildContext context,

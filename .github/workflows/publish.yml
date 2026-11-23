@@ -1,0 +1,61 @@
+# Publishes one package to pub.dev when its release tag is pushed.
+#
+# Tag convention: <package>-v<version> (`typed_navigator-v0.8.0`,
+# `typed_navigator_test-v0.8.0`): only the tagged package is published.
+#
+# Auth is pub.dev's GitHub Actions OIDC flow (no secrets). Each package must
+# have automated publishing enabled on pub.dev (Admin → Automated
+# publishing): repository `4akloon/typed_navigator`, tag pattern
+# `<package>-v{{version}}`, and the `pub.dev` GitHub environment required.
+# pub.dev allows this only for existing packages: the first version of each
+# package is published by hand (`flutter pub publish`), typed_navigator_test
+# first, since typed_navigator's tests depend on it.
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'typed_navigator-v*'
+      - 'typed_navigator_test-v*'
+
+jobs:
+  publish:
+    name: Publish to pub.dev
+    runs-on: ubuntu-latest
+    environment: pub.dev
+    permissions:
+      id-token: write # pub.dev OIDC token exchange
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Parse package and version from the tag
+        id: meta
+        run: |
+          TAG="$GITHUB_REF_NAME"
+          echo "package=${TAG%-v*}" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG##*-v}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify the pubspec version matches the tag
+        run: >-
+          grep -qx 'version: ${{ steps.meta.outputs.version }}'
+          'packages/${{ steps.meta.outputs.package }}/pubspec.yaml'
+
+      # Mints the temporary pub.dev credential from the job's OIDC token.
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      # Installed after setup-dart so Flutter's `dart` wins the PATH; the pub
+      # credential store is shared between the two SDKs.
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.50.1'
+
+      - name: Install dependencies (workspace)
+        run: flutter pub get
+
+      - name: Publish ${{ steps.meta.outputs.package }} ${{ steps.meta.outputs.version }}
+        run: flutter pub publish --force
+        working-directory: packages/${{ steps.meta.outputs.package }}

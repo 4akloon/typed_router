@@ -21,6 +21,9 @@ part of 'tree_node.dart';
 /// A feature module may declare a node as a class of its own that extends
 /// this one and passes everything to the super constructor. Overriding
 /// members is not supported: the router relies on them.
+///
+/// {@category routes-and-tree}
+/// {@category observers}
 class RouteNode<R extends TypedRoute<Object?>> extends TreeNode<NoParentRoute> {
   /// Creates a node for routes of type [R].
   const RouteNode({

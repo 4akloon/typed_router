@@ -60,6 +60,11 @@ import 'package:typed_navigator/src/tree/tree_node.dart';
 ///   (_) => showDialog(context: navigator.context, builder: buildWelcome),
 /// );
 /// ```
+///
+/// {@category getting-started}
+/// {@category navigation}
+/// {@category back-and-gestures}
+/// {@category observers}
 class TypedRouter implements RouterConfig<Object>, Listenable {
   /// Creates a router over the tree of [routes] that starts at
   /// [initialRoute], with the routes above it built from the tree.

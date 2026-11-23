@@ -6,6 +6,8 @@ import 'package:typed_navigator/src/route/typed_route.dart';
 /// It is a mistake in the app's redirects, found only at runtime. On an
 /// operation it is reported and the state stays as it was; when the router
 /// is shown or re-checks its stack, the error screen shows it.
+///
+/// {@category redirects}
 class RedirectChainError extends Error {
   /// Creates the error for a [chain] that came back to a route it had
   /// already passed.

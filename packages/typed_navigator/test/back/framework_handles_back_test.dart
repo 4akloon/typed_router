@@ -54,7 +54,7 @@ void main() {
       expect(platform.frameworkHandlesBack.last, isTrue);
 
       // The rooms branch keeps a room open, hidden: it does not count.
-      await settled(tester, router.pop);
+      await settled(tester, router.pop<Object?>);
       await settled(tester, () => router.go(room7));
       await settled(tester, () => shellOf(tester).goBranch<FriendsBranch>());
       expect(find.text('Friends'), findsOneWidget);

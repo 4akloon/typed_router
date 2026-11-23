@@ -37,6 +37,8 @@ import 'package:flutter/foundation.dart';
 ///
 /// A class may `implement` [TypedRoute] instead of extending it. It must
 /// then implement `==` and `hashCode` with value semantics itself.
+///
+/// {@category routes-and-tree}
 abstract class TypedRoute<T> {
   /// Creates a route. Subclasses should keep a `const` constructor.
   const TypedRoute();

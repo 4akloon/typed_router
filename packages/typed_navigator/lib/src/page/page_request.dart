@@ -4,6 +4,8 @@ import 'package:flutter/widgets.dart';
 ///
 /// Named a request rather than a context, so it does not read like a
 /// [BuildContext].
+///
+/// {@category page-factories}
 class PageRequest {
   /// Creates a request for one stack entry.
   ///

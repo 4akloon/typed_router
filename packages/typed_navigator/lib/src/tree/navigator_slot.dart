@@ -14,6 +14,8 @@
 ///   build: (context, route) => const CreateRoomPage(),
 /// )
 /// ```
+///
+/// {@category shells-and-tabs}
 class NavigatorSlot {
   /// A new slot, for one `ShellNode` or `BranchNode`.
   NavigatorSlot();

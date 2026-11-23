@@ -15,6 +15,8 @@ import 'package:typed_navigator/src/router/typed_router.dart';
 ///   TypedRouterScope(router: fakeRouter, child: const RoomsScreen()),
 /// );
 /// ```
+///
+/// {@category testing}
 class TypedRouterScope extends InheritedWidget {
   /// Puts [router] above [child].
   const TypedRouterScope({

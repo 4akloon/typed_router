@@ -24,6 +24,8 @@ part 'stateful_shell_node.dart';
 /// nothing from above is a `TreeNode<NoParentRoute>`; a node that builds its
 /// parent route ([RouteNode.withParent]) is a `TreeNode<ThatParentRoute>`, so
 /// the compiler only lets it sit under that parent.
+///
+/// {@category routes-and-tree}
 sealed class TreeNode<P> {
   const TreeNode();
 }

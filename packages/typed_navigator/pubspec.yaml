@@ -1,9 +1,17 @@
 name: typed_navigator
 description: >-
-  Statically typed, tree-based navigation for Flutter on Navigator 2.0.
-  Routes are Dart values; URLs are an optional adapter.
-version: 0.7.1
-publish_to: none
+  Statically typed, tree-based navigation for Flutter on Navigator 2.0:
+  routes are Dart values, with typed results, redirects, shells and tabs.
+version: 0.8.0
+repository: https://github.com/4akloon/typed_navigator
+homepage: https://github.com/4akloon/typed_navigator
+issue_tracker: https://github.com/4akloon/typed_navigator/issues
+documentation: https://github.com/4akloon/typed_navigator/tree/main/packages/typed_navigator/doc
+topics:
+  - navigation
+  - router
+  - routing
+  - go-router
 resolution: workspace
 
 environment:
@@ -23,5 +31,4 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   material_ui: ^1.0.1
-  typed_navigator_test:
-    path: ../typed_navigator_test
+  typed_navigator_test: ^0.8.0

@@ -1,0 +1,48 @@
+dartdoc:
+  categories:
+    getting-started:
+      markdown: doc/getting_started.md
+      displayName: Getting Started
+    routes-and-tree:
+      markdown: doc/routes_and_tree.md
+      displayName: Routes and the Tree
+    navigation:
+      markdown: doc/navigation.md
+      displayName: Navigation
+    redirects:
+      markdown: doc/redirects.md
+      displayName: Redirects
+    shells-and-tabs:
+      markdown: doc/shells_and_tabs.md
+      displayName: Shells and Tabs
+    back-and-gestures:
+      markdown: doc/back_and_gestures.md
+      displayName: Back and Gestures
+    page-factories:
+      markdown: doc/page_factories.md
+      displayName: Page Factories
+    observers:
+      markdown: doc/observers.md
+      displayName: Observers and Analytics
+    testing:
+      markdown: doc/testing.md
+      displayName: Testing
+    recipes:
+      markdown: doc/recipes.md
+      displayName: Recipes
+    migrating-from-go-router:
+      markdown: doc/migrating_from_go_router.md
+      displayName: Migrating from go_router
+  categoryOrder:
+    - getting-started
+    - routes-and-tree
+    - navigation
+    - redirects
+    - shells-and-tabs
+    - back-and-gestures
+    - page-factories
+    - observers
+    - testing
+    - recipes
+    - migrating-from-go-router
+  showUndocumentedCategories: true

@@ -73,11 +73,9 @@ void main() {
     expect(longer.state.routes, const [HomeRoute()]);
     expect(
       tester.takeException(),
-      isA<RedirectChainError>().having(
-        (error) => error.chain,
-        'chain',
-        [for (var number = 0; number <= 6; number++) StepRoute(number)],
-      ),
+      isA<RedirectChainError>().having((error) => error.chain, 'chain', [
+        for (var number = 0; number <= 6; number++) StepRoute(number),
+      ]),
     );
     await tester.pump();
     expect(find.text('Home'), findsOneWidget);

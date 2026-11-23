@@ -47,9 +47,7 @@ void main() {
     expect(platform.closedApp, isTrue);
   });
 
-  testWidgets('back closes a dialog over the shell page first', (
-    tester,
-  ) async {
+  testWidgets('back closes a dialog over the shell page first', (tester) async {
     final router = await pumpShellApp(tester, user1);
     final dialog = await _openDialog(tester, 'User u1');
 

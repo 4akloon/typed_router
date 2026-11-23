@@ -42,9 +42,7 @@ void main() {
     final router = await pumpPushedOverAccount(
       tester,
       tabsRoutes(ScreenLog()),
-      [
-        const RoomsRoute(),
-      ],
+      [const RoomsRoute()],
     );
     await settled(tester, () => shellOf(tester).goBranch<FriendsBranch>());
     await settled(tester, () => shellOf(tester).goBranch<RoomsBranch>());

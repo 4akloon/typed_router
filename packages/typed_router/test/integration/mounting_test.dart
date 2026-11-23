@@ -60,10 +60,8 @@ void main() {
         return null;
       },
     );
-    Widget app() => WidgetsApp.router(
-      routerConfig: router,
-      color: const Color(0xFF000000),
-    );
+    Widget app() =>
+        WidgetsApp.router(routerConfig: router, color: const Color(0xFF000000));
     Widget placed(Widget Function(List<Widget> children) parent) =>
         Directionality(
           textDirection: TextDirection.ltr,

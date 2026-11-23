@@ -23,9 +23,7 @@ class RetiredNavigators implements EntryLifecycle {
 
   @override
   void entriesLeft(List<NavigationEntry> left, TypedRouterState remains) {
-    final inUse = {
-      for (final entry in remains.allEntries) ...entry.levels,
-    };
+    final inUse = {for (final entry in remains.allEntries) ...entry.levels};
     final retired = <(int, ShellLevel)>{
       for (final entry in left)
         for (final (depth, level) in entry.levels.indexed)

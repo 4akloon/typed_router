@@ -54,11 +54,7 @@ class EntryChain {
     PendingResult<Object?>? pendingResult,
   }) => NavigationEntry(
     route,
-    levels: _shellPath.levelsFor(
-      route,
-      below: below,
-      replaceable: replaceable,
-    ),
+    levels: _shellPath.levelsFor(route, below: below, replaceable: replaceable),
     pendingResult: pendingResult,
   );
 }

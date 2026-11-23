@@ -56,16 +56,10 @@ void main() {
     final room = ResultProbe(router.push(room7));
     await tester.pumpAndSettle();
 
-    await settled(
-      tester,
-      () => shellWith(tester, FriendsBranch).goBranchAt(1),
-    );
+    await settled(tester, () => shellWith(tester, FriendsBranch).goBranchAt(1));
     await settled(tester, () => shellWith(tester, OuterAccount).goBranchAt(1));
     await settled(tester, () => shellWith(tester, OuterAccount).goBranchAt(0));
-    await settled(
-      tester,
-      () => shellWith(tester, FriendsBranch).goBranchAt(0),
-    );
+    await settled(tester, () => shellWith(tester, FriendsBranch).goBranchAt(0));
 
     expect(router.state.routes, const [rooms, room7]);
     expect(room.isCompleted, isFalse);

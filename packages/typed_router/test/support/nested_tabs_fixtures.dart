@@ -19,10 +19,7 @@ List<TreeNode<NoParentRoute>> nestedTabsRoutes(ScreenLog log) => [
   StatefulShellNode(
     builder: (context, state, shell) => shell,
     branches: [
-      BranchNode<OuterRooms>(
-        initial: rooms,
-        children: [tabsRoutes(log).first],
-      ),
+      BranchNode<OuterRooms>(initial: rooms, children: [tabsRoutes(log).first]),
       BranchNode<OuterAccount>(
         initial: const AccountRoute(),
         children: [

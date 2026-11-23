@@ -63,6 +63,10 @@ fvm dart format .                        # format (line length 80)
 (cd example && fvm flutter test)
 
 (cd example && fvm flutter run -d macos)  # the scenario catalogue
+
+# Pub points, as pub.dev scores a package on its own (CI fails below 160).
+fvm dart pub global activate pana
+fvm dart pub global run pana packages/typed_router
 ```
 
 `fvm dart analyze` and the tests of every member must be clean before a

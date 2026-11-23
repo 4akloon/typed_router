@@ -38,9 +38,10 @@ void main() {
     await settleAfter(tester, () => router.push(user1).ignore());
     await settleAfter(tester, () => router.pop(null));
 
-    expect(
-      observer.events.where((event) => event.contains('user')),
-      ['push users', 'push user', 'pop user'],
-    );
+    expect(observer.events.where((event) => event.contains('user')), [
+      'push users',
+      'push user',
+      'pop user',
+    ]);
   });
 }

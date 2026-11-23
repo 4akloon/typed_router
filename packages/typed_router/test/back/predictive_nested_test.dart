@@ -37,10 +37,7 @@ Future<TypedRouter> _pumpMaterial(
   );
   addTearDown(router.dispose);
   await tester.pumpWidget(
-    MaterialApp.router(
-      routerConfig: router,
-      theme: predictiveBackTheme,
-    ),
+    MaterialApp.router(routerConfig: router, theme: predictiveBackTheme),
   );
   await tester.pumpAndSettle();
   return router;

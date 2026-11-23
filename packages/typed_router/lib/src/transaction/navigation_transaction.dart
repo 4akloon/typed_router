@@ -22,10 +22,7 @@ class NavigationTransaction {
   ) {
     _isRunning = true;
     try {
-      return steps.fold(
-        candidate,
-        (state, step) => step.apply(current, state),
-      );
+      return steps.fold(candidate, (state, step) => step.apply(current, state));
     } finally {
       _isRunning = false;
     }

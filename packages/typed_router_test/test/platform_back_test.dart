@@ -20,9 +20,7 @@ void main() {
     expect(room.completions, [null]);
   }, variant: _android);
 
-  testWidgets('predictiveBack removes the top page on Android', (
-    tester,
-  ) async {
+  testWidgets('predictiveBack removes the top page on Android', (tester) async {
     final room = await pumpRoomOverRooms(tester, theme: predictiveBackTheme);
 
     await tester.predictiveBack();

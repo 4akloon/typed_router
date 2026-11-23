@@ -26,10 +26,10 @@ void main() {
   testWidgets("a nested flight follows the app's path: an arc in "
       'MaterialApp, a straight line in WidgetsApp', (tester) async {
     await pumpMaterialHeroes(tester, heroShellRoutes(), users);
-    final arc = heroControllerOf(tester, 'avatar')?.createRectTween?.call(
-      Rect.zero,
-      const Rect.fromLTWH(10, 10, 10, 10),
-    );
+    final arc = heroControllerOf(
+      tester,
+      'avatar',
+    )?.createRectTween?.call(Rect.zero, const Rect.fromLTWH(10, 10, 10, 10));
     expect(arc, isA<MaterialRectArcTween>());
 
     final router = TypedRouter(

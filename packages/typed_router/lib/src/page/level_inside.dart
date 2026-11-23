@@ -23,9 +23,9 @@ class LevelInside {
     final navigators = _currentNavigators.insideDeepestFirst(_level, _state);
     if (navigators.isEmpty) return false;
     if (navigators.any((navigator) => navigator.canPop())) return true;
-    return _routesOnTop(navigators).any(
-      (disposition) => disposition == RoutePopDisposition.doNotPop,
-    );
+    return _routesOnTop(
+      navigators,
+    ).any((disposition) => disposition == RoutePopDisposition.doNotPop);
   }
 
   /// Gives back to the navigators inside, the deepest first, as the system

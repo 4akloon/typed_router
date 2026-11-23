@@ -33,10 +33,7 @@ class RedirectStep implements NavigationStep {
 
   @override
   TypedRouterState apply(TypedRouterState current, TypedRouterState candidate) {
-    final chain = RedirectChain(
-      candidate.top,
-      redirectLimit: _redirectLimit,
-    );
+    final chain = RedirectChain(candidate.top, redirectLimit: _redirectLimit);
     var target = candidate;
     var check = _check;
     while (true) {

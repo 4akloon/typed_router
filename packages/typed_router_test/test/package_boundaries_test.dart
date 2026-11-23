@@ -12,19 +12,14 @@ void main() {
         .whereType<File>()
         .where((file) => file.path.endsWith('.dart'))
         .toList();
-    final coreImport = RegExp(
-      r"(import|export) 'package:typed_router/(\S+)'",
-    );
+    final coreImport = RegExp(r"(import|export) 'package:typed_router/(\S+)'");
 
     expect(libraryFiles, hasLength(greaterThan(3)));
-    expect(
-      [
-        for (final file in libraryFiles)
-          for (final match in coreImport.allMatches(file.readAsStringSync()))
-            if (match.group(2) != 'typed_router.dart') file.path,
-      ],
-      isEmpty,
-    );
+    expect([
+      for (final file in libraryFiles)
+        for (final match in coreImport.allMatches(file.readAsStringSync()))
+          if (match.group(2) != 'typed_router.dart') file.path,
+    ], isEmpty);
   });
 
   test('the test package has one entry point', () {

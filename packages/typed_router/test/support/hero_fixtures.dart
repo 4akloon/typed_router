@@ -123,9 +123,7 @@ Future<void> pushHalfway(
 /// thumbnail tagged [tag], or `null`.
 HeroController? heroControllerOf(WidgetTester tester, String tag) {
   final navigator = Navigator.of(
-    tester.element(
-      find.byKey(ValueKey('$tag thumbnail'), skipOffstage: false),
-    ),
+    tester.element(find.byKey(ValueKey('$tag thumbnail'), skipOffstage: false)),
   );
   return HeroControllerScope.maybeOf(navigator.context);
 }

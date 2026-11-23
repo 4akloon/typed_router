@@ -2,7 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
 /// The tabs' bar: tapping the active tab resets it to its initial route.
-final class TabsNavigationBar extends StatelessWidget {
+class TabsNavigationBar extends StatelessWidget {
   const TabsNavigationBar(this.shell, {super.key});
 
   final StatefulShell shell;

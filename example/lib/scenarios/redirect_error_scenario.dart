@@ -23,7 +23,7 @@ const redirectErrorScenario = Scenario(
 
 Widget _build(ScenarioFrame frame) => _RedirectErrorDemo(frame);
 
-final class _RedirectErrorDemo extends StatefulWidget {
+class _RedirectErrorDemo extends StatefulWidget {
   const _RedirectErrorDemo(this.frame);
 
   final ScenarioFrame frame;
@@ -32,7 +32,7 @@ final class _RedirectErrorDemo extends StatefulWidget {
   State<_RedirectErrorDemo> createState() => _RedirectErrorDemoState();
 }
 
-final class _RedirectErrorDemoState extends State<_RedirectErrorDemo> {
+class _RedirectErrorDemoState extends State<_RedirectErrorDemo> {
   /// Whether the redirects loop.
   final ValueNotifier<bool> _isBroken = ValueNotifier(false);
 
@@ -84,21 +84,21 @@ final class _RedirectErrorDemoState extends State<_RedirectErrorDemo> {
       RouterDemo(frame: widget.frame, createRouter: _createRouter);
 }
 
-final class HomeRoute extends TypedRoute<void> {
+class HomeRoute extends TypedRoute<void> {
   const HomeRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class PingRoute extends TypedRoute<void> {
+class PingRoute extends TypedRoute<void> {
   const PingRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class PongRoute extends TypedRoute<void> {
+class PongRoute extends TypedRoute<void> {
   const PongRoute();
 
   @override

@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 /// Who is signed in, for the sign-in guard scenario; the router's
 /// `refreshListenable`, so the redirects re-check the stack when it
 /// changes.
-final class SignInSession extends ChangeNotifier {
+class SignInSession extends ChangeNotifier {
   bool _isSignedIn = false;
   bool _isAdmin = false;
 

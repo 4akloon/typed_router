@@ -9,7 +9,7 @@ import 'package:typed_navigator/src/redirect/router_mount.dart';
 /// what `WidgetsApp` puts above the `Router`. It builds the navigator through
 /// [builder] on every build, so a re-check in [State.didChangeDependencies]
 /// shows in the same frame.
-final class RedirectScope extends StatefulWidget {
+class RedirectScope extends StatefulWidget {
   /// Creates the scope of one router; key it by the router, so another
   /// router gets a scope of its own.
   const RedirectScope({
@@ -32,7 +32,7 @@ final class RedirectScope extends StatefulWidget {
   State<RedirectScope> createState() => _RedirectScopeState();
 }
 
-final class _RedirectScopeState extends State<RedirectScope> {
+class _RedirectScopeState extends State<RedirectScope> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

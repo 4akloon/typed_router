@@ -10,7 +10,7 @@ import 'app_fixtures.dart';
 import 'route_fixtures.dart';
 
 /// The signed-in user and the ban, as an app's auth and ban services.
-final class Session extends ChangeNotifier {
+class Session extends ChangeNotifier {
   Session({this._isSignedIn = false});
 
   bool _isSignedIn;
@@ -32,14 +32,14 @@ final class Session extends ChangeNotifier {
   }
 }
 
-final class HomeRoute extends TypedRoute<void> {
+class HomeRoute extends TypedRoute<void> {
   const HomeRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class SignInRoute extends TypedRoute<void> {
+class SignInRoute extends TypedRoute<void> {
   const SignInRoute({this.returnTo});
 
   /// Where to go after signing in.
@@ -49,7 +49,7 @@ final class SignInRoute extends TypedRoute<void> {
   List<Object?> get fields => [returnTo];
 }
 
-final class BannedRoute extends TypedRoute<void> {
+class BannedRoute extends TypedRoute<void> {
   const BannedRoute();
 
   @override
@@ -57,7 +57,7 @@ final class BannedRoute extends TypedRoute<void> {
 }
 
 /// A child of the marked [AccountRoute]; not marked itself.
-final class AccountSettingsRoute extends TypedRoute<void> {
+class AccountSettingsRoute extends TypedRoute<void> {
   const AccountSettingsRoute();
 
   @override

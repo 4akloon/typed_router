@@ -72,21 +72,21 @@ final List<TreeNode<NoParentRoute>> _routes = [
   ),
 ];
 
-final class HomeRoute extends TypedRoute<void> {
+class HomeRoute extends TypedRoute<void> {
   const HomeRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class InboxRoute extends TypedRoute<void> {
+class InboxRoute extends TypedRoute<void> {
   const InboxRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class LetterRoute extends TypedRoute<void> {
+class LetterRoute extends TypedRoute<void> {
   const LetterRoute(this.number);
 
   final int number;
@@ -97,7 +97,7 @@ final class LetterRoute extends TypedRoute<void> {
 
 /// The shell's frame: a title bar and a list of letters around the
 /// shell's [navigator].
-final class _MailFrame extends StatelessWidget {
+class _MailFrame extends StatelessWidget {
   const _MailFrame({required this.selected, required this.navigator});
 
   final LetterRoute? selected;

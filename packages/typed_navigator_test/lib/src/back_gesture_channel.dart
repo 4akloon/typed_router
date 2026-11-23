@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// update, nothing for commit and cancel.
 ///
 /// Internal: `PredictiveBackGesture` drives it.
-final class BackGestureChannel {
+class BackGestureChannel {
   /// Creates the channel of [_tester]'s binding.
   BackGestureChannel(this._tester);
 

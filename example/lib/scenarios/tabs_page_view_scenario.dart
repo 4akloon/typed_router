@@ -39,7 +39,7 @@ Widget _build(ScenarioFrame frame) => RouterDemo(
 );
 
 /// The branch navigators in a [PageView] that follows the shell both ways.
-final class _PagedBranches extends StatefulWidget {
+class _PagedBranches extends StatefulWidget {
   const _PagedBranches(this.shell);
 
   final StatefulShell shell;
@@ -48,7 +48,7 @@ final class _PagedBranches extends StatefulWidget {
   State<_PagedBranches> createState() => _PagedBranchesState();
 }
 
-final class _PagedBranchesState extends State<_PagedBranches> {
+class _PagedBranchesState extends State<_PagedBranches> {
   late final PageController _pages = PageController(
     initialPage: widget.shell.currentIndex,
   );

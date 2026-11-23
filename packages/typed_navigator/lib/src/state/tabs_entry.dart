@@ -5,7 +5,7 @@ part of 'shell_level.dart';
 /// navigator.
 ///
 /// Compared by identity.
-final class TabsEntry {
+class TabsEntry {
   /// Creates a new instance of [node] and its branches.
   TabsEntry(this.node) : branchTypes = List.unmodifiable(node.branchTypes) {
     for (final branchType in branchTypes) {

@@ -56,7 +56,11 @@ part of 'tree_node.dart';
 ///   ],
 /// )
 /// ```
-final class StatefulShellNode extends TreeNode<NoParentRoute> {
+///
+/// A feature module may declare a node as a class of its own that extends
+/// this one and passes everything to the super constructor. Overriding
+/// members is not supported: the router relies on them.
+class StatefulShellNode extends TreeNode<NoParentRoute> {
   /// Creates tabs with [branches]; the router throws [ArgumentError] when
   /// there is none, a branch type repeats, a branch is empty or its
   /// initial route is not in it.

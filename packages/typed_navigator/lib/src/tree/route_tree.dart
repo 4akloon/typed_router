@@ -10,7 +10,7 @@ import 'package:typed_navigator/src/tree/tree_walk.dart';
 /// routes lie below a route on the stack.
 ///
 /// Internal: the router builds it from its `routes`.
-final class RouteTree {
+class RouteTree {
   /// Places every node of [roots] and their descendants.
   ///
   /// Throws [ArgumentError] when [roots] is empty, a route type has two

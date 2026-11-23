@@ -8,7 +8,7 @@ import 'package:typed_navigator/src/state/shell_level.dart';
 /// path, directly or through other kept stacks (nested tabs).
 ///
 /// Its entries are still on the stack: their pushes wait.
-final class InactiveBranches {
+class InactiveBranches {
   /// No kept stacks.
   const InactiveBranches.none() : _stacks = const {};
 

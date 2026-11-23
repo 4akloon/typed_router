@@ -3,7 +3,7 @@ import 'package:material_ui/material_ui.dart';
 /// The door of the rooms: small on the list, large in a room. Its hero flies
 /// between them inside the tab's navigator, which has a hero controller of its
 /// own.
-final class RoomBadge extends StatelessWidget {
+class RoomBadge extends StatelessWidget {
   const RoomBadge({required this.size, super.key});
 
   final double size;

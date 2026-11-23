@@ -3,7 +3,7 @@ import 'package:typed_navigator_example/catalogue/scenario.dart';
 import 'package:typed_navigator_example/catalogue/scenario_section.dart';
 
 /// The home screen: every scenario, grouped by the version that built it.
-final class CataloguePage extends StatelessWidget {
+class CataloguePage extends StatelessWidget {
   const CataloguePage({
     required this.sections,
     required this.onOpen,
@@ -35,7 +35,7 @@ final class CataloguePage extends StatelessWidget {
   );
 }
 
-final class _SectionHeading extends StatelessWidget {
+class _SectionHeading extends StatelessWidget {
   const _SectionHeading(this.title);
 
   final String title;

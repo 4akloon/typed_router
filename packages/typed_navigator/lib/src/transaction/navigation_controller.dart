@@ -12,7 +12,7 @@ import 'package:typed_navigator/src/transaction/transaction_outcome.dart';
 /// Accepts navigation candidates and changes made outside the router,
 /// commits them synchronously and notifies listeners only when the state
 /// really changed. Delegates the steps to a [NavigationTransaction].
-final class NavigationController extends ChangeNotifier {
+class NavigationController extends ChangeNotifier {
   /// Creates a controller at [initialState], without a notification.
   NavigationController({
     required NavigationState initialState,

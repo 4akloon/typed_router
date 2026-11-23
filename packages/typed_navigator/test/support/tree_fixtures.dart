@@ -7,7 +7,7 @@ import 'package:typed_navigator/typed_navigator.dart';
 import 'route_fixtures.dart';
 
 /// A route without fields at the top of the users feature.
-final class UsersRoute extends TypedRoute<void> {
+class UsersRoute extends TypedRoute<void> {
   const UsersRoute();
 
   @override
@@ -15,7 +15,7 @@ final class UsersRoute extends TypedRoute<void> {
 }
 
 /// A user's page; its parent is [UsersRoute].
-final class UserRoute extends TypedRoute<void> {
+class UserRoute extends TypedRoute<void> {
   const UserRoute(this.userId);
 
   final String userId;
@@ -25,7 +25,7 @@ final class UserRoute extends TypedRoute<void> {
 }
 
 /// A user's games; its parent [UserRoute] is built from [userId].
-final class UserGamesRoute extends TypedRoute<void> {
+class UserGamesRoute extends TypedRoute<void> {
   const UserGamesRoute(this.userId);
 
   final String userId;
@@ -35,7 +35,7 @@ final class UserGamesRoute extends TypedRoute<void> {
 }
 
 /// A top-level route of an auth feature.
-final class SignInRoute extends TypedRoute<void> {
+class SignInRoute extends TypedRoute<void> {
   const SignInRoute();
 
   @override

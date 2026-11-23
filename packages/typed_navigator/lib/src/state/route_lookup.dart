@@ -1,7 +1,7 @@
 import 'package:typed_navigator/src/route/typed_route.dart';
 
 /// Finds routes on the active path for `NavigationState`.
-final class RouteLookup {
+class RouteLookup {
   /// Creates the lookup over [_routes], bottom to top.
   const RouteLookup(this._routes);
 

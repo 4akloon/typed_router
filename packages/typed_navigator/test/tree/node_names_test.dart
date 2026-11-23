@@ -10,7 +10,7 @@ import '../support/operation_fixtures.dart';
 import '../support/route_fixtures.dart';
 
 /// A factory that passes the key but forgets the name.
-final class _NamelessPageFactory implements PageFactory {
+class _NamelessPageFactory implements PageFactory {
   const _NamelessPageFactory();
 
   @override

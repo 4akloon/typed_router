@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 /// observers of the root navigator, as go_router's merged observer does:
 /// Flutter attaches an observer to one navigator only, so each nested navigator
 /// gets a relay of its own.
-final class RootObserverRelay extends NavigatorObserver {
+class RootObserverRelay extends NavigatorObserver {
   /// Creates the relay to [_rootObservers].
   RootObserverRelay(this._rootObservers);
 

@@ -6,7 +6,7 @@ sealed class TransactionOutcome {
 }
 
 /// The navigation changed the screen; [state] is now committed.
-final class TransactionCommitted extends TransactionOutcome {
+class TransactionCommitted extends TransactionOutcome {
   /// Creates the outcome of a commit of [state].
   const TransactionCommitted(this.state);
 
@@ -27,7 +27,7 @@ final class TransactionCommitted extends TransactionOutcome {
 
 /// The navigation ended on the state already committed; nothing changed
 /// and nobody was notified.
-final class TransactionUnchanged extends TransactionOutcome {
+class TransactionUnchanged extends TransactionOutcome {
   /// Creates the outcome of a navigation that changed nothing.
   const TransactionUnchanged();
 
@@ -43,7 +43,7 @@ final class TransactionUnchanged extends TransactionOutcome {
 
 /// A step failed; the state is unchanged and the [error] was reported
 /// through `FlutterError.reportError`.
-final class TransactionFailed extends TransactionOutcome {
+class TransactionFailed extends TransactionOutcome {
   /// Creates the outcome of a navigation that failed with [error].
   const TransactionFailed(this.error, this.stackTrace);
 

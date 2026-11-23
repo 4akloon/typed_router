@@ -4,7 +4,7 @@ import 'package:typed_navigator/src/state/navigation_state.dart';
 /// Finds the entries that left the stack between two states: on screen or in a
 /// kept branch stack before, nowhere after. Compared by identity, since an
 /// entry is a page.
-final class LeftEntries {
+class LeftEntries {
   /// Creates the comparison.
   const LeftEntries();
 

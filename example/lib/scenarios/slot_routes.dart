@@ -71,19 +71,19 @@ RouteNode<RoomsRoute> roomsNode(NavigatorSlot roomsSlot) =>
     );
 
 /// Names the rooms tab.
-abstract final class RoomsBranch {}
+abstract class RoomsBranch {}
 
 /// Names the about tab.
-abstract final class AboutBranch {}
+abstract class AboutBranch {}
 
-final class RoomsRoute extends TypedRoute<void> {
+class RoomsRoute extends TypedRoute<void> {
   const RoomsRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class RoomRoute extends TypedRoute<void> {
+class RoomRoute extends TypedRoute<void> {
   const RoomRoute(this.id);
 
   final int id;
@@ -92,7 +92,7 @@ final class RoomRoute extends TypedRoute<void> {
   List<Object?> get fields => [id];
 }
 
-final class MembersRoute extends TypedRoute<void> {
+class MembersRoute extends TypedRoute<void> {
   const MembersRoute(this.roomId);
 
   final int roomId;
@@ -101,14 +101,14 @@ final class MembersRoute extends TypedRoute<void> {
   List<Object?> get fields => [roomId];
 }
 
-final class CreateRoomRoute extends TypedRoute<void> {
+class CreateRoomRoute extends TypedRoute<void> {
   const CreateRoomRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class AboutRoute extends TypedRoute<void> {
+class AboutRoute extends TypedRoute<void> {
   const AboutRoute();
 
   @override

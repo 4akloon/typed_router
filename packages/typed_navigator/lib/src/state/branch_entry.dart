@@ -2,7 +2,7 @@ part of 'shell_level.dart';
 
 /// One branch of a [TabsEntry] on the stack: a level of its own with its
 /// navigator. The tabs make it once per branch.
-final class BranchEntry extends ShellLevel {
+class BranchEntry extends ShellLevel {
   BranchEntry._(this.tabs, this.branchType);
 
   /// The tabs instance this branch belongs to.

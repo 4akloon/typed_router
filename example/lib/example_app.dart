@@ -10,14 +10,14 @@ import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
 /// `TypedRouter`), so the platform's back button and the root navigator
 /// belong to it alone while it is open. Closing it disposes its router and
 /// shows the catalogue again.
-final class ExampleApp extends StatefulWidget {
+class ExampleApp extends StatefulWidget {
   const ExampleApp({super.key});
 
   @override
   State<ExampleApp> createState() => _ExampleAppState();
 }
 
-final class _ExampleAppState extends State<ExampleApp> {
+class _ExampleAppState extends State<ExampleApp> {
   Scenario? _openScenario;
 
   void _open(Scenario scenario) => setState(() => _openScenario = scenario);

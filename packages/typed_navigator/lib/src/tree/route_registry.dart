@@ -9,7 +9,7 @@ import 'package:typed_navigator/src/tree/route_placement.dart';
 /// Finds where a route type sits in the tree.
 ///
 /// Filled once while the tree is built, then only read.
-final class RouteRegistry {
+class RouteRegistry {
   final Map<Type, RoutePlacement> _placements = {};
 
   /// Records [placement]; a route type may be placed only once.

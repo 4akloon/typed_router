@@ -12,7 +12,7 @@ import 'package:typed_navigator/src/state/shell_level.dart';
 /// does not override `==`.
 ///
 /// Internal: not exported.
-final class NavigationEntry {
+class NavigationEntry {
   /// Creates an entry for [route] inside [levels] (outer first);
   /// `pendingResult` when a push awaits it.
   NavigationEntry(

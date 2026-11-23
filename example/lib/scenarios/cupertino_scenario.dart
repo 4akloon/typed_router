@@ -17,7 +17,7 @@ const cupertinoScenario = Scenario(
 );
 
 /// The Cupertino counterpart of `RouterDemo`.
-final class _CupertinoDemo extends StatefulWidget {
+class _CupertinoDemo extends StatefulWidget {
   const _CupertinoDemo(this.frame);
 
   final ScenarioFrame frame;
@@ -26,7 +26,7 @@ final class _CupertinoDemo extends StatefulWidget {
   State<_CupertinoDemo> createState() => _CupertinoDemoState();
 }
 
-final class _CupertinoDemoState extends State<_CupertinoDemo> {
+class _CupertinoDemoState extends State<_CupertinoDemo> {
   final TypedRouter _router = TypedRouter(
     routes: [
       RouteNode<ContactsRoute>(
@@ -69,7 +69,7 @@ final class _CupertinoDemoState extends State<_CupertinoDemo> {
   );
 }
 
-final class _ContactsPage extends StatelessWidget {
+class _ContactsPage extends StatelessWidget {
   const _ContactsPage();
 
   @override
@@ -95,7 +95,7 @@ final class _ContactsPage extends StatelessWidget {
   }
 }
 
-final class _CupertinoScreen extends StatelessWidget {
+class _CupertinoScreen extends StatelessWidget {
   const _CupertinoScreen({required this.title, required this.child});
 
   final String title;
@@ -109,14 +109,14 @@ final class _CupertinoScreen extends StatelessWidget {
   );
 }
 
-final class ContactsRoute extends TypedRoute<void> {
+class ContactsRoute extends TypedRoute<void> {
   const ContactsRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class ContactRoute extends TypedRoute<void> {
+class ContactRoute extends TypedRoute<void> {
   const ContactRoute(this.name);
 
   final String name;
@@ -125,7 +125,7 @@ final class ContactRoute extends TypedRoute<void> {
   List<Object?> get fields => [name];
 }
 
-final class ComposeRoute extends TypedRoute<void> {
+class ComposeRoute extends TypedRoute<void> {
   const ComposeRoute();
 
   @override

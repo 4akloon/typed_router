@@ -1,13 +1,21 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 /// What a `PageFactory` needs to create one page.
 ///
 /// Named a request rather than a context, so it does not read like a
 /// [BuildContext].
-final class PageRequest {
-  /// Creates a request for one stack entry. Only the router creates them.
-  @internal
+class PageRequest {
+  /// Creates a request for one stack entry.
+  ///
+  /// The router creates them; an app creates one to test its own
+  /// `PageFactory`:
+  ///
+  /// ```dart
+  /// final page = const FadePageFactory().createPage(
+  ///   const PageRequest(key: ValueKey('rooms'), child: Text('Rooms')),
+  /// );
+  /// expect(page.key, const ValueKey('rooms'));
+  /// ```
   const PageRequest({required this.key, required this.child, this.name});
 
   /// Identifies the stack entry while it lives; pass it to the page as its
@@ -24,7 +32,8 @@ final class PageRequest {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PageRequest &&
+      other.runtimeType == runtimeType &&
+          other is PageRequest &&
           other.key == key &&
           other.child == child &&
           other.name == name;

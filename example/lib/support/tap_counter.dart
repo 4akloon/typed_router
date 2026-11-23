@@ -2,14 +2,14 @@ import 'package:material_ui/material_ui.dart';
 
 /// A counter that lives in the screen's state: it shows whether a page was
 /// kept (the count stays) or built again (it starts at zero).
-final class TapCounter extends StatefulWidget {
+class TapCounter extends StatefulWidget {
   const TapCounter({super.key});
 
   @override
   State<TapCounter> createState() => _TapCounterState();
 }
 
-final class _TapCounterState extends State<TapCounter> {
+class _TapCounterState extends State<TapCounter> {
   int _taps = 0;
 
   @override

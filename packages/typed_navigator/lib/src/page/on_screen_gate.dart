@@ -10,7 +10,7 @@ import 'package:typed_navigator/src/state/navigation_entry.dart';
 /// not shown) says it cannot pop, so Flutter does not give it the gesture;
 /// router operations and `Navigator.pop` still remove it. On screen, the
 /// app's own `PopScope` decides.
-final class OnScreenGate extends StatelessWidget {
+class OnScreenGate extends StatelessWidget {
   /// Creates the gate of [entry]'s page around [child].
   const OnScreenGate({required this.entry, required this.child, super.key});
 

@@ -20,7 +20,7 @@ ThemeData get predictiveBackTheme => ThemeData(
 );
 
 /// The result of the page pushed by [pumpRoomOverRooms], as it completes.
-final class PushedRoom {
+class PushedRoom {
   /// Records every completion of [result].
   PushedRoom(Future<Object?> result) {
     result.then(completions.add).ignore();

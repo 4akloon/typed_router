@@ -48,28 +48,28 @@ Widget _build(ScenarioFrame frame) => RouterDemo(
   ),
 );
 
-final class HomeRoute extends TypedRoute<void> {
+class HomeRoute extends TypedRoute<void> {
   const HomeRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class DetailsRoute extends TypedRoute<void> {
+class DetailsRoute extends TypedRoute<void> {
   const DetailsRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class _DetailsPage extends StatefulWidget {
+class _DetailsPage extends StatefulWidget {
   const _DetailsPage();
 
   @override
   State<_DetailsPage> createState() => _DetailsPageState();
 }
 
-final class _DetailsPageState extends State<_DetailsPage> {
+class _DetailsPageState extends State<_DetailsPage> {
   bool _isBackBlocked = false;
 
   void _showDialog() => showDialog<void>(

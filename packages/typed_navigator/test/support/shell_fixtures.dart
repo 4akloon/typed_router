@@ -16,12 +16,12 @@ const account = AccountRoute();
 
 /// Counts the frames the shell created: the same frame means the same
 /// shell instance.
-final class FrameLog {
+class FrameLog {
   int createdFrames = 0;
 }
 
 /// The list | detail frame: the selected user, then the shell navigator.
-final class ListDetailFrame extends StatefulWidget {
+class ListDetailFrame extends StatefulWidget {
   const ListDetailFrame({
     required this.log,
     required this.selected,
@@ -37,7 +37,7 @@ final class ListDetailFrame extends StatefulWidget {
   State<ListDetailFrame> createState() => _ListDetailFrameState();
 }
 
-final class _ListDetailFrameState extends State<ListDetailFrame> {
+class _ListDetailFrameState extends State<ListDetailFrame> {
   @override
   void initState() {
     super.initState();

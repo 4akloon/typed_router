@@ -13,7 +13,7 @@ import 'package:typed_navigator/src/tabs/stateful_shell.dart';
 /// Makes the page that holds a nested navigator: a shell's or a tabs instance's
 /// with its branch navigators. The page comes from the node's factory or the
 /// router's and is keyed by the instance.
-final class LevelPages {
+class LevelPages {
   /// Creates the pages with [_routePages] checking the factories, the
   /// router's [_pageFactory] for nodes without their own,
   /// [_switchingFor] giving each tabs instance its branch switching, and

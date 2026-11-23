@@ -15,7 +15,7 @@ typedef RedirectedPlan = NavigationState Function(TypedRoute<Object?> route);
 /// Follows redirects until none fires, re-planning the operation for every new
 /// target; whatever a redirect throws, and a [RedirectChainError], fails the
 /// transaction, which reports it and keeps the state.
-final class RedirectStep implements NavigationStep {
+class RedirectStep implements NavigationStep {
   /// Creates the step of one navigation.
   RedirectStep({
     required this._resolver,

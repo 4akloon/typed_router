@@ -10,7 +10,7 @@ import 'redirect_fixtures.dart';
 import 'route_fixtures.dart';
 
 /// One step of a redirect chain.
-final class StepRoute extends TypedRoute<void> {
+class StepRoute extends TypedRoute<void> {
   const StepRoute(this.number);
 
   final int number;

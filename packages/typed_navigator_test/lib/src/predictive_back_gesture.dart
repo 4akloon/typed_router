@@ -25,7 +25,7 @@ import 'package:typed_navigator_test/src/back_gesture_channel.dart';
 /// ```
 ///
 /// Experimental until 1.0: it may change without a major version.
-final class PredictiveBackGesture {
+class PredictiveBackGesture {
   /// Wraps a gesture [_channel] has already started.
   @internal
   PredictiveBackGesture(this._channel);

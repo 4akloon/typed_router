@@ -3,7 +3,7 @@ part of 'tree_node.dart';
 /// A [RouteNode] put under a parent route with [RouteNode.withParent].
 ///
 /// Not exported: users only ever see it as a `TreeNode<P>`.
-final class ParentedRouteNode<
+class ParentedRouteNode<
   P extends TypedRoute<Object?>,
   R extends TypedRoute<Object?>
 >

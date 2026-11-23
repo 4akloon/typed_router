@@ -11,7 +11,7 @@ import 'package:typed_navigator/src/state/stack_parts.dart';
 /// ` > `, a shell's navigator in brackets, tabs in braces with every
 /// visited branch and the active one starred:
 /// `{*RoomsBranch: [RoomsRoute() > RoomRoute(7)] | HomeBranch: [HomeRoute()]}`.
-final class StackDescription {
+class StackDescription {
   /// Creates the description of [_entries] with the kept stacks of
   /// [_inactive].
   const StackDescription(this._entries, this._inactive);

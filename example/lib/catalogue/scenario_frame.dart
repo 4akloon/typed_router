@@ -7,7 +7,7 @@ import 'package:typed_navigator_example/catalogue/scenario.dart';
 /// to the catalogue.
 ///
 /// Compared by identity: the catalogue makes one each time a demo opens.
-final class ScenarioFrame {
+class ScenarioFrame {
   const ScenarioFrame({required this.scenario, required this.onClose});
 
   final Scenario scenario;

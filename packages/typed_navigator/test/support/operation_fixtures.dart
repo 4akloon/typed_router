@@ -14,7 +14,7 @@ const ProfileRoute routeWithoutNode = ProfileRoute('u1', 'games');
 
 /// Records what a result future completed with, without awaiting it, so a
 /// test can tell a pending future from a completed one.
-final class ResultProbe<T> {
+class ResultProbe<T> {
   ResultProbe(Future<T?> result) {
     result.then(completions.add);
   }
@@ -26,7 +26,7 @@ final class ResultProbe<T> {
 }
 
 /// Counts the notifications of a [Listenable].
-final class NotificationCounter {
+class NotificationCounter {
   NotificationCounter(Listenable listenable) {
     listenable.addListener(() => count++);
   }

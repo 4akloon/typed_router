@@ -8,7 +8,7 @@ sealed class StackPart {
 }
 
 /// A page of a route in this navigator.
-final class RoutePart extends StackPart {
+class RoutePart extends StackPart {
   /// Creates the part of [entry].
   const RoutePart(this.entry);
 
@@ -18,7 +18,7 @@ final class RoutePart extends StackPart {
 
 /// Entries one after another in the same [level], shown by one page of
 /// this navigator that holds the level's navigator.
-final class LevelPart extends StackPart {
+class LevelPart extends StackPart {
   /// Creates the part of [entries] in [level].
   const LevelPart(this.level, this.entries);
 
@@ -32,7 +32,7 @@ final class LevelPart extends StackPart {
 /// Splits the entries of one navigator into its parts: a route at [depth]
 /// is its own page; entries that stand in the same level at [depth], one
 /// after another, are one part.
-final class StackParts {
+class StackParts {
   /// Creates the splitter.
   const StackParts();
 

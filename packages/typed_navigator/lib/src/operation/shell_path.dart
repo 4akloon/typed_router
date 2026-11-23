@@ -11,7 +11,7 @@ import 'package:typed_navigator/src/tree/route_tree.dart';
 /// over the levels of an entry it replaces: the same shell instance, and
 /// for tabs the same instance in the route's branch (a branch switch).
 /// Whichever reuses more levels wins; every level past them is new.
-final class ShellPath {
+class ShellPath {
   /// Creates the path finder for routes of [_tree].
   ShellPath(this._tree);
 

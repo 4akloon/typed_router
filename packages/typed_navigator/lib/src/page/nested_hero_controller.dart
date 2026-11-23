@@ -7,7 +7,7 @@ import 'package:typed_navigator/src/page/hero_flight_scope.dart';
 /// controller follows the app's flight path ([HeroFlightScope]) and is disposed
 /// with the navigator; keyed by the navigator's level, it moves with the
 /// navigator in the tree.
-final class NestedHeroController extends StatefulWidget {
+class NestedHeroController extends StatefulWidget {
   /// Creates the controller's holder around [child], the nested navigator.
   const NestedHeroController({required this.child, super.key});
 
@@ -18,7 +18,7 @@ final class NestedHeroController extends StatefulWidget {
   State<NestedHeroController> createState() => _NestedHeroControllerState();
 }
 
-final class _NestedHeroControllerState extends State<NestedHeroController> {
+class _NestedHeroControllerState extends State<NestedHeroController> {
   // Made on first build with the app's flight path, which stays fixed for
   // the controller's life.
   late final HeroController _controller = HeroController(

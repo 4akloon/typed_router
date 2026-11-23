@@ -14,7 +14,7 @@ import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 /// `go`, `push`, `replace` and `pushAndRemoveUntil` run the redirects of the
 /// route they go to; a redirect re-plans the same operation for its target.
 /// `pop` and `popUntil` run none.
-final class StackOperations {
+class StackOperations {
   /// Creates operations that plan with [_planner], redirect with
   /// [_redirects] and commit through [_controller].
   StackOperations(this._controller, this._planner, this._redirects);

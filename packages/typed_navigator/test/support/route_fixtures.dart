@@ -3,7 +3,7 @@
 import 'package:typed_navigator/typed_navigator.dart';
 
 /// A room id with value equality.
-final class RoomId {
+class RoomId {
   const RoomId(this.value);
 
   final int value;
@@ -19,7 +19,7 @@ final class RoomId {
 }
 
 /// A route with one field.
-final class RoomRoute extends TypedRoute<void> {
+class RoomRoute extends TypedRoute<void> {
   const RoomRoute(this.id);
 
   final RoomId id;
@@ -29,12 +29,12 @@ final class RoomRoute extends TypedRoute<void> {
 }
 
 /// A subtype with the same fields as [RoomRoute].
-final class FeaturedRoomRoute extends RoomRoute {
+class FeaturedRoomRoute extends RoomRoute {
   const FeaturedRoomRoute(super.id);
 }
 
 /// A route without fields.
-final class RoomsRoute extends TypedRoute<void> {
+class RoomsRoute extends TypedRoute<void> {
   const RoomsRoute();
 
   @override
@@ -42,7 +42,7 @@ final class RoomsRoute extends TypedRoute<void> {
 }
 
 /// A route with two fields of the same type, where the order matters.
-final class ProfileRoute extends TypedRoute<void> {
+class ProfileRoute extends TypedRoute<void> {
   const ProfileRoute(this.userId, this.tab);
 
   final String userId;
@@ -53,7 +53,7 @@ final class ProfileRoute extends TypedRoute<void> {
 }
 
 /// A route that keeps a mutable list among its fields.
-final class SearchRoute extends TypedRoute<void> {
+class SearchRoute extends TypedRoute<void> {
   const SearchRoute(this.tags);
 
   final List<String> tags;
@@ -63,7 +63,7 @@ final class SearchRoute extends TypedRoute<void> {
 }
 
 /// A route that returns the edited text.
-final class EditNoteRoute extends TypedRoute<String> {
+class EditNoteRoute extends TypedRoute<String> {
   const EditNoteRoute();
 
   @override
@@ -72,7 +72,7 @@ final class EditNoteRoute extends TypedRoute<String> {
 
 /// A route that implements [TypedRoute] with its own, case-insensitive
 /// equality instead of extending it.
-final class CaseInsensitiveRoute implements TypedRoute<void> {
+class CaseInsensitiveRoute implements TypedRoute<void> {
   const CaseInsensitiveRoute(this.key);
 
   final String key;
@@ -96,7 +96,7 @@ final class CaseInsensitiveRoute implements TypedRoute<void> {
 abstract interface class AuthArea {}
 
 /// A route behind authentication, marked with [AuthArea].
-final class AccountRoute extends TypedRoute<void> implements AuthArea {
+class AccountRoute extends TypedRoute<void> implements AuthArea {
   const AccountRoute();
 
   @override

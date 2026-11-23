@@ -31,7 +31,7 @@ Widget _build(ScenarioFrame frame) => RouterDemo(
   ),
 );
 
-final class StepRoute extends TypedRoute<void> {
+class StepRoute extends TypedRoute<void> {
   const StepRoute(this.number);
 
   final int number;
@@ -42,7 +42,7 @@ final class StepRoute extends TypedRoute<void> {
 
 bool _isFirstStep(TypedRoute<Object?> route) => route == const StepRoute(1);
 
-final class _StepPage extends StatelessWidget {
+class _StepPage extends StatelessWidget {
   const _StepPage(this.step);
 
   final StepRoute step;

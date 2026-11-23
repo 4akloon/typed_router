@@ -21,7 +21,7 @@ Material (`package:material_ui`):
 import 'package:material_ui/material_ui.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
-final class MaterialPageFactory implements PageFactory {
+class MaterialPageFactory implements PageFactory {
   const MaterialPageFactory({this.fullscreenDialog = false});
 
   final bool fullscreenDialog;
@@ -42,7 +42,7 @@ Cupertino (`package:cupertino_ui`):
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
-final class CupertinoPageFactory implements PageFactory {
+class CupertinoPageFactory implements PageFactory {
   const CupertinoPageFactory({this.fullscreenDialog = false});
 
   final bool fullscreenDialog;

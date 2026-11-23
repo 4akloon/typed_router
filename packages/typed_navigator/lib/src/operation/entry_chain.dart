@@ -5,7 +5,7 @@ import 'package:typed_navigator/src/state/navigation_entry.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
 
 /// Makes new stack entries with their levels.
-final class EntryChain {
+class EntryChain {
   /// Creates entries whose levels [_shellPath] decides.
   EntryChain(this._shellPath);
 

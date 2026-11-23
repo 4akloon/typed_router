@@ -59,35 +59,35 @@ List<TreeNode<NoParentRoute>> signInRoutes(SignInSession session) => [
   ),
 ];
 
-final class HomeRoute extends TypedRoute<void> {
+class HomeRoute extends TypedRoute<void> {
   const HomeRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class AccountRoute extends TypedRoute<void> implements AuthArea {
+class AccountRoute extends TypedRoute<void> implements AuthArea {
   const AccountRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class AdminRoute extends TypedRoute<void> implements AuthArea {
+class AdminRoute extends TypedRoute<void> implements AuthArea {
   const AdminRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class NotAllowedRoute extends TypedRoute<void> {
+class NotAllowedRoute extends TypedRoute<void> {
   const NotAllowedRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class SignInRoute extends TypedRoute<void> {
+class SignInRoute extends TypedRoute<void> {
   const SignInRoute({required this.returnTo});
 
   /// Where to go once signed in.

@@ -14,7 +14,7 @@ import 'package:typed_navigator/typed_navigator.dart';
 ///   pageFactory: const CupertinoPageFactory(),
 /// );
 /// ```
-final class CupertinoPageFactory implements PageFactory {
+class CupertinoPageFactory implements PageFactory {
   /// Creates the factory; [fullscreenDialog] is passed to every page.
   const CupertinoPageFactory({this.fullscreenDialog = false});
 

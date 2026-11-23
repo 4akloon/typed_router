@@ -8,9 +8,9 @@ import 'package:typed_navigator/typed_navigator.dart';
 
 import '../support/route_fixtures.dart';
 
-final class RoomsBranch {}
+class RoomsBranch {}
 
-final class AccountBranch {}
+class AccountBranch {}
 
 Widget _frame(
   BuildContext context,

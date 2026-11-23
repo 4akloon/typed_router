@@ -7,7 +7,7 @@ import 'package:typed_navigator/src/state/shell_level.dart';
 /// (Flutter attaches an observer to one navigator only). The lists stay the
 /// same between builds, so a navigator does not detach and attach its observers
 /// on every navigation.
-final class NavigatorObservers {
+class NavigatorObservers {
   /// Creates the observers around the app's [observers].
   NavigatorObservers(List<NavigatorObserver> observers)
     : root = List.unmodifiable(observers);

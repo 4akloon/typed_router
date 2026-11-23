@@ -17,7 +17,7 @@ typedef RoutePredicate = bool Function(TypedRoute<Object?> route);
 /// anything happens when the operation cannot be planned. New entries get their
 /// levels from [EntryChain]; the state keeps the stacks of branches not on
 /// screen as the active path changes.
-final class NavigationPlanner {
+class NavigationPlanner {
   /// Creates a planner over the routes of [_tree] that makes entries with
   /// [_entryChain], plans `go` with [_goPlan] and switches branches with
   /// [_branchSwitch].

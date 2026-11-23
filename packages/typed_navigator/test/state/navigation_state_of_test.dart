@@ -11,7 +11,7 @@ import '../support/shell_fixtures.dart' show settleAfter;
 import '../support/state_fixtures.dart';
 
 /// Shows the state's top route, read through [NavigationState.of].
-final class _TopLabel extends StatelessWidget {
+class _TopLabel extends StatelessWidget {
   const _TopLabel();
 
   @override

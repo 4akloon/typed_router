@@ -12,7 +12,7 @@ import 'operation_fixtures.dart';
 import 'route_fixtures.dart';
 
 /// A form under rooms that refuses the back button.
-final class FormRoute extends TypedRoute<void> {
+class FormRoute extends TypedRoute<void> {
   const FormRoute();
 
   @override
@@ -20,7 +20,7 @@ final class FormRoute extends TypedRoute<void> {
 }
 
 /// A first page that keeps the app open on back.
-final class ExitGuardRoute extends TypedRoute<void> {
+class ExitGuardRoute extends TypedRoute<void> {
   const ExitGuardRoute();
 
   @override

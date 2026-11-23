@@ -19,7 +19,7 @@ abstract interface class EntryLifecycle {
   void stackDisposed(List<NavigationEntry> entries);
 }
 
-final class _IgnoringEntryLifecycle implements EntryLifecycle {
+class _IgnoringEntryLifecycle implements EntryLifecycle {
   const _IgnoringEntryLifecycle();
 
   @override

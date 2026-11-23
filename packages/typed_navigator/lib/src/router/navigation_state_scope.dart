@@ -5,7 +5,7 @@ import 'package:typed_navigator/src/state/navigation_state.dart';
 /// `NavigationState.of` rebuilds on every navigation. Next to
 /// `TypedRouterScope`, which holds the router itself and does not change when
 /// the state does.
-final class NavigationStateScope extends InheritedWidget {
+class NavigationStateScope extends InheritedWidget {
   /// Puts [state] above [child].
   const NavigationStateScope({
     required this.state,

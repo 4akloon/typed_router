@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Public classes are open: `TypedRouter`, `NavigationState`, the tree
+  nodes, `PageRequest`, `NavigatorSlot`, `RedirectChainError` and
+  `StatefulShell` are no longer `final`, as go_router's classes are not.
+  An app can fake the router for code it passes the router to
+  (`implements TypedRouter`), declare nodes as classes
+  (`extends RouteNode<RoomRoute>`, passing everything to the super
+  constructor) and fake a state for its own code. `PageRequest`'s
+  constructor is public, to test an app's own page factory.
+
 - **Breaking:** the repository is a pub workspace; the library depends on
   `flutter` and `meta` only and needs Flutter 3.44 or later.
   **Migration:**

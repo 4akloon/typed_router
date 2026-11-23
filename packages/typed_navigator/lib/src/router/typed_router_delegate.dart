@@ -15,7 +15,7 @@ import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 /// pages the navigator removes by itself.
 ///
 /// [Router] listens to it, so every commit rebuilds the navigator.
-final class TypedRouterDelegate extends RouterDelegate<Object> {
+class TypedRouterDelegate extends RouterDelegate<Object> {
   /// Creates the delegate of `router`, showing `controller`'s state as
   /// `pages`.
   TypedRouterDelegate({

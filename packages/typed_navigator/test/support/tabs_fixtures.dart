@@ -9,18 +9,18 @@ import 'package:typed_navigator/typed_navigator.dart';
 import 'app_fixtures.dart';
 import 'route_fixtures.dart';
 
-final class RoomsBranch {}
+class RoomsBranch {}
 
-final class FriendsBranch {}
+class FriendsBranch {}
 
-final class FriendsRoute extends TypedRoute<void> {
+class FriendsRoute extends TypedRoute<void> {
   const FriendsRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class FriendRoute extends TypedRoute<String> {
+class FriendRoute extends TypedRoute<String> {
   const FriendRoute(this.name);
 
   final String name;
@@ -33,11 +33,11 @@ const friends = FriendsRoute();
 const ann = FriendRoute('ann');
 
 /// Records every screen created, by its text.
-final class ScreenLog {
+class ScreenLog {
   final List<String> created = [];
 }
 
-final class LoggedScreen extends StatefulWidget {
+class LoggedScreen extends StatefulWidget {
   const LoggedScreen(this.text, this.log, {super.key});
 
   final String text;
@@ -47,7 +47,7 @@ final class LoggedScreen extends StatefulWidget {
   State<LoggedScreen> createState() => _LoggedScreenState();
 }
 
-final class _LoggedScreenState extends State<LoggedScreen> {
+class _LoggedScreenState extends State<LoggedScreen> {
   @override
   void initState() {
     super.initState();

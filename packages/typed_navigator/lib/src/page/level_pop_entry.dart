@@ -10,7 +10,7 @@ import 'package:typed_navigator/src/page/level_inside.dart';
 /// page as well (flutter/flutter#152323); a level off screen does not take it
 /// at all, as the router's pages. A `maybePop` the entry turns away goes
 /// inside, where the system back button goes too.
-final class LevelPopEntry extends PopEntry<Object?> {
+class LevelPopEntry extends PopEntry<Object?> {
   /// Creates the entry; [_inside] gives what is inside the level now.
   LevelPopEntry(this._inside);
 

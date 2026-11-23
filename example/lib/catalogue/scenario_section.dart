@@ -3,7 +3,7 @@ import 'package:typed_navigator_example/catalogue/scenario.dart';
 /// A heading of the catalogue and the scenarios under it.
 ///
 /// Compared by identity: every section is a single `const` instance.
-final class ScenarioSection {
+class ScenarioSection {
   const ScenarioSection({required this.title, required this.scenarios});
 
   final String title;

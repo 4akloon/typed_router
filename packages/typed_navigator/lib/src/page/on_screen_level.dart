@@ -7,7 +7,7 @@ import 'package:typed_navigator/src/page/on_screen_scope.dart';
 ///
 /// `ModalRoute.of` makes it rebuild when a route opens or closes above
 /// that page, so a dialog over a shell takes the back gesture itself.
-final class OnScreenLevel extends StatelessWidget {
+class OnScreenLevel extends StatelessWidget {
   /// Creates the level around [child], the nested navigator.
   const OnScreenLevel({required this.isActive, required this.child, super.key});
 

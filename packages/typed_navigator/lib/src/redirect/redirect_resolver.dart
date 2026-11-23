@@ -16,7 +16,7 @@ typedef RouterRedirect =
 /// Finds where one target is redirected: the router's redirect first, then the
 /// shells and nodes of every checked route from the top of the tree down; the
 /// first redirect that names another route wins.
-final class RedirectResolver {
+class RedirectResolver {
   /// Creates a resolver over [tree] with the router's optional redirect.
   RedirectResolver({required this._tree, required this._routerRedirect});
 

@@ -30,7 +30,11 @@ part of 'tree_node.dart';
 ///   ],
 /// )
 /// ```
-final class ShellNode<P> extends TreeNode<P> {
+///
+/// A feature module may declare a node as a class of its own that extends
+/// this one and passes everything to the super constructor. Overriding
+/// members is not supported: the router relies on them.
+class ShellNode<P> extends TreeNode<P> {
   /// Creates a shell around [children]; the router throws [ArgumentError]
   /// when it has none.
   const ShellNode({

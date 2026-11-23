@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 /// The router's `RedirectScope` attaches its context when it is built and
 /// detaches it when it leaves the tree. Without a context, navigation runs
 /// no redirects; they run when the router is shown again.
-final class RouterMount {
+class RouterMount {
   BuildContext? _context;
 
   /// The context of the widget at the root of the router's delegate, or

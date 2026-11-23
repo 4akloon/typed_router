@@ -9,7 +9,7 @@ import 'package:typed_navigator/src/tree/tree_node.dart';
 
 /// The checks of a [StatefulShellNode] when the router is built: each fails
 /// with an [ArgumentError] that says how to fix it.
-final class TabsValidation {
+class TabsValidation {
   /// Creates the checks.
   const TabsValidation();
 

@@ -43,7 +43,7 @@ import 'package:typed_navigator/src/tree/tree_node.dart';
 ///   refreshListenable: session,
 /// );
 /// ```
-final class TypedRouter implements RouterConfig<Object>, Listenable {
+class TypedRouter implements RouterConfig<Object>, Listenable {
   /// Creates a router over the tree of [routes] that starts at
   /// [initialRoute], with the routes above it built from the tree.
   /// [pageFactory] turns every screen into a [Page] unless the route's node

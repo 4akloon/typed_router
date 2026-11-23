@@ -19,7 +19,7 @@ abstract interface class FramePhase {
   void afterFrame(VoidCallback callback);
 }
 
-final class _SchedulerFramePhase implements FramePhase {
+class _SchedulerFramePhase implements FramePhase {
   const _SchedulerFramePhase();
 
   /// [BindingBase.debugBindingType] answers only in debug builds, which is

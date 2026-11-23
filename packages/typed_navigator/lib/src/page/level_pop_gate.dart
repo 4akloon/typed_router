@@ -13,7 +13,7 @@ import 'package:typed_navigator/src/page/on_screen_scope.dart';
 /// or a page's `PopScope` changed, as the router's own gate does when
 /// another branch shows), and when the level's page or its place on
 /// screen changes.
-final class LevelPopGate extends StatefulWidget {
+class LevelPopGate extends StatefulWidget {
   /// Creates the gate around [child], the level's frame.
   const LevelPopGate({required this.inside, required this.child, super.key});
 
@@ -27,7 +27,7 @@ final class LevelPopGate extends StatefulWidget {
   State<LevelPopGate> createState() => _LevelPopGateState();
 }
 
-final class _LevelPopGateState extends State<LevelPopGate> {
+class _LevelPopGateState extends State<LevelPopGate> {
   // Reads the widget when asked: the router rebuilds it with each state.
   late final LevelPopEntry _entry = LevelPopEntry(() => widget.inside);
   ModalRoute<Object?>? _route;

@@ -30,7 +30,7 @@ import 'package:typed_navigator/src/tree/tree_node.dart';
 ///
 /// Validates while wiring: the tree, the initial route and the redirect limit
 /// throw [ArgumentError] here.
-final class RouterParts {
+class RouterParts {
   /// Wires the collaborators of a router; see `TypedRouter.new` for the
   /// arguments.
   factory RouterParts({

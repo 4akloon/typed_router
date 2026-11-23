@@ -51,7 +51,7 @@ Future<TypedRouter> _pumpMaintenance(
   return router;
 }
 
-final class _Maintenance extends InheritedWidget {
+class _Maintenance extends InheritedWidget {
   const _Maintenance({required this.isOn, required super.child});
 
   final bool isOn;

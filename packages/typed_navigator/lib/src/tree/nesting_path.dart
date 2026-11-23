@@ -4,7 +4,7 @@ import 'package:typed_navigator/src/tree/nesting.dart';
 /// Where a node sits while the tree is walked: the shells and branches around
 /// it in the tree, the ones its routes are shown in, and the slots open on the
 /// way. An immutable value.
-final class NestingPath {
+class NestingPath {
   /// The path at the top of the tree: no nesting, only the root slot.
   const NestingPath.top()
     : guarding = const [],

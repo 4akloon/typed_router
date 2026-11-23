@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `PredictiveBackGesture` and `PlatformNavigationLog` are no longer
+  `final`.
+
 - The widget test utilities of typed_navigator (`TypedNavigatorTester`,
   `PredictiveBackGesture`, `PlatformNavigationLog`) move here from
   `package:typed_navigator/testing.dart`. Add this package to

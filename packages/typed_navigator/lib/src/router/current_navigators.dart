@@ -8,7 +8,7 @@ import 'package:typed_navigator/src/state/shell_level.dart';
 /// Starts at the root and follows the levels (shells, branches) of the top
 /// entry inward; stops at a level whose page is not current (a dialog or
 /// another page above it), so back reaches that first.
-final class CurrentNavigators {
+class CurrentNavigators {
   /// Creates the lookup.
   const CurrentNavigators();
 

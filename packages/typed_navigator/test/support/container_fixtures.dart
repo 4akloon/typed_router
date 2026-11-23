@@ -10,15 +10,14 @@ import 'route_fixtures.dart';
 import 'tabs_fixtures.dart';
 
 /// Rotates for ever while its ticker is enabled.
-final class Spinner extends StatefulWidget {
+class Spinner extends StatefulWidget {
   const Spinner({super.key});
 
   @override
   State<Spinner> createState() => _SpinnerState();
 }
 
-final class _SpinnerState extends State<Spinner>
-    with SingleTickerProviderStateMixin {
+class _SpinnerState extends State<Spinner> with SingleTickerProviderStateMixin {
   late final AnimationController _rotation = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 1),
@@ -37,7 +36,7 @@ final class _SpinnerState extends State<Spinner>
 
 /// The last shell the tabs' builder got, for tests whose container does
 /// not put the shell itself in the tree.
-final class ShellCapture {
+class ShellCapture {
   StatefulShell? shell;
 
   /// The captured shell; fails the test when the builder has not run.

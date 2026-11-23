@@ -6,7 +6,7 @@ import 'package:typed_navigator/src/state/shell_level.dart';
 /// What is inside a level's page (a shell's or a tabs instance's) for back: the
 /// current navigators of the level and of the levels inside it, toward the top
 /// entry of the state.
-final class LevelInside {
+class LevelInside {
   /// Creates the view of [_level] in [_state]; [_currentNavigators] finds
   /// the navigators.
   const LevelInside(this._level, this._state, this._currentNavigators);

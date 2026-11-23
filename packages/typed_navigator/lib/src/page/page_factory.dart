@@ -18,7 +18,7 @@ import 'package:typed_navigator/src/page/page_request.dart';
 /// not decide whether a page takes back gestures: the router does.
 ///
 /// ```dart
-/// final class FadePageFactory implements PageFactory {
+/// class FadePageFactory implements PageFactory {
 ///   const FadePageFactory();
 ///
 ///   @override

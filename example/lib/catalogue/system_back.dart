@@ -8,7 +8,7 @@ import 'package:typed_navigator/typed_navigator.dart';
 /// [RootBackButtonDispatcher] asks the current navigators to `maybePop`, so
 /// a dialog closes first and `PopScope` can refuse. When nothing pops,
 /// Android would close the app; the demo reports it instead of quitting.
-final class SystemBack {
+class SystemBack {
   const SystemBack(this.router);
 
   final TypedRouter router;

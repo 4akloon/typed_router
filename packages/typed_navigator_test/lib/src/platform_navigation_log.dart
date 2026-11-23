@@ -19,7 +19,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// ```
 ///
 /// Experimental until 1.0: it may change without a major version.
-final class PlatformNavigationLog {
+class PlatformNavigationLog {
   /// Starts recording; stops when the test ends.
   PlatformNavigationLog(WidgetTester tester) {
     final messenger = tester.binding.defaultBinaryMessenger

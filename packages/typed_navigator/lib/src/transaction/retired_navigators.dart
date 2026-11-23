@@ -12,7 +12,7 @@ import 'package:typed_navigator/src/transaction/entry_lifecycle.dart';
 /// navigator is still mounted, this pops every route above its first one,
 /// deepest navigator first, so those routes complete with `null`. Pages it
 /// pops are already gone from the state; the router ignores them.
-final class RetiredNavigators implements EntryLifecycle {
+class RetiredNavigators implements EntryLifecycle {
   /// Creates the lifecycle.
   const RetiredNavigators();
 

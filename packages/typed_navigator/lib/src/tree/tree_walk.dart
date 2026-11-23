@@ -19,7 +19,7 @@ import 'package:typed_navigator/src/tree/tree_node.dart';
 /// branch start their own chains inside that branch's level. A route with a
 /// `parentNavigatorSlot` is shown in that slot's navigator, and its children
 /// with it.
-final class TreeWalk {
+class TreeWalk {
   /// Creates a walk that registers into [_registry].
   TreeWalk(this._registry);
 

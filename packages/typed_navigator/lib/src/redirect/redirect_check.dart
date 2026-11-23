@@ -13,7 +13,7 @@ sealed class RedirectCheck {
 
 /// An operation: only the route it goes to, with its ancestors. The routes
 /// below were checked when they were opened.
-final class NewRouteCheck extends RedirectCheck {
+class NewRouteCheck extends RedirectCheck {
   /// Creates the check of an operation's route.
   const NewRouteCheck();
 
@@ -25,7 +25,7 @@ final class NewRouteCheck extends RedirectCheck {
 
 /// Showing the router or re-checking it: every route on the stack, since
 /// any of them may have become forbidden.
-final class WholeStackCheck extends RedirectCheck {
+class WholeStackCheck extends RedirectCheck {
   /// Creates the check of the whole stack.
   const WholeStackCheck();
 

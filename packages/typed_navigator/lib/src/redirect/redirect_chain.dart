@@ -5,7 +5,7 @@ import 'package:typed_navigator/src/route/typed_route.dart';
 /// than the limit.
 ///
 /// Mutable and short-lived: one per navigation, owned by its redirect step.
-final class RedirectChain {
+class RedirectChain {
   /// Starts a chain at the route the navigation went to.
   RedirectChain(TypedRoute<Object?> start, {required this._redirectLimit})
     : _routes = [start];

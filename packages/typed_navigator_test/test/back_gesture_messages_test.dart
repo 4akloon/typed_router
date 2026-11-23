@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:typed_navigator_test/typed_navigator_test.dart';
 
 /// Takes every back gesture and records what reaches the framework.
-final class _GestureRecorder with WidgetsBindingObserver {
+class _GestureRecorder with WidgetsBindingObserver {
   final List<String> calls = [];
 
   @override

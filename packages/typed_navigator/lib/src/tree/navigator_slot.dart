@@ -14,7 +14,7 @@
 ///   build: (context, route) => const CreateRoomPage(),
 /// )
 /// ```
-final class NavigatorSlot {
+class NavigatorSlot {
   /// A new slot, for one `ShellNode` or `BranchNode`.
   NavigatorSlot();
 

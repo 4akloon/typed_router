@@ -12,7 +12,7 @@ import 'package:typed_navigator/src/route/typed_route.dart';
 /// Created where [T] is known (`push<T>`), so it can check results that
 /// arrive untyped. Completes exactly once: with the recorded result, or
 /// `null` when none was recorded.
-final class PendingResult<T> {
+class PendingResult<T> {
   final Completer<T?> _completer = Completer<T?>();
   T? _result;
 

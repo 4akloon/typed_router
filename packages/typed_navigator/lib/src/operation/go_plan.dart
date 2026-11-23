@@ -11,7 +11,7 @@ import 'package:typed_navigator/src/tree/route_tree.dart';
 /// below the tabs followed by that branch's kept stack. New entries reuse
 /// the shells and tabs of the entries they replace, wherever those stand
 /// on the active path.
-final class GoPlan {
+class GoPlan {
   /// Creates the plan over routes of [_tree], making entries with
   /// [_entryChain].
   GoPlan(this._tree, this._entryChain);

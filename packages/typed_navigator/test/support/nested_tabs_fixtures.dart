@@ -9,10 +9,10 @@ import 'route_fixtures.dart';
 import 'tabs_fixtures.dart';
 
 /// The outer branch holding the rooms | friends tabs.
-final class OuterRooms {}
+class OuterRooms {}
 
 /// The outer branch with the account.
-final class OuterAccount {}
+class OuterAccount {}
 
 /// Outer tabs whose first branch holds the rooms | friends tabs.
 List<TreeNode<NoParentRoute>> nestedTabsRoutes(ScreenLog log) => [

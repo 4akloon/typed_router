@@ -87,7 +87,7 @@ void main() {
 }
 
 /// A route only these tests navigate to.
-final class SignInRouteForSteps extends TypedRoute<void> {
+class SignInRouteForSteps extends TypedRoute<void> {
   const SignInRouteForSteps();
 
   @override

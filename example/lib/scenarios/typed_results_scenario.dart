@@ -37,7 +37,7 @@ Widget _build(ScenarioFrame frame) => RouterDemo(
   ),
 );
 
-final class ProfileRoute extends TypedRoute<void> {
+class ProfileRoute extends TypedRoute<void> {
   const ProfileRoute();
 
   @override
@@ -45,7 +45,7 @@ final class ProfileRoute extends TypedRoute<void> {
 }
 
 /// Returns the new name when popped.
-final class EditNameRoute extends TypedRoute<String> {
+class EditNameRoute extends TypedRoute<String> {
   const EditNameRoute(this.current);
 
   final String current;
@@ -54,14 +54,14 @@ final class EditNameRoute extends TypedRoute<String> {
   List<Object?> get fields => [current];
 }
 
-final class _ProfilePage extends StatefulWidget {
+class _ProfilePage extends StatefulWidget {
   const _ProfilePage();
 
   @override
   State<_ProfilePage> createState() => _ProfilePageState();
 }
 
-final class _ProfilePageState extends State<_ProfilePage> {
+class _ProfilePageState extends State<_ProfilePage> {
   String _name = 'Ann';
   String _lastResult = 'nothing yet';
 
@@ -85,7 +85,7 @@ final class _ProfilePageState extends State<_ProfilePage> {
   );
 }
 
-final class _EditNamePage extends StatefulWidget {
+class _EditNamePage extends StatefulWidget {
   const _EditNamePage(this.current);
 
   final String current;
@@ -94,7 +94,7 @@ final class _EditNamePage extends StatefulWidget {
   State<_EditNamePage> createState() => _EditNamePageState();
 }
 
-final class _EditNamePageState extends State<_EditNamePage> {
+class _EditNamePageState extends State<_EditNamePage> {
   late final TextEditingController _name = TextEditingController(
     text: widget.current,
   );

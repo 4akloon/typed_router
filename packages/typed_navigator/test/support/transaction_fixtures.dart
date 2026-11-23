@@ -9,7 +9,7 @@ import 'package:typed_navigator/src/transaction/navigation_step.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
 /// A step that returns [replacement] and records what it was given.
-final class ReplacingStep implements NavigationStep {
+class ReplacingStep implements NavigationStep {
   ReplacingStep(this.replacement);
 
   final NavigationState replacement;
@@ -23,14 +23,14 @@ final class ReplacingStep implements NavigationStep {
 }
 
 /// A step that fails.
-final class ThrowingStep implements NavigationStep {
+class ThrowingStep implements NavigationStep {
   @override
   NavigationState apply(NavigationState current, NavigationState candidate) =>
       throw StateError('The step failed.');
 }
 
 /// A step that wrongly navigates from inside the transaction.
-final class NavigatingStep implements NavigationStep {
+class NavigatingStep implements NavigationStep {
   late NavigationController controller;
 
   @override
@@ -41,7 +41,7 @@ final class NavigatingStep implements NavigationStep {
 }
 
 /// A frame phase the test switches by hand.
-final class ManualFramePhase implements FramePhase {
+class ManualFramePhase implements FramePhase {
   @override
   bool isBuilding = false;
 
@@ -61,7 +61,7 @@ final class ManualFramePhase implements FramePhase {
 }
 
 /// Records every report of entries that left the state.
-final class RecordingEntryLifecycle implements EntryLifecycle {
+class RecordingEntryLifecycle implements EntryLifecycle {
   final List<List<NavigationEntry>> reports = [];
 
   @override
@@ -74,7 +74,7 @@ final class RecordingEntryLifecycle implements EntryLifecycle {
 
 /// Collects errors reported through [FlutterError.reportError] while a
 /// test runs; restores the previous handler afterwards.
-final class ReportedErrors {
+class ReportedErrors {
   final List<FlutterErrorDetails> details = [];
   FlutterExceptionHandler? _previousHandler;
 

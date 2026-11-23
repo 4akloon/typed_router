@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/router/typed_router.dart';
 
 /// Carries the router above its root navigator, for `TypedRouter.of`.
-final class TypedRouterScope extends InheritedWidget {
+class TypedRouterScope extends InheritedWidget {
   /// Puts [router] above [child].
   const TypedRouterScope({
     required this.router,

@@ -4,7 +4,7 @@ import 'package:typed_navigator_example/catalogue/instructions_panel.dart';
 import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
 
 /// A running demo above its instructions panel.
-final class FramedScenario extends StatelessWidget {
+class FramedScenario extends StatelessWidget {
   const FramedScenario({
     required this.frame,
     required this.router,

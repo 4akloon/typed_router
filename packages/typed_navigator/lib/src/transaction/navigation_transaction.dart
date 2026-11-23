@@ -6,7 +6,7 @@ import 'package:typed_navigator/src/transaction/navigation_step.dart';
 ///
 /// Knows whether it is running, so that a navigation started from inside a step
 /// can be rejected. The steps belong to one navigation, not to the transaction.
-final class NavigationTransaction {
+class NavigationTransaction {
   bool _isRunning = false;
 
   /// Whether a step is being applied right now.

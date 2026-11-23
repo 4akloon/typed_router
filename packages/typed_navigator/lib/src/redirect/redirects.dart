@@ -6,7 +6,7 @@ import 'package:typed_navigator/src/transaction/navigation_step.dart';
 
 /// The redirects of a router: gives each navigation its redirect step while the
 /// router is shown.
-final class Redirects {
+class Redirects {
   /// Creates the redirects of a router; throws [ArgumentError] when
   /// [redirectLimit] is negative.
   Redirects({

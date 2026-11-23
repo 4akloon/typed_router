@@ -7,7 +7,7 @@ import 'package:typed_navigator/typed_navigator.dart';
 import 'app_fixtures.dart';
 
 /// Records what it hears: `push rooms`, `pop room`, `push pageless`.
-final class LogObserver extends NavigatorObserver {
+class LogObserver extends NavigatorObserver {
   final List<String> events = [];
 
   String _name(Route<dynamic> route) => switch (route.settings) {

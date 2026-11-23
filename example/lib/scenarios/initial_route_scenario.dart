@@ -59,14 +59,14 @@ final List<TreeNode<NoParentRoute>> _routes = [
   ),
 ];
 
-final class TopicsRoute extends TypedRoute<void> {
+class TopicsRoute extends TypedRoute<void> {
   const TopicsRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class TopicRoute extends TypedRoute<void> {
+class TopicRoute extends TypedRoute<void> {
   const TopicRoute(this.name);
 
   final String name;
@@ -75,7 +75,7 @@ final class TopicRoute extends TypedRoute<void> {
   List<Object?> get fields => [name];
 }
 
-final class ArticleRoute extends TypedRoute<void> {
+class ArticleRoute extends TypedRoute<void> {
   const ArticleRoute(this.topic, this.number);
 
   final String topic;
@@ -85,7 +85,7 @@ final class ArticleRoute extends TypedRoute<void> {
   List<Object?> get fields => [topic, number];
 }
 
-final class _TopicsPage extends StatelessWidget {
+class _TopicsPage extends StatelessWidget {
   const _TopicsPage();
 
   @override

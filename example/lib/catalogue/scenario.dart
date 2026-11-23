@@ -4,7 +4,7 @@ import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
 /// One entry of the catalogue: a small app showing one way to navigate.
 ///
 /// Compared by identity: every scenario is a single `const` instance.
-final class Scenario {
+class Scenario {
   const Scenario({
     required this.title,
     required this.summary,

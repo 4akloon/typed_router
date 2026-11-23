@@ -8,7 +8,7 @@ import 'package:typed_navigator/typed_navigator.dart';
 import 'route_fixtures.dart';
 
 /// A route whose node has its own page factory, like a create-room sheet.
-final class CreateRoomRoute extends TypedRoute<void> {
+class CreateRoomRoute extends TypedRoute<void> {
   const CreateRoomRoute();
 
   @override
@@ -16,14 +16,14 @@ final class CreateRoomRoute extends TypedRoute<void> {
 }
 
 /// The rooms list; stateful, so tests can see whether its state survives.
-final class RoomsScreen extends StatefulWidget {
+class RoomsScreen extends StatefulWidget {
   const RoomsScreen({super.key});
 
   @override
   State<RoomsScreen> createState() => RoomsScreenState();
 }
 
-final class RoomsScreenState extends State<RoomsScreen> {
+class RoomsScreenState extends State<RoomsScreen> {
   @override
   Widget build(BuildContext context) => const Text('Rooms');
 }
@@ -74,12 +74,12 @@ class TestPage extends Page<Object?> {
 }
 
 /// The kind of page [SheetPageFactory] creates.
-final class SheetPage extends TestPage {
+class SheetPage extends TestPage {
   const SheetPage({required super.child, super.key, super.name});
 }
 
 /// The router's factory in tests: [TestPage]s.
-final class TestPageFactory implements PageFactory {
+class TestPageFactory implements PageFactory {
   const TestPageFactory();
 
   @override
@@ -88,7 +88,7 @@ final class TestPageFactory implements PageFactory {
 }
 
 /// A node's own factory: [SheetPage]s.
-final class SheetPageFactory implements PageFactory {
+class SheetPageFactory implements PageFactory {
   const SheetPageFactory();
 
   @override
@@ -97,7 +97,7 @@ final class SheetPageFactory implements PageFactory {
 }
 
 /// A factory that forgets to pass the request key.
-final class KeylessPageFactory implements PageFactory {
+class KeylessPageFactory implements PageFactory {
   const KeylessPageFactory();
 
   @override

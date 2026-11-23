@@ -13,7 +13,7 @@ import 'package:typed_navigator/src/transaction/transaction_outcome.dart';
 /// leaves no safe state to stay on, so the stack is kept with the error and the
 /// navigator shows the error screen. Does nothing while the router is not
 /// shown.
-final class StackRecheck {
+class StackRecheck {
   /// Creates the re-check of the stack [_controller] holds.
   StackRecheck(this._controller, this._planner, this._redirects);
 

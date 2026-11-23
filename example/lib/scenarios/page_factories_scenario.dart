@@ -47,7 +47,7 @@ Widget _build(ScenarioFrame frame) => RouterDemo(
   ),
 );
 
-final class _HomePage extends StatelessWidget {
+class _HomePage extends StatelessWidget {
   const _HomePage();
 
   @override
@@ -73,28 +73,28 @@ final class _HomePage extends StatelessWidget {
   }
 }
 
-final class HomeRoute extends TypedRoute<void> {
+class HomeRoute extends TypedRoute<void> {
   const HomeRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class DetailsRoute extends TypedRoute<void> {
+class DetailsRoute extends TypedRoute<void> {
   const DetailsRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class FiltersRoute extends TypedRoute<void> {
+class FiltersRoute extends TypedRoute<void> {
   const FiltersRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class PreviewRoute extends TypedRoute<void> {
+class PreviewRoute extends TypedRoute<void> {
   const PreviewRoute();
 
   @override

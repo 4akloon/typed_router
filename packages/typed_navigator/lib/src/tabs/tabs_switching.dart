@@ -4,7 +4,7 @@ import 'package:typed_navigator/src/tabs/branch_switching.dart';
 
 /// Switches the branches of one tabs instance through the router's stack
 /// operations, so a switch is a navigation with redirects.
-final class TabsSwitching implements BranchSwitching {
+class TabsSwitching implements BranchSwitching {
   /// Creates the switching of [_tabs] through [_operations].
   const TabsSwitching(this._operations, this._tabs);
 

@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
 /// A page factory of the app's own: screens fade in instead of sliding.
-final class FadePageFactory implements PageFactory {
+class FadePageFactory implements PageFactory {
   const FadePageFactory();
 
   @override
@@ -11,7 +11,7 @@ final class FadePageFactory implements PageFactory {
 }
 
 /// A page that fades its [child] in and out.
-final class _FadePage extends Page<Object?> {
+class _FadePage extends Page<Object?> {
   const _FadePage({required this.child, super.key, super.name});
 
   final Widget child;
@@ -22,7 +22,7 @@ final class _FadePage extends Page<Object?> {
 
 /// Shows the child of the page it holds now, not the one it was created
 /// with: the router updates pages in place (see `PageFactory`).
-final class _FadeRoute extends PageRoute<Object?> {
+class _FadeRoute extends PageRoute<Object?> {
   _FadeRoute(_FadePage page) : super(settings: page);
 
   _FadePage get _page => settings as _FadePage;

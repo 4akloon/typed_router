@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 /// navigator, which hides the app's `HeroControllerScope` from its pages:
 /// nested navigators fly heroes along the same path as the root one, an arc in
 /// a `MaterialApp`.
-final class HeroFlightScope extends InheritedWidget {
+class HeroFlightScope extends InheritedWidget {
   /// Creates the scope with the app's [createRectTween] above [child].
   const HeroFlightScope({
     required this.createRectTween,

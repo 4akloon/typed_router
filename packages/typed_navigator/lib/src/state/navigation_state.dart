@@ -21,7 +21,7 @@ import 'package:typed_navigator/src/state/stack_description.dart';
 /// if (state.contains<AuthArea>() && !session.isSignedIn) { ... }
 /// final RoomRoute? room = state.find<RoomRoute>();
 /// ```
-final class NavigationState {
+class NavigationState {
   /// Creates a state from the entries on the active path, bottom to top.
   ///
   /// Only the router creates states. An empty list is a bug in this
@@ -126,11 +126,13 @@ final class NavigationState {
   }
 
   /// Whether [other] holds the same pages (entries on screen and kept) and
-  /// [error]. Two states with equal routes but rebuilt pages differ.
+  /// [error]. Two states with equal routes but rebuilt pages differ, and
+  /// an app's own implementation equals no state of the router.
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is NavigationState &&
+      other.runtimeType == runtimeType &&
+          other is NavigationState &&
           listEquals(other._entries, _entries) &&
           other._inactive == _inactive &&
           other.error == error;

@@ -65,14 +65,14 @@ final List<TreeNode<NoParentRoute>> _routes = [
   RouteNode<HelpRoute>(build: (context, help) => const _HelpPage()),
 ];
 
-final class RoomsRoute extends TypedRoute<void> {
+class RoomsRoute extends TypedRoute<void> {
   const RoomsRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class RoomRoute extends TypedRoute<void> {
+class RoomRoute extends TypedRoute<void> {
   const RoomRoute(this.id);
 
   final int id;
@@ -81,7 +81,7 @@ final class RoomRoute extends TypedRoute<void> {
   List<Object?> get fields => [id];
 }
 
-final class MessageRoute extends TypedRoute<void> {
+class MessageRoute extends TypedRoute<void> {
   const MessageRoute(this.roomId, this.messageId);
 
   final int roomId;
@@ -91,14 +91,14 @@ final class MessageRoute extends TypedRoute<void> {
   List<Object?> get fields => [roomId, messageId];
 }
 
-final class HelpRoute extends TypedRoute<void> {
+class HelpRoute extends TypedRoute<void> {
   const HelpRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class _RoomPage extends StatelessWidget {
+class _RoomPage extends StatelessWidget {
   const _RoomPage(this.room);
 
   final RoomRoute room;
@@ -123,7 +123,7 @@ final class _RoomPage extends StatelessWidget {
   }
 }
 
-final class _HelpPage extends StatelessWidget {
+class _HelpPage extends StatelessWidget {
   const _HelpPage();
 
   @override

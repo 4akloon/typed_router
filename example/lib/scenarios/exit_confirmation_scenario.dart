@@ -44,28 +44,28 @@ Widget _build(ScenarioFrame frame) => RouterDemo(
   ),
 );
 
-final class HomeRoute extends TypedRoute<void> {
+class HomeRoute extends TypedRoute<void> {
   const HomeRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class DraftRoute extends TypedRoute<void> {
+class DraftRoute extends TypedRoute<void> {
   const DraftRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class _DraftPage extends StatefulWidget {
+class _DraftPage extends StatefulWidget {
   const _DraftPage();
 
   @override
   State<_DraftPage> createState() => _DraftPageState();
 }
 
-final class _DraftPageState extends State<_DraftPage> {
+class _DraftPageState extends State<_DraftPage> {
   bool _hasChanges = false;
 
   Future<bool> _confirmLeaving() async =>

@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 /// A button of a `DemoPage`, labelled with what it does.
-final class DemoButton extends StatelessWidget {
+class DemoButton extends StatelessWidget {
   const DemoButton(this.label, {required this.onPressed, super.key});
 
   final String label;

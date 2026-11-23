@@ -67,7 +67,7 @@ List<TreeNode<NoParentRoute>> _routes(ValueNotifier<List<String>> log) => [
 ];
 
 /// Writes what it hears to the log.
-final class _LogObserver extends NavigatorObserver {
+class _LogObserver extends NavigatorObserver {
   _LogObserver(this._add);
 
   final void Function(String line) _add;
@@ -81,7 +81,7 @@ final class _LogObserver extends NavigatorObserver {
       _add('observer: pop ${route.settings.name}');
 }
 
-final class _LogPage extends StatelessWidget {
+class _LogPage extends StatelessWidget {
   const _LogPage(this.title, this.log, {this.next});
 
   final String title;
@@ -111,21 +111,21 @@ final class _LogPage extends StatelessWidget {
   );
 }
 
-final class HomeRoute extends TypedRoute<void> {
+class HomeRoute extends TypedRoute<void> {
   const HomeRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class RoomsRoute extends TypedRoute<void> {
+class RoomsRoute extends TypedRoute<void> {
   const RoomsRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class RoomRoute extends TypedRoute<void> {
+class RoomRoute extends TypedRoute<void> {
   const RoomRoute();
 
   @override

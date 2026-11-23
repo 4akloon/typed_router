@@ -16,7 +16,7 @@ import 'package:typed_navigator/src/state/shell_level.dart';
 /// Entries that stand in the same level, one after another, become one page
 /// holding that level's navigator; inside it the same rule applies one level
 /// deeper. A state whose redirects failed becomes the error screen alone.
-final class NavigatorPages {
+class NavigatorPages {
   /// Creates the pages with [_routePages] for routes, [_levelPages] for
   /// shells and tabs, the router's [_pageFactory] for the error screen,
   /// which [_errorBuilder] builds (a plain one when it is `null`), and the

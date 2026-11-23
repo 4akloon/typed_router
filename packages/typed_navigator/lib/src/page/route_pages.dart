@@ -11,7 +11,7 @@ import 'package:typed_navigator/src/tree/route_tree.dart';
 
 /// Makes the page of one route entry: its node builds the screen, the
 /// node's own factory or the router's makes the page, keyed by the entry.
-final class RoutePages {
+class RoutePages {
   /// Creates pages for routes of `tree`, with `pageFactory` for nodes that
   /// have no factory of their own.
   RoutePages({required this._tree, required this._pageFactory});

@@ -5,7 +5,7 @@ part of 'shell_level.dart';
 /// The same instance keeps its navigator and the state of its frame; a new
 /// instance of the same node is another navigator. A shell no entry stands
 /// in does not exist.
-final class ShellEntry extends ShellLevel {
+class ShellEntry extends ShellLevel {
   /// Creates a new instance of [node].
   ShellEntry(this.node);
 

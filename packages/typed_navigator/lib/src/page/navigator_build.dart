@@ -11,7 +11,7 @@ import 'package:typed_navigator/src/state/stack_parts.dart';
 
 /// One build of the navigators for [_state]: the pages of every
 /// navigator, each nested navigator inside the page of its level.
-final class NavigatorBuild {
+class NavigatorBuild {
   /// Creates one build of the navigators for [_state].
   NavigatorBuild({
     required this._routePages,

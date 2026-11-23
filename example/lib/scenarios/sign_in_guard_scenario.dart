@@ -27,7 +27,7 @@ const signInGuardScenario = Scenario(
 Widget _build(ScenarioFrame frame) => _SignInGuardDemo(frame);
 
 /// Owns the session, which outlives the router's every navigation.
-final class _SignInGuardDemo extends StatefulWidget {
+class _SignInGuardDemo extends StatefulWidget {
   const _SignInGuardDemo(this.frame);
 
   final ScenarioFrame frame;
@@ -36,7 +36,7 @@ final class _SignInGuardDemo extends StatefulWidget {
   State<_SignInGuardDemo> createState() => _SignInGuardDemoState();
 }
 
-final class _SignInGuardDemoState extends State<_SignInGuardDemo> {
+class _SignInGuardDemoState extends State<_SignInGuardDemo> {
   final SignInSession _session = SignInSession();
 
   @override

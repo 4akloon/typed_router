@@ -18,7 +18,7 @@ import 'package:flutter/foundation.dart';
 /// (`implements AuthArea`) are welcome: they describe what the route is.
 ///
 /// ```dart
-/// final class RoomRoute extends TypedRoute<void> {
+/// class RoomRoute extends TypedRoute<void> {
 ///   const RoomRoute(this.id);
 ///
 ///   final RoomId id;
@@ -27,7 +27,7 @@ import 'package:flutter/foundation.dart';
 ///   List<Object?> get fields => [id];
 /// }
 ///
-/// final class RoomsRoute extends TypedRoute<void> {
+/// class RoomsRoute extends TypedRoute<void> {
 ///   const RoomsRoute();
 ///
 ///   @override

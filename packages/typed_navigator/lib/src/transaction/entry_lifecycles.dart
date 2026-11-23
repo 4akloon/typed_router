@@ -3,7 +3,7 @@ import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/transaction/entry_lifecycle.dart';
 
 /// Several lifecycles told about the same entries, in order.
-final class EntryLifecycles implements EntryLifecycle {
+class EntryLifecycles implements EntryLifecycle {
   /// Creates the lifecycle of [_lifecycles], told in this order.
   const EntryLifecycles(this._lifecycles);
 

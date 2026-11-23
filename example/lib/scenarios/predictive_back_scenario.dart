@@ -78,14 +78,14 @@ final List<TreeNode<NoParentRoute>> _routes = [
   ),
 ];
 
-final class AlbumsRoute extends TypedRoute<void> {
+class AlbumsRoute extends TypedRoute<void> {
   const AlbumsRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class AlbumRoute extends TypedRoute<void> {
+class AlbumRoute extends TypedRoute<void> {
   const AlbumRoute(this.name);
 
   final String name;
@@ -94,7 +94,7 @@ final class AlbumRoute extends TypedRoute<void> {
   List<Object?> get fields => [name];
 }
 
-final class PhotoRoute extends TypedRoute<void> {
+class PhotoRoute extends TypedRoute<void> {
   const PhotoRoute(this.album, this.number);
 
   final String album;

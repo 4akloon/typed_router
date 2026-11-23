@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 /// Built on `widgets.dart` only, like go_router's `ErrorScreen`, without a
 /// button home: home is the stack the redirects just failed on. Apps give
 /// their own screen through `errorBuilder`.
-final class RedirectErrorScreen extends StatelessWidget {
+class RedirectErrorScreen extends StatelessWidget {
   /// Creates the screen for [error].
   const RedirectErrorScreen({required this.error, super.key});
 

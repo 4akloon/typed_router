@@ -6,7 +6,7 @@ import 'package:typed_navigator_example/catalogue/system_back.dart';
 /// The bottom panel of a running demo: what to try, the router's state as
 /// it changes, a system back button for desktop and web, and the way back
 /// to the catalogue.
-final class InstructionsPanel extends StatefulWidget {
+class InstructionsPanel extends StatefulWidget {
   const InstructionsPanel({
     required this.frame,
     required this.router,
@@ -21,7 +21,7 @@ final class InstructionsPanel extends StatefulWidget {
   State<InstructionsPanel> createState() => _InstructionsPanelState();
 }
 
-final class _InstructionsPanelState extends State<InstructionsPanel> {
+class _InstructionsPanelState extends State<InstructionsPanel> {
   bool _isExpanded = true;
   String? _backOutcome;
 
@@ -81,7 +81,7 @@ final class _InstructionsPanelState extends State<InstructionsPanel> {
 }
 
 /// `State: RoomsRoute() > RoomRoute(7)`, rebuilt on every navigation.
-final class _StateLine extends StatelessWidget {
+class _StateLine extends StatelessWidget {
   const _StateLine({required this.router});
 
   final TypedRouter router;

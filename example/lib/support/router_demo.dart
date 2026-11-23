@@ -4,7 +4,7 @@ import 'package:typed_navigator_example/catalogue/scenario_frame.dart';
 
 /// A Material demo app over the router [createRouter] makes: created when
 /// the demo opens, disposed when it closes, as an app keeps its router.
-final class RouterDemo extends StatefulWidget {
+class RouterDemo extends StatefulWidget {
   const RouterDemo({
     required this.frame,
     required this.createRouter,
@@ -20,7 +20,7 @@ final class RouterDemo extends StatefulWidget {
   State<RouterDemo> createState() => _RouterDemoState();
 }
 
-final class _RouterDemoState extends State<RouterDemo> {
+class _RouterDemoState extends State<RouterDemo> {
   late final TypedRouter _router = widget.createRouter();
 
   @override

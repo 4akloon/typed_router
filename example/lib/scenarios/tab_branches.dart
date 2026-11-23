@@ -71,22 +71,22 @@ List<BranchNode<Object?>> tabBranches() => [
 ];
 
 /// Names the rooms tab.
-abstract final class RoomsBranch {}
+abstract class RoomsBranch {}
 
 /// Names the friends tab.
-abstract final class FriendsBranch {}
+abstract class FriendsBranch {}
 
 /// Names the profile tab.
-abstract final class ProfileBranch {}
+abstract class ProfileBranch {}
 
-final class RoomsRoute extends TypedRoute<void> {
+class RoomsRoute extends TypedRoute<void> {
   const RoomsRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class RoomRoute extends TypedRoute<void> {
+class RoomRoute extends TypedRoute<void> {
   const RoomRoute(this.id);
 
   final int id;
@@ -95,14 +95,14 @@ final class RoomRoute extends TypedRoute<void> {
   List<Object?> get fields => [id];
 }
 
-final class FriendsRoute extends TypedRoute<void> {
+class FriendsRoute extends TypedRoute<void> {
   const FriendsRoute();
 
   @override
   List<Object?> get fields => const [];
 }
 
-final class ProfileRoute extends TypedRoute<void> {
+class ProfileRoute extends TypedRoute<void> {
   const ProfileRoute();
 
   @override

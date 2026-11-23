@@ -5,7 +5,7 @@ import 'package:typed_navigator/src/tree/tree_node.dart';
 
 /// Where routes of one type sit in the tree, and how to build the routes
 /// above one of them.
-final class RoutePlacement {
+class RoutePlacement {
   /// A placement with no route above it, at [path].
   RoutePlacement.topLevel(this.node, {required this.path}) : _parentLink = null;
 
@@ -47,7 +47,7 @@ final class RoutePlacement {
 }
 
 /// The link from a placement to the one above it.
-final class _ParentLink {
+class _ParentLink {
   const _ParentLink(this._parent, this._buildParent);
 
   final RoutePlacement _parent;

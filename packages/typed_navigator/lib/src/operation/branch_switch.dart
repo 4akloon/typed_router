@@ -8,7 +8,7 @@ import 'package:typed_navigator/src/tree/route_tree.dart';
 /// The active path after switching or resetting a branch of a tabs instance, as
 /// go_router's `goBranch`: the entries below the tabs, then the branch's stack.
 /// What was above the tabs goes.
-final class BranchSwitch {
+class BranchSwitch {
   /// Creates the switch over routes of [_tree], making entries with
   /// [_entryChain] and resetting with [_goPlan].
   BranchSwitch(this._tree, this._entryChain, this._goPlan);

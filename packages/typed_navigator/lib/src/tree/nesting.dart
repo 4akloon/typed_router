@@ -17,7 +17,7 @@ sealed class Nesting {
 }
 
 /// Nesting inside a [ShellNode].
-final class ShellNesting extends Nesting {
+class ShellNesting extends Nesting {
   /// Creates the nesting inside [node].
   const ShellNesting(this.node);
 
@@ -42,7 +42,7 @@ final class ShellNesting extends Nesting {
 }
 
 /// Nesting inside one branch of a [StatefulShellNode].
-final class BranchNesting extends Nesting {
+class BranchNesting extends Nesting {
   /// Creates the nesting inside [branch] of [node].
   const BranchNesting(this.node, this.branch);
 

@@ -4,7 +4,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:typed_navigator/typed_navigator.dart';
 
-final class MaterialPageFactory implements PageFactory {
+class MaterialPageFactory implements PageFactory {
   const MaterialPageFactory({this.fullscreenDialog = false});
 
   final bool fullscreenDialog;

@@ -8,7 +8,7 @@ import 'package:typed_navigator/typed_navigator.dart';
 
 import '../support/route_fixtures.dart';
 
-class _OnAccount extends Fake implements NavigationState {
+class _OnAccount extends Fake implements TypedRouterState {
   @override
   TypedRoute<Object?> get top => const AccountRoute();
 }
@@ -17,7 +17,7 @@ class _FakeRouter extends Fake implements TypedRouter {
   final List<TypedRoute<Object?>> pushed = [];
 
   @override
-  NavigationState get state => _OnAccount();
+  TypedRouterState get state => _OnAccount();
 
   @override
   Future<T?> push<T>(TypedRoute<T> route) {
@@ -33,13 +33,13 @@ class _AccountButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
     onTap: () => TypedRouter.of(context).push(const RoomsRoute()).ignore(),
-    child: Text('On ${NavigationState.of(context).top}'),
+    child: Text('On ${TypedRouterState.of(context).top}'),
   );
 }
 
 void main() {
   testWidgets('a fake router in TypedRouterScope is found by TypedRouter.of '
-      'and NavigationState.of', (tester) async {
+      'and TypedRouterState.of', (tester) async {
     final router = _FakeRouter();
 
     await tester.pumpWidget(

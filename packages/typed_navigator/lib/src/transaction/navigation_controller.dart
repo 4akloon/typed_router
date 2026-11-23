@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/transaction/entry_lifecycle.dart';
 import 'package:typed_navigator/src/transaction/frame_phase.dart';
 import 'package:typed_navigator/src/transaction/left_entries.dart';
@@ -9,7 +9,7 @@ import 'package:typed_navigator/src/transaction/notification_after_frame.dart';
 import 'package:typed_navigator/src/transaction/step_failure_report.dart';
 import 'package:typed_navigator/src/transaction/transaction_outcome.dart';
 
-/// The single owner of the committed [NavigationState].
+/// The single owner of the committed [TypedRouterState].
 ///
 /// Accepts navigation candidates and changes made outside the router,
 /// commits them synchronously and notifies listeners only when the state
@@ -17,7 +17,7 @@ import 'package:typed_navigator/src/transaction/transaction_outcome.dart';
 class NavigationController extends ChangeNotifier {
   /// Creates a controller at [initialState], without a notification.
   NavigationController({
-    required NavigationState initialState,
+    required TypedRouterState initialState,
     this._framePhase = const FramePhase.scheduler(),
     this._entryLifecycle = const EntryLifecycle.ignoring(),
   }) : _state = initialState,
@@ -29,12 +29,12 @@ class NavigationController extends ChangeNotifier {
   final FramePhase _framePhase;
   final NotificationAfterFrame _afterFrame;
   final EntryLifecycle _entryLifecycle;
-  NavigationState _state;
+  TypedRouterState _state;
   bool _isDisposed = false;
   bool _isChangingWhileBuilding = false;
 
   /// The committed state.
-  NavigationState get state => _state;
+  TypedRouterState get state => _state;
 
   /// Whether [dispose] was called.
   bool get isDisposed => _isDisposed;
@@ -47,7 +47,7 @@ class NavigationController extends ChangeNotifier {
   /// while widgets build (outside [changeWhileBuilding]) fails with an
   /// [AssertionError].
   TransactionOutcome navigate(
-    NavigationState candidate, {
+    TypedRouterState candidate, {
     List<NavigationStep> steps = const [],
   }) {
     _checkUsable();
@@ -61,7 +61,7 @@ class NavigationController extends ChangeNotifier {
       'Navigation was requested while widgets build. Navigate from a '
       'callback, or schedule it with addPostFrameCallback.',
     );
-    final NavigationState next;
+    final TypedRouterState next;
     try {
       next = _transaction.run(_state, candidate, steps);
     } catch (error, stackTrace) {
@@ -75,7 +75,7 @@ class NavigationController extends ChangeNotifier {
 
   /// Commits [next] as it is, without steps: a change the router did not
   /// start, such as a page popped by the platform.
-  TransactionOutcome applyExternalChange(NavigationState next) {
+  TransactionOutcome applyExternalChange(TypedRouterState next) {
     _checkUsable();
     return _commit(next);
   }
@@ -111,7 +111,7 @@ class NavigationController extends ChangeNotifier {
     super.dispose();
   }
 
-  TransactionOutcome _commit(NavigationState next) {
+  TransactionOutcome _commit(TypedRouterState next) {
     if (next == _state) return const TransactionUnchanged();
     final entriesThatLeft = _leftEntries.between(_state, next);
     _state = next;

@@ -80,7 +80,7 @@ class StatefulShellNode extends TreeNode<NoParentRoute> {
   /// on every navigation; [state] is the router's whole state.
   final Widget Function(
     BuildContext context,
-    NavigationState state,
+    TypedRouterState state,
     StatefulShell shell,
   )
   builder;
@@ -96,7 +96,7 @@ class StatefulShellNode extends TreeNode<NoParentRoute> {
   /// [ShellNode.redirect].
   final TypedRoute<Object?>? Function(
     BuildContext context,
-    NavigationState target,
+    TypedRouterState target,
   )?
   redirect;
 
@@ -122,7 +122,7 @@ class StatefulShellNode extends TreeNode<NoParentRoute> {
   @internal
   TypedRoute<Object?>? redirectFor(
     BuildContext context,
-    NavigationState target,
+    TypedRouterState target,
   ) => redirect?.call(context, target);
 
   /// This node's [pageFactory], or [routerFactory] when it has none.

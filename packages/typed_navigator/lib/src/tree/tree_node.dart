@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/tabs/stateful_shell.dart';
 import 'package:typed_navigator/src/tree/navigator_slot.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';

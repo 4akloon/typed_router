@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/redirect/redirect_check.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/tree/nesting.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
 
@@ -10,7 +10,7 @@ import 'package:typed_navigator/src/tree/route_tree.dart';
 typedef RouterRedirect =
     TypedRoute<Object?>? Function(
       BuildContext context,
-      NavigationState target,
+      TypedRouterState target,
     );
 
 /// Finds where one target is redirected: the router's redirect first, then the
@@ -27,7 +27,7 @@ class RedirectResolver {
   /// the target's top route lets it through, like `null`.
   TypedRoute<Object?>? redirectOf(
     BuildContext context,
-    NavigationState target,
+    TypedRouterState target,
     RedirectCheck check,
   ) {
     for (final redirected in _redirects(context, target, check)) {
@@ -38,7 +38,7 @@ class RedirectResolver {
 
   Iterable<TypedRoute<Object?>?> _redirects(
     BuildContext context,
-    NavigationState target,
+    TypedRouterState target,
     RedirectCheck check,
   ) sync* {
     if (_routerRedirect case final routerRedirect?) {

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 
 /// Makes anew a page a navigator popped by itself while nothing would be left
 /// under it.
@@ -20,8 +20,8 @@ class RenewedPage {
   /// entries in them. [left] are the entries of the popped page, on screen
   /// and in branches not on screen; those not on screen are dropped with
   /// their levels.
-  NavigationState renewing(
-    NavigationState state,
+  TypedRouterState renewing(
+    TypedRouterState state,
     LocalKey? pageKey,
     List<NavigationEntry> left,
   ) {

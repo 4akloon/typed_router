@@ -7,9 +7,9 @@ import 'package:typed_navigator/src/redirect/redirect_scope.dart';
 import 'package:typed_navigator/src/redirect/router_mount.dart';
 import 'package:typed_navigator/src/redirect/stack_recheck.dart';
 import 'package:typed_navigator/src/router/current_navigators.dart';
-import 'package:typed_navigator/src/router/navigation_state_scope.dart';
 import 'package:typed_navigator/src/router/typed_router.dart';
 import 'package:typed_navigator/src/router/typed_router_scope.dart';
+import 'package:typed_navigator/src/router/typed_router_state_scope.dart';
 import 'package:typed_navigator/src/state/renewed_page.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 
@@ -64,7 +64,7 @@ class TypedRouterDelegate extends RouterDelegate<Object> {
       // same frame.
       builder: (context) => _withHeroes(
         context.getInheritedWidgetOfExactType<HeroControllerScope>(),
-        NavigationStateScope(
+        TypedRouterStateScope(
           state: _controller.state,
           child: Navigator(
             key: _navigatorKey,

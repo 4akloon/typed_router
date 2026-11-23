@@ -7,8 +7,8 @@ import 'package:typed_navigator/src/operation/top_replacement.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
 
 /// Which routes may stay on the stack.
@@ -41,20 +41,20 @@ class NavigationPlanner {
   final BranchSwitch _branchSwitch;
 
   /// The chain of [route] from the tree, as the first state of a router.
-  NavigationState startingAt(TypedRoute<Object?> route) =>
-      NavigationState.fromEntries(
+  TypedRouterState startingAt(TypedRoute<Object?> route) =>
+      TypedRouterState.fromEntries(
         _entryChain.chained(const [], _tree.chainTo(route)),
       );
 
   /// The chain of [route] from the tree; see [GoPlan].
-  NavigationState goTo(NavigationState current, TypedRoute<Object?> route) =>
+  TypedRouterState goTo(TypedRouterState current, TypedRoute<Object?> route) =>
       current.showing(_goPlan.entriesFor(current, route));
 
   /// [current] with [route] on top, in the shell or branch on screen when
   /// it belongs there, else in new ones; [pendingResult] when a push
   /// awaits it.
-  NavigationState pushedOnto(
-    NavigationState current,
+  TypedRouterState pushedOnto(
+    TypedRouterState current,
     TypedRoute<Object?> route, {
     PendingResult<Object?>? pendingResult,
   }) => current.showing([
@@ -67,32 +67,32 @@ class NavigationPlanner {
   ]);
 
   /// [current] without its top entry; the caller checks there is one below.
-  NavigationState withoutTop(NavigationState current) =>
+  TypedRouterState withoutTop(TypedRouterState current) =>
       current.showing(_belowTop(current));
 
   /// See [TopReplacement.replaced].
-  NavigationState withTopReplaced(
-    NavigationState current,
+  TypedRouterState withTopReplaced(
+    TypedRouterState current,
     TypedRoute<Object?> route, {
     PendingResult<Object?>? pendingResult,
   }) => _topReplacement.replaced(current, route, pendingResult: pendingResult);
 
   /// See [TopReplacement.updated].
-  NavigationState withTopUpdated(
-    NavigationState current,
+  TypedRouterState withTopUpdated(
+    TypedRouterState current,
     TypedRoute<Object?> route, {
     PendingResult<Object?>? pendingResult,
   }) => _topReplacement.updated(current, route, pendingResult: pendingResult);
 
   /// See [StackTrim.poppedUntil].
-  NavigationState poppedUntil(
-    NavigationState current,
+  TypedRouterState poppedUntil(
+    TypedRouterState current,
     RoutePredicate predicate,
   ) => _stackTrim.poppedUntil(current, predicate);
 
   /// See [StackTrim.pushedAfterPoppingUntil].
-  NavigationState pushedAfterPoppingUntil(
-    NavigationState current,
+  TypedRouterState pushedAfterPoppingUntil(
+    TypedRouterState current,
     TypedRoute<Object?> route,
     RoutePredicate predicate, {
     PendingResult<Object?>? pendingResult,
@@ -106,8 +106,8 @@ class NavigationPlanner {
   /// [current] showing [branchType] of [tabs]: the active branch as it
   /// is, or another one's kept stack or initial chain; [current] itself
   /// when the tabs are not on the active path.
-  NavigationState branchShown(
-    NavigationState current,
+  TypedRouterState branchShown(
+    TypedRouterState current,
     TabsEntry tabs,
     Type branchType,
   ) => switch (_branchSwitch.shown(current, tabs, branchType)) {
@@ -116,8 +116,8 @@ class NavigationPlanner {
   };
 
   /// [current] showing [branchType] of [tabs] from its initial route.
-  NavigationState branchReset(
-    NavigationState current,
+  TypedRouterState branchReset(
+    TypedRouterState current,
     TabsEntry tabs,
     Type branchType,
   ) => switch (_branchSwitch.reset(current, tabs, branchType)) {
@@ -125,6 +125,6 @@ class NavigationPlanner {
     null => current,
   };
 
-  List<NavigationEntry> _belowTop(NavigationState current) =>
+  List<NavigationEntry> _belowTop(TypedRouterState current) =>
       current.entries.take(current.entries.length - 1).toList();
 }

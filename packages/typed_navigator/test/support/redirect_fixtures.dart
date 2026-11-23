@@ -65,7 +65,7 @@ class AccountSettingsRoute extends TypedRoute<void> {
 }
 
 /// The router's redirect: the ban first, then AuthArea for guests.
-TypedRoute<Object?>? Function(BuildContext context, NavigationState target)
+TypedRoute<Object?>? Function(BuildContext context, TypedRouterState target)
 sessionRedirect(Session session, List<String> calls) => (context, target) {
   calls.add('router: ${target.top}');
   if (session.isBanned) return const BannedRoute();

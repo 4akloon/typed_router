@@ -1,4 +1,4 @@
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 
 /// One stage of a navigation transaction: looks at the candidate state and
 /// returns the state to continue with.
@@ -10,5 +10,5 @@ import 'package:typed_navigator/src/state/navigation_state.dart';
 abstract interface class NavigationStep {
   /// Returns the state to continue with, given the [current] committed
   /// state and the [candidate] produced so far.
-  NavigationState apply(NavigationState current, NavigationState candidate);
+  TypedRouterState apply(TypedRouterState current, TypedRouterState candidate);
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/router/navigator_top.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/transaction/entry_lifecycle.dart';
 
 /// Closes what is left in the navigator of a level (a shell instance, a branch
@@ -22,7 +22,7 @@ class RetiredNavigators implements EntryLifecycle {
   final NavigatorTop _top = const NavigatorTop();
 
   @override
-  void entriesLeft(List<NavigationEntry> left, NavigationState remains) {
+  void entriesLeft(List<NavigationEntry> left, TypedRouterState remains) {
     final inUse = {
       for (final entry in remains.allEntries) ...entry.levels,
     };

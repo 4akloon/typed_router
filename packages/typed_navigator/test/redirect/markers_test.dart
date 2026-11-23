@@ -1,5 +1,5 @@
 // Marker interfaces and returning after sign-in need nothing beyond
-// NavigationState and typed route fields.
+// TypedRouterState and typed route fields.
 
 import 'package:flutter_test/flutter_test.dart';
 

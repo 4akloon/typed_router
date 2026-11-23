@@ -56,7 +56,7 @@ class _ListDetailFrameState extends State<ListDetailFrame> {
 /// The app's tree; the note editor refuses back through PopScope.
 List<TreeNode<NoParentRoute>> shellRoutes(
   FrameLog log, {
-  TypedRoute<Object?>? Function(BuildContext context, NavigationState target)?
+  TypedRoute<Object?>? Function(BuildContext context, TypedRouterState target)?
   shellRedirect,
 }) => [
   ShellNode<NoParentRoute>(

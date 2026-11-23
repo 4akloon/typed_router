@@ -61,7 +61,7 @@ class _LoggedScreenState extends State<LoggedScreen> {
 /// The app's tree: tabs of rooms and friends, account on the root.
 List<TreeNode<NoParentRoute>> tabsRoutes(
   ScreenLog log, {
-  TypedRoute<Object?>? Function(BuildContext context, NavigationState target)?
+  TypedRoute<Object?>? Function(BuildContext context, TypedRouterState target)?
   redirect,
 }) => [
   StatefulShellNode(
@@ -118,7 +118,7 @@ Future<TypedRouter> pumpTabsApp(
   WidgetTester tester,
   TypedRoute<Object?> initialRoute, {
   ScreenLog? log,
-  TypedRoute<Object?>? Function(BuildContext context, NavigationState target)?
+  TypedRoute<Object?>? Function(BuildContext context, TypedRouterState target)?
   redirect,
 }) async {
   final router = TypedRouter(

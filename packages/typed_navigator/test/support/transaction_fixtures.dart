@@ -12,11 +12,11 @@ import 'package:typed_navigator/typed_navigator.dart';
 class ReplacingStep implements NavigationStep {
   ReplacingStep(this.replacement);
 
-  final NavigationState replacement;
-  final List<NavigationState> receivedCandidates = [];
+  final TypedRouterState replacement;
+  final List<TypedRouterState> receivedCandidates = [];
 
   @override
-  NavigationState apply(NavigationState current, NavigationState candidate) {
+  TypedRouterState apply(TypedRouterState current, TypedRouterState candidate) {
     receivedCandidates.add(candidate);
     return replacement;
   }
@@ -25,8 +25,10 @@ class ReplacingStep implements NavigationStep {
 /// A step that fails.
 class ThrowingStep implements NavigationStep {
   @override
-  NavigationState apply(NavigationState current, NavigationState candidate) =>
-      throw StateError('The step failed.');
+  TypedRouterState apply(
+    TypedRouterState current,
+    TypedRouterState candidate,
+  ) => throw StateError('The step failed.');
 }
 
 /// A step that wrongly navigates from inside the transaction.
@@ -34,7 +36,7 @@ class NavigatingStep implements NavigationStep {
   late NavigationController controller;
 
   @override
-  NavigationState apply(NavigationState current, NavigationState candidate) {
+  TypedRouterState apply(TypedRouterState current, TypedRouterState candidate) {
     controller.navigate(candidate);
     return candidate;
   }
@@ -65,7 +67,7 @@ class RecordingEntryLifecycle implements EntryLifecycle {
   final List<List<NavigationEntry>> reports = [];
 
   @override
-  void entriesLeft(List<NavigationEntry> left, NavigationState remains) =>
+  void entriesLeft(List<NavigationEntry> left, TypedRouterState remains) =>
       reports.add(left);
 
   @override

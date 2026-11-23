@@ -1,5 +1,5 @@
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/transaction/entry_lifecycle.dart';
 
 /// Completes the pushes of entries that leave the state, and of every
@@ -9,7 +9,7 @@ class ResultCompletion implements EntryLifecycle {
   const ResultCompletion();
 
   @override
-  void entriesLeft(List<NavigationEntry> left, NavigationState remains) =>
+  void entriesLeft(List<NavigationEntry> left, TypedRouterState remains) =>
       _leave(left);
 
   @override

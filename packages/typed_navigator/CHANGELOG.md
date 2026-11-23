@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **Breaking:** `TypedRouterState` is renamed `TypedRouterState`, after
+  go_router's `GoRouterState`, as `TypedRouter` follows `GoRouter`.
+  **Migration:** rename the type; `TypedRouterState.of(context)` replaces
+  `TypedRouterState.of(context)`, and `router.state` is a
+  `TypedRouterState`.
+
 - Operations as in `Navigator` and go_router:
   - **Breaking:** `replace` now updates the top page in place (same page,
     no transition, the screen keeps its state; navigator observers hear
@@ -21,7 +27,7 @@
   - `TypedRouter.navigatorOf(slot)` gives the navigator of a shell's or
     branch's slot, for code outside the shell's widgets.
   - `TypedRouterScope` is public: put a router (a fake one in a widget
-    test) above widgets for `TypedRouter.of` and `NavigationState.of`.
+    test) above widgets for `TypedRouter.of` and `TypedRouterState.of`.
   - A predictive back gesture over a shell or tabs closes a drawer (a
     local history entry) opened inside first.
 
@@ -48,7 +54,7 @@
   with `ArgumentError` when the router is built. **Migration:** add the
   type argument, or show the initial route inside its branch.
 
-- Public classes are open: `TypedRouter`, `NavigationState`, the tree
+- Public classes are open: `TypedRouter`, `TypedRouterState`, the tree
   nodes, `PageRequest`, `NavigatorSlot`, `RedirectChainError` and
   `StatefulShell` are no longer `final`, as go_router's classes are not.
   An app can fake the router for code it passes the router to
@@ -101,9 +107,9 @@
 
 ## 0.3.10 - 2026-11-20
 
-- `NavigationState.of(context)` reads the router's state and rebuilds the
+- `TypedRouterState.of(context)` reads the router's state and rebuilds the
   screen on every navigation, as `GoRouterState.of`.
-- `NavigationState.routeAfter(route)` answers the route right above
+- `TypedRouterState.routeAfter(route)` answers the route right above
   `route`'s entry nearest to the top: the item a list opened, which the
   list highlights while a back gesture reveals it.
 - Fix: a predictive back gesture over a shell or tabs pushed above another
@@ -185,7 +191,7 @@
   navigator)`, optional `pageFactory` and `redirect`. `go` keeps the shell
   while the navigation stays in it; `push` goes into the shell on screen or
   starts a new one; the back button pops the deepest current navigator
-  first. `NavigationState.toString` marks shell navigators with brackets.
+  first. `TypedRouterState.toString` marks shell navigators with brackets.
 - A `PageFactory`'s route must show the child of its current page, as
   `MaterialPage` does: the router updates a shell's page in place.
 
@@ -208,7 +214,7 @@
   whole stack. `redirectLimit` (5) and loops end in `RedirectChainError`.
   When the redirects fail as the router is shown or re-checks the stack,
   `errorBuilder` (or a plain built-in screen) is shown and
-  `NavigationState.error` holds the error.
+  `TypedRouterState.error` holds the error.
 
 ## 0.1.9 - 2026-11-19
 
@@ -273,7 +279,7 @@
 
 ## 0.1.3 - 2026-11-19
 
-- `NavigationState`: an immutable, never-empty snapshot of the active path
+- `TypedRouterState`: an immutable, never-empty snapshot of the active path
   with `routes`, `top`, `find<R>()` and `contains<T>()`; equal when it holds
   the same pages.
 

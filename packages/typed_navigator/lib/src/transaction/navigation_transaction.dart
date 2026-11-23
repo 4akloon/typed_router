@@ -1,4 +1,4 @@
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/transaction/navigation_step.dart';
 
 /// Runs a navigation candidate through the steps of that navigation, in
@@ -15,9 +15,9 @@ class NavigationTransaction {
   /// Returns the state [steps] settle on, starting from [candidate].
   ///
   /// Whatever a step throws propagates to the caller.
-  NavigationState run(
-    NavigationState current,
-    NavigationState candidate,
+  TypedRouterState run(
+    TypedRouterState current,
+    TypedRouterState candidate,
     List<NavigationStep> steps,
   ) {
     _isRunning = true;

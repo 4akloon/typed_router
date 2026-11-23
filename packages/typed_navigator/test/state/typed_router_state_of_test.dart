@@ -10,13 +10,13 @@ import '../support/route_fixtures.dart';
 import '../support/shell_fixtures.dart' show settleAfter;
 import '../support/state_fixtures.dart';
 
-/// Shows the state's top route, read through [NavigationState.of].
+/// Shows the state's top route, read through [TypedRouterState.of].
 class _TopLabel extends StatelessWidget {
   const _TopLabel();
 
   @override
   Widget build(BuildContext context) =>
-      Text('top ${NavigationState.of(context).top}');
+      Text('top ${TypedRouterState.of(context).top}');
 }
 
 Future<TypedRouter> _pump(WidgetTester tester) async {
@@ -43,7 +43,7 @@ Future<TypedRouter> _pump(WidgetTester tester) async {
 Finder _label(String top) => find.text('top $top', skipOffstage: false);
 
 void main() {
-  testWidgets('a const screen reading NavigationState.of rebuilds on every '
+  testWidgets('a const screen reading TypedRouterState.of rebuilds on every '
       'navigation', (tester) async {
     final router = await _pump(tester);
     expect(_label('RoomsRoute()'), findsOneWidget);
@@ -63,7 +63,7 @@ void main() {
     expect(_label('RoomsRoute()'), findsOneWidget);
   });
 
-  testWidgets('NavigationState.of without a router throws FlutterError', (
+  testWidgets('TypedRouterState.of without a router throws FlutterError', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -78,7 +78,7 @@ void main() {
       isA<FlutterError>().having(
         (error) => error.message,
         'message',
-        contains('NavigationState.of() found no router'),
+        contains('TypedRouterState.of() found no router'),
       ),
     );
   });

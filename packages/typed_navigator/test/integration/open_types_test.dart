@@ -32,13 +32,13 @@ class _RoomsNode extends RouteNode<RoomsRoute> {
 }
 
 /// A state an app's unit test makes up for its own code.
-class _OnAccount extends Fake implements NavigationState {
+class _OnAccount extends Fake implements TypedRouterState {
   @override
   TypedRoute<Object?> get top => const AccountRoute();
 }
 
 /// App code that reads a state: the screen name for analytics.
-String _screenName(NavigationState state) =>
+String _screenName(TypedRouterState state) =>
     state.top is AuthArea ? 'private' : 'public';
 
 void main() {

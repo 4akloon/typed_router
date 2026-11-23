@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/router/current_navigators.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 
 /// What is inside a level's page (a shell's or a tabs instance's) for back: the
 /// current navigators of the level and of the levels inside it, toward the top
@@ -12,7 +12,7 @@ class LevelInside {
   const LevelInside(this._level, this._state, this._currentNavigators);
 
   final ShellLevel _level;
-  final NavigationState _state;
+  final TypedRouterState _state;
   final CurrentNavigators _currentNavigators;
 
   /// Whether back inside is handled there, as Flutter's

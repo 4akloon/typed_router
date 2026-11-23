@@ -5,9 +5,9 @@ import 'package:typed_navigator/src/page/navigator_observers.dart';
 import 'package:typed_navigator/src/page/on_screen_level.dart';
 import 'package:typed_navigator/src/page/route_pages.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
 import 'package:typed_navigator/src/state/stack_parts.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 
 /// One build of the navigators for [_state]: the pages of every
 /// navigator, each nested navigator inside the page of its level.
@@ -23,7 +23,7 @@ class NavigatorBuild {
 
   final RoutePages _routePages;
   final LevelPages _levelPages;
-  final NavigationState _state;
+  final TypedRouterState _state;
   final void Function(Page<Object?> page) _onDidRemovePage;
   final NavigatorObservers _observers;
   final StackParts _parts = const StackParts();

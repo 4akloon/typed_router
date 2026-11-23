@@ -4,7 +4,7 @@ part of 'tree_node.dart';
 /// go_router's `ShellRoute`: a list | detail layout, a flow frame.
 ///
 /// Not a route: it has no value of its own and is not in
-/// [NavigationState.routes]. It is transparent for [P]: its children are
+/// [TypedRouterState.routes]. It is transparent for [P]: its children are
 /// `TreeNode<P>` and see the same parent route the shell does.
 ///
 /// The children live in the shell's navigator. `go` builds the shell with
@@ -54,7 +54,7 @@ class ShellNode<P> extends TreeNode<P> {
   /// router's whole state.
   final Widget Function(
     BuildContext context,
-    NavigationState state,
+    TypedRouterState state,
     Widget navigator,
   )
   builder;
@@ -72,7 +72,7 @@ class ShellNode<P> extends TreeNode<P> {
   /// only.
   final TypedRoute<Object?>? Function(
     BuildContext context,
-    NavigationState target,
+    TypedRouterState target,
   )?
   redirect;
 
@@ -80,7 +80,7 @@ class ShellNode<P> extends TreeNode<P> {
   @internal
   TypedRoute<Object?>? redirectFor(
     BuildContext context,
-    NavigationState target,
+    TypedRouterState target,
   ) => redirect?.call(context, target);
 
   /// This node's [pageFactory], or [routerFactory] when it has none.

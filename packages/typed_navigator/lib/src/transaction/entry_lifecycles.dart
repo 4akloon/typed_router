@@ -1,5 +1,5 @@
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/transaction/entry_lifecycle.dart';
 
 /// Several lifecycles told about the same entries, in order.
@@ -10,7 +10,7 @@ class EntryLifecycles implements EntryLifecycle {
   final List<EntryLifecycle> _lifecycles;
 
   @override
-  void entriesLeft(List<NavigationEntry> left, NavigationState remains) {
+  void entriesLeft(List<NavigationEntry> left, TypedRouterState remains) {
     for (final lifecycle in _lifecycles) {
       lifecycle.entriesLeft(left, remains);
     }

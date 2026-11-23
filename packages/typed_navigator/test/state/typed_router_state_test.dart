@@ -66,8 +66,8 @@ void main() {
   group('equality', () {
     test('states with the same entries are equal and share a hash', () {
       final entries = [NavigationEntry(rooms), NavigationEntry(room7)];
-      final first = NavigationState.fromEntries(entries);
-      final second = NavigationState.fromEntries(entries);
+      final first = TypedRouterState.fromEntries(entries);
+      final second = TypedRouterState.fromEntries(entries);
 
       expect(first, second);
       expect(first.hashCode, second.hashCode);
@@ -86,6 +86,6 @@ void main() {
   });
 
   test('a state without entries cannot be created', () {
-    expect(() => NavigationState.fromEntries(const []), throwsStateError);
+    expect(() => TypedRouterState.fromEntries(const []), throwsStateError);
   });
 }

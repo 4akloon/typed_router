@@ -2,7 +2,7 @@ import 'package:typed_navigator/src/operation/navigation_planner.dart';
 import 'package:typed_navigator/src/redirect/redirect_check.dart';
 import 'package:typed_navigator/src/redirect/redirect_step.dart';
 import 'package:typed_navigator/src/redirect/redirects.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/transaction/navigation_step.dart';
 
 /// The redirects a stack operation runs: those of the route it goes to,
@@ -20,7 +20,7 @@ class OperationRedirects {
   /// The steps of an operation from [state] that goes to a new route;
   /// [replan] plans the operation again for a redirect's target.
   List<NavigationStep> toNewRoute(
-    NavigationState state,
+    TypedRouterState state,
     RedirectedPlan replan,
   ) => state.error == null
       ? _redirects.stepsFor(replan, const NewRouteCheck())
@@ -28,11 +28,11 @@ class OperationRedirects {
 
   /// The steps of an operation from [state] that only removes routes: none,
   /// but the whole stack's on the error screen.
-  List<NavigationStep> toRemainingRoutes(NavigationState state) =>
+  List<NavigationStep> toRemainingRoutes(TypedRouterState state) =>
       state.error == null ? const [] : ofWholeStack(state);
 
   /// The redirects over the whole candidate, as on `refresh`.
-  List<NavigationStep> ofWholeStack(NavigationState state) =>
+  List<NavigationStep> ofWholeStack(TypedRouterState state) =>
       _redirects.stepsFor(
         (redirected) => _planner.goTo(state, redirected),
         const WholeStackCheck(),

@@ -23,7 +23,7 @@ class StepRoute extends TypedRoute<void> {
 /// [redirect] is optional. Disposed when the test ends.
 TypedRouter stepRouter({
   required TypedRoute<Object?>? Function(int number) next,
-  TypedRoute<Object?>? Function(BuildContext context, NavigationState target)?
+  TypedRoute<Object?>? Function(BuildContext context, TypedRouterState target)?
   redirect,
   TypedRoute<Object?> initialRoute = const HomeRoute(),
   int redirectLimit = 5,

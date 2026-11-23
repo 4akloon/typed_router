@@ -7,11 +7,11 @@ import 'package:typed_navigator/src/page/page_request.dart';
 import 'package:typed_navigator/src/page/route_pages.dart';
 import 'package:typed_navigator/src/redirect/redirect_error_screen.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/page_identity.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 
-/// Turns a [NavigationState] into the pages of the root navigator, with a
+/// Turns a [TypedRouterState] into the pages of the root navigator, with a
 /// navigator of its own in every shell and every visited branch of tabs.
 ///
 /// Entries that stand in the same level, one after another, become one page
@@ -39,7 +39,7 @@ class NavigatorPages {
   /// The pages of the root navigator for [state], bottom to top. Every
   /// navigator reports the pages it removes itself to [onDidRemovePage].
   List<Page<Object?>> pagesFor(
-    NavigationState state, {
+    TypedRouterState state, {
     required void Function(Page<Object?> page) onDidRemovePage,
   }) => switch (state.error) {
     final error? => [_errorPage(error)],
@@ -55,7 +55,7 @@ class NavigatorPages {
   /// The entries a page of [pagesFor] stands for: one for a route page, every
   /// entry of the instance for a shell or tabs page, on screen or in a branch
   /// not on screen; none for a page this router did not create.
-  List<NavigationEntry> entriesOf(Page<Object?> page, NavigationState state) =>
+  List<NavigationEntry> entriesOf(Page<Object?> page, TypedRouterState state) =>
       switch (page.key) {
         // The entry with that page now; none when it already left the state.
         ValueKey<PageIdentity>(:final value) => [

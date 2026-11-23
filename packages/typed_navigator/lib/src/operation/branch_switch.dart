@@ -1,8 +1,8 @@
 import 'package:typed_navigator/src/operation/entry_chain.dart';
 import 'package:typed_navigator/src/operation/go_plan.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
 
 /// The active path after switching or resetting a branch of a tabs instance, as
@@ -21,7 +21,7 @@ class BranchSwitch {
   /// another branch's kept stack, or its initial chain on the first visit.
   /// `null` when [tabs] is not on the active path.
   List<NavigationEntry>? shown(
-    NavigationState current,
+    TypedRouterState current,
     TabsEntry tabs,
     Type branchType,
   ) {
@@ -43,7 +43,7 @@ class BranchSwitch {
   /// stack stay, with their screens. `null` when [tabs] is not on the
   /// active path.
   List<NavigationEntry>? reset(
-    NavigationState current,
+    TypedRouterState current,
     TabsEntry tabs,
     Type branchType,
   ) {
@@ -76,13 +76,14 @@ class BranchSwitch {
     replaceable: [firstInTabs.levelsIn(tabs, branchType)],
   );
 
-  List<NavigationEntry> _entriesIn(NavigationState current, TabsEntry tabs) => [
-    for (final entry in current.entries)
-      if (entry.standsIn(tabs)) entry,
-  ];
+  List<NavigationEntry> _entriesIn(TypedRouterState current, TabsEntry tabs) =>
+      [
+        for (final entry in current.entries)
+          if (entry.standsIn(tabs)) entry,
+      ];
 
   List<NavigationEntry> _below(
-    NavigationState current,
+    TypedRouterState current,
     NavigationEntry firstInTabs,
   ) => current.entries.take(current.entries.indexOf(firstInTabs)).toList();
 }

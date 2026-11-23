@@ -11,7 +11,7 @@ import '../support/route_fixtures.dart';
 import '../support/tabs_fixtures.dart';
 import '../support/tree_fixtures.dart';
 
-Widget _frame(BuildContext context, NavigationState state, Widget navigator) =>
+Widget _frame(BuildContext context, TypedRouterState state, Widget navigator) =>
     navigator;
 
 /// Shells A > B > C; a room route in C shows in A, its note child in

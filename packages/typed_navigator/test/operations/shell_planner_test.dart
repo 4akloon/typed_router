@@ -54,7 +54,7 @@ NavigationPlanner _plannerOver(RouteTree tree) {
 }
 
 /// The shell instance of every entry, bottom to top; `null` on the root.
-List<ShellLevel?> shellsOf(NavigationState state) => [
+List<ShellLevel?> shellsOf(TypedRouterState state) => [
   for (final entry in state.entries) entry.levels.firstOrNull,
 ];
 

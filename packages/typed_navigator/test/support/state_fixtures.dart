@@ -5,7 +5,7 @@ import 'package:typed_navigator/typed_navigator.dart';
 
 /// A state whose active path holds [routes], bottom to top, each in a new
 /// entry (a new page).
-NavigationState stateOf(List<TypedRoute<Object?>> routes) =>
-    NavigationState.fromEntries([
+TypedRouterState stateOf(List<TypedRoute<Object?>> routes) =>
+    TypedRouterState.fromEntries([
       for (final route in routes) NavigationEntry(route),
     ]);

@@ -1,5 +1,5 @@
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 
 /// Learns about stack entries that left the navigation state.
 ///
@@ -13,7 +13,7 @@ abstract interface class EntryLifecycle {
 
   /// Called once per commit with the entries that [left], bottom to top,
   /// and the state that [remains]. Not called when no entry left.
-  void entriesLeft(List<NavigationEntry> left, NavigationState remains);
+  void entriesLeft(List<NavigationEntry> left, TypedRouterState remains);
 
   /// Called once when the router is disposed, with every entry it held.
   void stackDisposed(List<NavigationEntry> entries);
@@ -23,7 +23,7 @@ class _IgnoringEntryLifecycle implements EntryLifecycle {
   const _IgnoringEntryLifecycle();
 
   @override
-  void entriesLeft(List<NavigationEntry> left, NavigationState remains) {}
+  void entriesLeft(List<NavigationEntry> left, TypedRouterState remains) {}
 
   @override
   void stackDisposed(List<NavigationEntry> entries) {}

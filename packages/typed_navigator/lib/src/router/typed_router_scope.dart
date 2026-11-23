@@ -3,11 +3,11 @@ import 'package:meta/meta.dart';
 import 'package:typed_navigator/src/router/typed_router.dart';
 
 /// Puts a router above widgets, for `TypedRouter.of` and
-/// `NavigationState.of`, as go_router's `InheritedGoRouter`.
+/// `TypedRouterState.of`, as go_router's `InheritedGoRouter`.
 ///
 /// The router puts itself above its navigator; an app needs this only to
 /// hand its widgets another router, such as a fake one in a widget test.
-/// `NavigationState.of` then reads `router.state` once and does not
+/// `TypedRouterState.of` then reads `router.state` once and does not
 /// rebuild when it changes.
 ///
 /// ```dart

@@ -3,7 +3,7 @@ import 'package:typed_navigator/src/operation/navigation_planner.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 
 /// Plans the operations that remove entries down to a route a predicate holds
 /// for: `popUntil` and `pushAndRemoveUntil`.
@@ -16,8 +16,8 @@ class StackTrim {
   /// [current] without the entries above the topmost route that matches
   /// [predicate]. Throws [StateError] when no route matches: the navigator
   /// would be left empty.
-  NavigationState poppedUntil(
-    NavigationState current,
+  TypedRouterState poppedUntil(
+    TypedRouterState current,
     RoutePredicate predicate,
   ) => switch (_keptUntil(current, predicate)) {
     [] => throw StateError(
@@ -29,8 +29,8 @@ class StackTrim {
   /// The entries up to the topmost route that matches [predicate], then a new
   /// entry for [route] above them; [route] alone, in its own levels, when none
   /// matches, as `Navigator.pushAndRemoveUntil`.
-  NavigationState pushedAfterPoppingUntil(
-    NavigationState current,
+  TypedRouterState pushedAfterPoppingUntil(
+    TypedRouterState current,
     TypedRoute<Object?> route,
     RoutePredicate predicate, {
     PendingResult<Object?>? pendingResult,
@@ -47,7 +47,7 @@ class StackTrim {
   }
 
   List<NavigationEntry> _keptUntil(
-    NavigationState current,
+    TypedRouterState current,
     RoutePredicate predicate,
   ) {
     final entries = current.entries;

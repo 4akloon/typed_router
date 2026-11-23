@@ -1,5 +1,5 @@
 import 'package:typed_navigator/src/route/typed_route.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 
 /// Which routes of a target the redirects of the nodes look at. The router's
 /// own redirect always sees the whole target.
@@ -8,7 +8,7 @@ sealed class RedirectCheck {
 
   /// The routes of [target] whose nodes, and their ancestors' nodes, run
   /// their redirects, bottom to top.
-  List<TypedRoute<Object?>> routesToCheck(NavigationState target);
+  List<TypedRoute<Object?>> routesToCheck(TypedRouterState target);
 }
 
 /// An operation: only the route it goes to, with its ancestors. The routes
@@ -18,7 +18,7 @@ class NewRouteCheck extends RedirectCheck {
   const NewRouteCheck();
 
   @override
-  List<TypedRoute<Object?>> routesToCheck(NavigationState target) => [
+  List<TypedRoute<Object?>> routesToCheck(TypedRouterState target) => [
     target.top,
   ];
 }
@@ -30,6 +30,6 @@ class WholeStackCheck extends RedirectCheck {
   const WholeStackCheck();
 
   @override
-  List<TypedRoute<Object?>> routesToCheck(NavigationState target) =>
+  List<TypedRoute<Object?>> routesToCheck(TypedRouterState target) =>
       target.routes;
 }

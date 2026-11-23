@@ -9,7 +9,7 @@ import 'package:typed_navigator/typed_navigator.dart';
 
 import '../support/tree_fixtures.dart';
 
-Widget _frame(BuildContext context, NavigationState state, Widget navigator) =>
+Widget _frame(BuildContext context, TypedRouterState state, Widget navigator) =>
     navigator;
 
 void main() {

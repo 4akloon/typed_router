@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 
 /// The navigators the system back button goes to, deepest first, as go_router's
 /// `_findCurrentNavigators`.
@@ -15,7 +15,7 @@ class CurrentNavigators {
   /// The current navigators for [state] under [root], the deepest first.
   List<NavigatorState> deepestFirst(
     NavigatorState root,
-    NavigationState state,
+    TypedRouterState state,
   ) => [root, ..._outermostFirst(state.topLevels)].reversed.toList();
 
   /// The current navigators of [level] and of the levels inside it, the deepest
@@ -23,7 +23,7 @@ class CurrentNavigators {
   /// holding [level] is not current.
   List<NavigatorState> insideDeepestFirst(
     ShellLevel level,
-    NavigationState state,
+    TypedRouterState state,
   ) {
     final levels = state.topLevels;
     final index = levels.indexOf(level);

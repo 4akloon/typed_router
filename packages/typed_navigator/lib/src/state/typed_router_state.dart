@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
-import 'package:typed_navigator/src/router/navigation_state_scope.dart';
+import 'package:typed_navigator/src/router/typed_router_state_scope.dart';
 import 'package:typed_navigator/src/state/inactive_branches.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
 import 'package:typed_navigator/src/state/route_lookup.dart';
@@ -21,16 +21,16 @@ import 'package:typed_navigator/src/state/stack_description.dart';
 /// if (state.contains<AuthArea>() && !session.isSignedIn) { ... }
 /// final RoomRoute? room = state.find<RoomRoute>();
 /// ```
-class NavigationState {
+class TypedRouterState {
   /// Creates a state from the entries on the active path, bottom to top.
   ///
   /// Only the router creates states. An empty list is a bug in this
   /// library, so it throws [StateError].
   @internal
-  NavigationState.fromEntries(Iterable<NavigationEntry> entries)
+  TypedRouterState.fromEntries(Iterable<NavigationEntry> entries)
     : this._(List.unmodifiable(entries), null, const InactiveBranches.none());
 
-  NavigationState._(this._entries, this.error, this._inactive)
+  TypedRouterState._(this._entries, this.error, this._inactive)
     : routes = List.unmodifiable([for (final entry in _entries) entry.route]) {
     if (_entries.isEmpty) {
       throw StateError('A navigation state needs at least one entry.');
@@ -41,8 +41,8 @@ class NavigationState {
   /// navigation, as with `ModalRoute.of`: for a screen showing the state, a
   /// list highlighting the item opened from it. Throws [FlutterError] without a
   /// router above.
-  static NavigationState of(BuildContext context) =>
-      NavigationStateScope.stateOf(context);
+  static TypedRouterState of(BuildContext context) =>
+      TypedRouterStateScope.stateOf(context);
 
   final List<NavigationEntry> _entries;
   final InactiveBranches _inactive;
@@ -91,7 +91,7 @@ class NavigationState {
   /// The state with [next] on screen: the kept branch stacks follow the change
   /// of active branches.
   @internal
-  NavigationState showing(List<NavigationEntry> next) => NavigationState._(
+  TypedRouterState showing(List<NavigationEntry> next) => TypedRouterState._(
     List.unmodifiable(next),
     null,
     _inactive.afterShowing(_entries, next),
@@ -99,25 +99,25 @@ class NavigationState {
 
   /// This state with [error] set: the redirects failed on its stack.
   @internal
-  NavigationState withError(Object error) =>
-      NavigationState._(_entries, error, _inactive);
+  TypedRouterState withError(Object error) =>
+      TypedRouterState._(_entries, error, _inactive);
 
   /// This state without its error: the stack the redirects failed on.
   @internal
-  NavigationState withoutError() =>
-      NavigationState._(_entries, null, _inactive);
+  TypedRouterState withoutError() =>
+      TypedRouterState._(_entries, null, _inactive);
 
   /// This state without [removed] (pages a navigator popped by itself, on
   /// screen or in a hidden branch); this same state when nothing changes
   /// or nothing would be left on screen.
   @internal
-  NavigationState withoutEntries(Iterable<NavigationEntry> removed) {
+  TypedRouterState withoutEntries(Iterable<NavigationEntry> removed) {
     final removedEntries = removed.toSet();
     final kept = [
       ..._entries.where((entry) => !removedEntries.contains(entry)),
     ];
     if (kept.isEmpty) return this;
-    final next = NavigationState._(
+    final next = TypedRouterState._(
       List.unmodifiable(kept),
       error,
       _inactive.without(removedEntries).afterShowing(_entries, kept),
@@ -132,7 +132,7 @@ class NavigationState {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other.runtimeType == runtimeType &&
-          other is NavigationState &&
+          other is TypedRouterState &&
           listEquals(other._entries, _entries) &&
           other._inactive == _inactive &&
           other.error == error;

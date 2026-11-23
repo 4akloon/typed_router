@@ -19,7 +19,7 @@ void main() {
     entryLifecycle = RecordingEntryLifecycle();
   });
 
-  NavigationController controllerAt(NavigationState initialState) =>
+  NavigationController controllerAt(TypedRouterState initialState) =>
       NavigationController(
         initialState: initialState,
         framePhase: ManualFramePhase(),

@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/tree/navigator_slot.dart';
 
 /// Finds the navigator of a slot for code outside the shell's widgets, as
@@ -18,7 +18,7 @@ class SlotNavigators {
   NavigatorState? of(
     NavigatorSlot slot,
     NavigatorState? root,
-    NavigationState state,
+    TypedRouterState state,
   ) {
     if (root == null) return null;
     if (identical(slot, NavigatorSlot.root)) return root;

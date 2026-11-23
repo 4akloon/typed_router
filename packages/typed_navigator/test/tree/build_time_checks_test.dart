@@ -14,7 +14,7 @@ class _AccountBranch {}
 
 Widget _frame(
   BuildContext context,
-  NavigationState state,
+  TypedRouterState state,
   StatefulShell shell,
 ) => shell;
 

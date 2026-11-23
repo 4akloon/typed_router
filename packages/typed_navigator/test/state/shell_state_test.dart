@@ -22,7 +22,7 @@ void main() {
 
   test('routes are flat across shells', () {
     final shell = ShellEntry(_shellNode());
-    final state = NavigationState.fromEntries([
+    final state = TypedRouterState.fromEntries([
       NavigationEntry(rooms, levels: [shell]),
       NavigationEntry(room7, levels: [shell]),
       NavigationEntry(account),
@@ -35,7 +35,7 @@ void main() {
   test('toString marks each shell navigator with brackets', () {
     final outer = ShellEntry(_shellNode());
     final inner = ShellEntry(_shellNode());
-    final state = NavigationState.fromEntries([
+    final state = TypedRouterState.fromEntries([
       NavigationEntry(rooms, levels: [outer]),
       NavigationEntry(room7, levels: [outer, inner]),
       NavigationEntry(room8, levels: [outer, inner]),
@@ -53,7 +53,7 @@ void main() {
     final node = _shellNode();
     final first = ShellEntry(node);
     final second = ShellEntry(node);
-    final state = NavigationState.fromEntries([
+    final state = TypedRouterState.fromEntries([
       NavigationEntry(rooms, levels: [first]),
       NavigationEntry(room7, levels: [second]),
     ]);

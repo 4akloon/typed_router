@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
 
 /// How a route is nested in the tree: inside a shell, or inside one branch of
@@ -12,7 +12,7 @@ sealed class Nesting {
   /// Runs the level's redirect for [target]; `null` lets it through.
   TypedRoute<Object?>? redirectFor(
     BuildContext context,
-    NavigationState target,
+    TypedRouterState target,
   );
 }
 
@@ -27,7 +27,7 @@ class ShellNesting extends Nesting {
   @override
   TypedRoute<Object?>? redirectFor(
     BuildContext context,
-    NavigationState target,
+    TypedRouterState target,
   ) => node.redirectFor(context, target);
 
   @override
@@ -55,7 +55,7 @@ class BranchNesting extends Nesting {
   @override
   TypedRoute<Object?>? redirectFor(
     BuildContext context,
-    NavigationState target,
+    TypedRouterState target,
   ) => node.redirectFor(context, target);
 
   @override

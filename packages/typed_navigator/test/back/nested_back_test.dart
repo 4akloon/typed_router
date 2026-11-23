@@ -18,7 +18,7 @@ final iOS = TargetPlatformVariant.only(TargetPlatform.iOS);
 List<TreeNode<NoParentRoute>> _tabsFramedBy(
   Widget Function(
     BuildContext context,
-    NavigationState state,
+    TypedRouterState state,
     StatefulShell shell,
   )
   builder, {

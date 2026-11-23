@@ -5,8 +5,8 @@ import 'package:typed_navigator/src/page/page_factory.dart';
 import 'package:typed_navigator/src/page/page_request.dart';
 import 'package:typed_navigator/src/page/route_pages.dart';
 import 'package:typed_navigator/src/router/current_navigators.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/tabs/branch_switching.dart';
 import 'package:typed_navigator/src/tabs/stateful_shell.dart';
 
@@ -33,7 +33,7 @@ class LevelPages {
   /// The page of [shell], whose builder frames [navigator].
   Page<Object?> shellPage(
     ShellEntry shell,
-    NavigationState state,
+    TypedRouterState state,
     Widget navigator,
   ) => _routePages.created(
     shell.node.pageFactoryOr(_pageFactory),
@@ -54,7 +54,7 @@ class LevelPages {
   /// with [navigators], one per visited branch.
   Page<Object?> tabsPage(
     BranchEntry active,
-    NavigationState state,
+    TypedRouterState state,
     Map<Type, Widget> navigators,
   ) {
     final tabs = active.tabs;
@@ -81,7 +81,7 @@ class LevelPages {
   }
 
   /// [frame] of [level], giving back to what is inside while it handles back.
-  Widget _gated(ShellLevel level, NavigationState state, Widget frame) =>
+  Widget _gated(ShellLevel level, TypedRouterState state, Widget frame) =>
       LevelPopGate(
         inside: LevelInside(level, state, _currentNavigators),
         child: frame,

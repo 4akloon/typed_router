@@ -1,7 +1,7 @@
 import 'package:typed_navigator/src/operation/navigation_planner.dart';
 import 'package:typed_navigator/src/redirect/redirect_check.dart';
 import 'package:typed_navigator/src/redirect/redirects.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 import 'package:typed_navigator/src/transaction/transaction_outcome.dart';
 
@@ -21,7 +21,7 @@ class StackRecheck {
   final NavigationPlanner _planner;
   final Redirects _redirects;
 
-  NavigationState get _state => _controller.state;
+  TypedRouterState get _state => _controller.state;
 
   /// Re-checks outside a build: listeners hear about a change at once.
   void recheck() => _recheck();

@@ -1,4 +1,4 @@
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 
 /// What happened to one navigation.
 sealed class TransactionOutcome {
@@ -11,7 +11,7 @@ class TransactionCommitted extends TransactionOutcome {
   const TransactionCommitted(this.state);
 
   /// The committed state.
-  final NavigationState state;
+  final TypedRouterState state;
 
   @override
   bool operator ==(Object other) =>

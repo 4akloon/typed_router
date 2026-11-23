@@ -11,14 +11,14 @@ import 'package:typed_navigator/src/router/slot_navigators.dart';
 import 'package:typed_navigator/src/router/top_route_pop.dart';
 import 'package:typed_navigator/src/router/typed_router_delegate.dart';
 import 'package:typed_navigator/src/router/typed_router_scope.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 import 'package:typed_navigator/src/tree/navigator_slot.dart';
 import 'package:typed_navigator/src/tree/no_parent_route.dart';
 import 'package:typed_navigator/src/tree/tree_node.dart';
 
 /// The application's router: owns the route tree and the current
-/// [NavigationState], shows it in the root navigator and notifies
+/// [TypedRouterState], shows it in the root navigator and notifies
 /// listeners when it changes.
 ///
 /// Create it once, before `runApp`, keep it where the app keeps its
@@ -92,7 +92,10 @@ class TypedRouter implements RouterConfig<Object>, Listenable {
     required List<TreeNode<NoParentRoute>> routes,
     required TypedRoute<Object?> initialRoute,
     required PageFactory pageFactory,
-    TypedRoute<Object?>? Function(BuildContext context, NavigationState target)?
+    TypedRoute<Object?>? Function(
+      BuildContext context,
+      TypedRouterState target,
+    )?
     redirect,
     Listenable? refreshListenable,
     int redirectLimit = 5,
@@ -157,7 +160,7 @@ class TypedRouter implements RouterConfig<Object>, Listenable {
   ///
   /// Before the router is first shown, it is the requested state: the
   /// redirects check it when the router is shown.
-  NavigationState get state => _controller.state;
+  TypedRouterState get state => _controller.state;
 
   /// Replaces the stack with [route] and the routes above it in the tree;
   /// shown in the next frame (a dialog after it: see [TypedRouter]).
@@ -243,7 +246,7 @@ class TypedRouter implements RouterConfig<Object>, Listenable {
   ///
   /// Experimental until 1.0: it may change without a major version.
   @visibleForTesting
-  NavigationState stateAfterGo(TypedRoute<Object?> route) =>
+  TypedRouterState stateAfterGo(TypedRoute<Object?> route) =>
       _operations.plannedGo(route);
 
   /// The state `push(route)` would build: the current stack with [route]
@@ -252,7 +255,7 @@ class TypedRouter implements RouterConfig<Object>, Listenable {
   /// The [push] counterpart of [stateAfterGo]; the same rules apply.
   /// Throws [ArgumentError] when [route]'s type has no node.
   @visibleForTesting
-  NavigationState stateAfterPush(TypedRoute<Object?> route) =>
+  TypedRouterState stateAfterPush(TypedRoute<Object?> route) =>
       _operations.plannedPush(route);
 
   /// Runs the redirects over the whole stack, as a notification of

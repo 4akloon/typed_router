@@ -3,8 +3,8 @@ import 'package:typed_navigator/src/operation/operation_redirects.dart';
 import 'package:typed_navigator/src/redirect/redirects.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
 import 'package:typed_navigator/src/state/shell_level.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/transaction/navigation_controller.dart';
 
 /// Carries out the router's stack operations: checks what must hold
@@ -22,7 +22,7 @@ class StackOperations {
   final NavigationPlanner _planner;
   final OperationRedirects _redirects;
 
-  NavigationState get _state => _controller.state;
+  TypedRouterState get _state => _controller.state;
 
   /// Whether [pop] can remove an entry: never on the error screen.
   bool get canPop => _state.error == null && _state.entries.length > 1;
@@ -35,12 +35,12 @@ class StackOperations {
 
   /// The state [go] would build for [route], without redirects and without
   /// committing.
-  NavigationState plannedGo(TypedRoute<Object?> route) =>
+  TypedRouterState plannedGo(TypedRoute<Object?> route) =>
       _planner.goTo(_state, route);
 
   /// The state [push] would build for [route], without redirects and without
   /// committing.
-  NavigationState plannedPush(TypedRoute<Object?> route) =>
+  TypedRouterState plannedPush(TypedRoute<Object?> route) =>
       _planner.pushedOnto(_state, route);
 
   /// See `TypedRouter.push`.
@@ -112,7 +112,7 @@ class StackOperations {
   /// is not [T].
   Future<T?> _navigateWithNew<T>(
     TypedRoute<T> route,
-    NavigationState Function(
+    TypedRouterState Function(
       TypedRoute<Object?> route,
       PendingResult<Object?>? pendingResult,
     )
@@ -130,8 +130,8 @@ class StackOperations {
   }
 
   void _navigate(
-    NavigationState candidate,
-    NavigationState Function(TypedRoute<Object?> redirected) replan,
+    TypedRouterState candidate,
+    TypedRouterState Function(TypedRoute<Object?> redirected) replan,
   ) => _controller.navigate(
     candidate,
     steps: _redirects.toNewRoute(_state, replan),

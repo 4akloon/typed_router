@@ -1,7 +1,7 @@
 import 'package:typed_navigator/src/operation/entry_chain.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/tree/route_tree.dart';
 
 /// Plans `go`: the chain of the route from the tree, keeping what it can.
@@ -21,7 +21,7 @@ class GoPlan {
 
   /// The active path `go(route)` leads to from [current].
   List<NavigationEntry> entriesFor(
-    NavigationState current,
+    TypedRouterState current,
     TypedRoute<Object?> route,
   ) {
     final chain = _tree.chainTo(route);
@@ -34,7 +34,7 @@ class GoPlan {
   /// starts with stay; new entries for the rest reuse the shells and tabs
   /// of the entries they replace.
   List<NavigationEntry> entriesFrom(
-    NavigationState current,
+    TypedRouterState current,
     List<NavigationEntry> base,
     List<TypedRoute<Object?>> chain,
   ) {
@@ -53,7 +53,7 @@ class GoPlan {
   /// below a tabs instance followed by one of its kept branch stacks, the
   /// one sharing the longest prefix with [chain].
   List<NavigationEntry> _closestBase(
-    NavigationState current,
+    TypedRouterState current,
     List<TypedRoute<Object?>> chain,
   ) {
     var closest = current.entries;

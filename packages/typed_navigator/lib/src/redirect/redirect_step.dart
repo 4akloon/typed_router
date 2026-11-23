@@ -3,12 +3,12 @@ import 'package:typed_navigator/src/redirect/redirect_chain.dart';
 import 'package:typed_navigator/src/redirect/redirect_check.dart';
 import 'package:typed_navigator/src/redirect/redirect_resolver.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 import 'package:typed_navigator/src/transaction/navigation_step.dart';
 
 /// Plans the navigation again for the route a redirect named: `go` builds its
 /// chain, `push` pushes it.
-typedef RedirectedPlan = NavigationState Function(TypedRoute<Object?> route);
+typedef RedirectedPlan = TypedRouterState Function(TypedRoute<Object?> route);
 
 /// The redirects of one navigation, as a step of its transaction.
 ///
@@ -32,7 +32,7 @@ class RedirectStep implements NavigationStep {
   final int _redirectLimit;
 
   @override
-  NavigationState apply(NavigationState current, NavigationState candidate) {
+  TypedRouterState apply(TypedRouterState current, TypedRouterState candidate) {
     final chain = RedirectChain(
       candidate.top,
       redirectLimit: _redirectLimit,

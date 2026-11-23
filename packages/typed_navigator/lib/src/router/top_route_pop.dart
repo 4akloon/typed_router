@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:typed_navigator/src/operation/stack_operations.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 
 /// `TypedRouter.pop` and `canPop` as `Navigator.pop` and go_router's: what is
 /// above the state's top page closes first — a dialog or another route without
@@ -20,7 +20,7 @@ class TopRoutePop {
 
   final NavigatorState? Function() _root;
   final StackOperations _operations;
-  final NavigationState Function() _state;
+  final TypedRouterState Function() _state;
 
   /// Whether [pop] can close something: a page of the state, or something
   /// above the top page.

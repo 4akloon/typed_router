@@ -4,7 +4,7 @@ import 'package:typed_navigator/src/operation/in_place_update.dart';
 import 'package:typed_navigator/src/result/pending_result.dart';
 import 'package:typed_navigator/src/route/typed_route.dart';
 import 'package:typed_navigator/src/state/navigation_entry.dart';
-import 'package:typed_navigator/src/state/navigation_state.dart';
+import 'package:typed_navigator/src/state/typed_router_state.dart';
 
 /// Plans `pushReplacement` and `replace`: a route in place of the top entry,
 /// pushed onto the entry below, as go_router's; with nothing below, the route
@@ -20,8 +20,8 @@ class TopReplacement {
 
   /// [current] with [route] in a new page in place of its top entry;
   /// [pendingResult] awaits it.
-  NavigationState replaced(
-    NavigationState current,
+  TypedRouterState replaced(
+    TypedRouterState current,
     TypedRoute<Object?> route, {
     PendingResult<Object?>? pendingResult,
   }) {
@@ -50,8 +50,8 @@ class TopReplacement {
 
   /// [current] with [route] shown in the top entry's page where that page
   /// can show it; else as [replaced]. With nothing below, as `go`.
-  NavigationState updated(
-    NavigationState current,
+  TypedRouterState updated(
+    TypedRouterState current,
     TypedRoute<Object?> route, {
     PendingResult<Object?>? pendingResult,
   }) {
@@ -67,6 +67,6 @@ class TopReplacement {
     };
   }
 
-  List<NavigationEntry> _belowTop(NavigationState current) =>
+  List<NavigationEntry> _belowTop(TypedRouterState current) =>
       current.entries.take(current.entries.length - 1).toList();
 }

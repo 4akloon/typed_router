@@ -22,7 +22,7 @@ void main() {
     entryLifecycle = RecordingEntryLifecycle();
   });
 
-  NavigationController controllerAt(NavigationState initialState) =>
+  NavigationController controllerAt(TypedRouterState initialState) =>
       NavigationController(
         initialState: initialState,
         framePhase: framePhase,
@@ -68,11 +68,11 @@ void main() {
     final roomsEntry = NavigationEntry(rooms);
     final roomEntry = NavigationEntry(room7);
     final controller = controllerAt(
-      NavigationState.fromEntries([roomsEntry, roomEntry]),
+      TypedRouterState.fromEntries([roomsEntry, roomEntry]),
     );
 
     controller.navigate(
-      NavigationState.fromEntries([roomsEntry, NavigationEntry(room7)]),
+      TypedRouterState.fromEntries([roomsEntry, NavigationEntry(room7)]),
     );
 
     expect(entryLifecycle.reports, [

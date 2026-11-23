@@ -81,7 +81,7 @@ class RouteNode<R extends TypedRoute<Object?>> extends TreeNode<NoParentRoute> {
   final TypedRoute<Object?>? Function(
     BuildContext context,
     R route,
-    NavigationState target,
+    TypedRouterState target,
   )?
   redirect;
 
@@ -108,7 +108,7 @@ class RouteNode<R extends TypedRoute<Object?>> extends TreeNode<NoParentRoute> {
   TypedRoute<Object?>? redirectFor(
     BuildContext context,
     TypedRoute<Object?> route,
-    NavigationState target,
+    TypedRouterState target,
   ) => switch (redirect) {
     final redirect? => redirect(context, route as R, target),
     null => null,

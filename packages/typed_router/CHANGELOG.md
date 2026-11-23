@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.9.0 - 2026-11-24
 
 - `RouteNode.onExit`, as go_router's `GoRoute.onExit`: asks before a page
   leaves the stack on screen, on every operation that removes it (`go`,

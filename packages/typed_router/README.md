@@ -74,7 +74,7 @@ TypedRouter.of(context).go(const RoomRoute(7)); // RoomsRoute() > RoomRoute(7)
 
 ```yaml
 dependencies:
-  typed_router: ^0.8.0
+  typed_router: ^0.9.0
 
 dev_dependencies:
   typed_router_test: ^0.8.0 # platform back in widget tests, optional

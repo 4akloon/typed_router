@@ -51,6 +51,8 @@ TypedRouter.of(context).go(const RoomRoute(7)); // RoomsRoute() > RoomRoute(7)
   `StatefulShellRoute`, with branches named by types.
 - **Platform back in nested navigators:** the back button, predictive
   back and the iOS swipe reach the page on screen, with `PopScope`.
+- **Ask before leaving:** `onExit` on a node, as go_router's, asked by
+  every operation that removes the page and by back.
 - **Behaves like `Navigator` and go_router**: the same operations
   (`go`, `push`, `pop`, `replace`, `pushReplacement`, `popUntil`,
   `pushAndRemoveUntil`) doing the same things.
@@ -159,7 +161,7 @@ key, and observers see the name. A custom transition: see
 | [Navigation](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/navigation.md) | `go`, `push`, `pop`, `replace`, `pushReplacement`, `popUntil`, `pushAndRemoveUntil`, typed results, reading the state. |
 | [Redirects](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/redirects.md) | The router's and the nodes' redirects, `refreshListenable`, errors. |
 | [Shells and tabs](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/shells_and_tabs.md) | `ShellNode`, `StatefulShellNode`, custom branch containers, navigator slots. |
-| [Back and gestures](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/back_and_gestures.md) | The back button, predictive back, the iOS swipe, `PopScope`, confirming before leaving. |
+| [Back and gestures](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/back_and_gestures.md) | The back button, predictive back, the iOS swipe, `PopScope`, `onExit`. |
 | [Page factories](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/page_factories.md) | Material, Cupertino, a custom transition, a factory per route. |
 | [Observers and analytics](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/observers.md) | `NavigatorObserver`s, node names, typed events. |
 | [Testing](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/testing.md) | Tests through the app, redirects, platform back, a fake router. |
@@ -170,8 +172,6 @@ key, and observers see the name. A custom transition: see
 
 - No URLs yet: no web address bar, browser history or path-based deep
   links. The app maps its links to routes and calls `go`.
-- No `onExit`: use `PopScope` and confirm before the screen's own
-  navigation.
 - No state restoration of the navigation stack.
 
 ## License

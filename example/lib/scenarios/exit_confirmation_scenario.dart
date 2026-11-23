@@ -9,14 +9,14 @@ import 'package:typed_router_example/support/router_demo.dart';
 
 const exitConfirmationScenario = Scenario(
   title: 'Exit confirmation',
-  summary: 'No onExit: the screen asks with PopScope and before its own go.',
+  summary: 'onExit on the draft: back and every go ask before it leaves.',
   instructions: [
     'Open the draft and type something: it has unsaved changes.',
-    'Press back (app bar, System back, Android back gesture): PopScope '
-        'asks first; "Stay" keeps the page, "Leave" pops it. The iOS swipe '
-        'is off while there are changes, as with the native Navigator.',
-    '"Go home" is the screen\'s own navigation: it asks the same before '
-        'calling go.',
+    'Press back (app bar, System back, Android back gesture): onExit asks; '
+        '"Stay" keeps the page, "Leave" pops it. The page takes no back '
+        'gesture, as with PopScope(canPop: false).',
+    '"Go home" is a plain go, as a deep link or another feature would '
+        'call it: onExit asks the same.',
     'With no changes, back and "Go home" leave at once.',
   ],
   build: _build,
@@ -24,24 +24,37 @@ const exitConfirmationScenario = Scenario(
 
 Widget _build(ScenarioFrame frame) => RouterDemo(
   frame: frame,
-  createRouter: () => TypedRouter(
-    routes: [
-      RouteNode<HomeRoute>(
-        build: (context, home) => DemoPage(
-          title: 'Home',
-          actions: [
-            DemoButton(
-              'open the draft',
-              onPressed: () => TypedRouter.of(context).push(const DraftRoute()),
-            ),
-          ],
+  createRouter: () {
+    final draft = _Draft();
+    return TypedRouter(
+      routes: [
+        RouteNode<HomeRoute>(
+          build: (context, home) => DemoPage(
+            title: 'Home',
+            actions: [
+              DemoButton(
+                'open the draft',
+                onPressed: () =>
+                    TypedRouter.of(context).push(const DraftRoute()),
+              ),
+            ],
+          ),
         ),
-      ),
-      RouteNode<DraftRoute>(build: (context, draft) => const _DraftPage()),
-    ],
-    initialRoute: const HomeRoute(),
-    pageFactory: const MaterialPageFactory(),
-  ),
+        RouteNode<DraftRoute>(
+          build: (context, route) => _DraftPage(draft),
+          onExit: (context, route, target) async =>
+              draft.text.isEmpty ||
+              (await showDialog<bool>(
+                    context: context,
+                    builder: _discardDialog,
+                  ) ??
+                  false),
+        ),
+      ],
+      initialRoute: const HomeRoute(),
+      pageFactory: const MaterialPageFactory(),
+    );
+  },
 );
 
 class HomeRoute extends TypedRoute<void> {
@@ -58,62 +71,55 @@ class DraftRoute extends TypedRoute<void> {
   List<Object?> get fields => const [];
 }
 
+/// The unsaved text, kept outside the screen so onExit can read it, as an
+/// app's draft service.
+class _Draft {
+  String text = '';
+}
+
+Widget _discardDialog(BuildContext context) => AlertDialog(
+  title: const Text('Discard the draft?'),
+  actions: [
+    TextButton(
+      onPressed: () => Navigator.pop(context, false),
+      child: const Text('Stay'),
+    ),
+    TextButton(
+      onPressed: () => Navigator.pop(context, true),
+      child: const Text('Leave'),
+    ),
+  ],
+);
+
 class _DraftPage extends StatefulWidget {
-  const _DraftPage();
+  const _DraftPage(this.draft);
+
+  final _Draft draft;
 
   @override
   State<_DraftPage> createState() => _DraftPageState();
 }
 
 class _DraftPageState extends State<_DraftPage> {
-  bool _hasChanges = false;
-
-  Future<bool> _confirmLeaving() async =>
-      !_hasChanges ||
-      (await showDialog<bool>(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: const Text('Discard the draft?'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child: const Text('Stay'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context, true),
-                  child: const Text('Leave'),
-                ),
-              ],
-            ),
-          ) ??
-          false);
-
-  Future<void> _onBackBlocked() async {
-    final isLeaving = await _confirmLeaving();
-    if (isLeaving && mounted) Navigator.pop(context);
-  }
-
-  Future<void> _goHome() async {
-    final isLeaving = await _confirmLeaving();
-    if (isLeaving && mounted) TypedRouter.of(context).go(const HomeRoute());
+  @override
+  void dispose() {
+    widget.draft.text = '';
+    super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => PopScope(
-    canPop: !_hasChanges,
-    onPopInvokedWithResult: (didPop, result) {
-      if (!didPop) _onBackBlocked();
-    },
-    child: DemoPage(
-      title: 'Draft',
-      text: _hasChanges ? 'Unsaved changes.' : 'No changes.',
-      actions: [
-        TextField(
-          decoration: const InputDecoration(hintText: 'Type to change'),
-          onChanged: (text) => setState(() => _hasChanges = text.isNotEmpty),
-        ),
-        DemoButton('Go home', onPressed: _goHome),
-      ],
-    ),
+  Widget build(BuildContext context) => DemoPage(
+    title: 'Draft',
+    text: widget.draft.text.isEmpty ? 'No changes.' : 'Unsaved changes.',
+    actions: [
+      TextField(
+        decoration: const InputDecoration(hintText: 'Type to change'),
+        onChanged: (text) => setState(() => widget.draft.text = text),
+      ),
+      DemoButton(
+        'Go home',
+        onPressed: () => TypedRouter.of(context).go(const HomeRoute()),
+      ),
+    ],
   );
 }

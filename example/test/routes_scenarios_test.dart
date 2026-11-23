@@ -82,6 +82,21 @@ void main() {
     expect(shownState(tester), 'HomeRoute()');
   });
 
+  testWidgets('a go from the changed draft asks onExit, and Stay keeps it', (
+    tester,
+  ) async {
+    await startScenario(tester, exitConfirmationScenario);
+    await tapLabel(tester, 'open the draft');
+    await tester.enterText(find.byType(TextField), 'text');
+    await tester.pump();
+
+    await tapLabel(tester, 'Go home');
+    expect(find.text('Discard the draft?'), findsOneWidget);
+    await tapLabel(tester, 'Stay');
+
+    expect(shownState(tester), 'HomeRoute() > DraftRoute()');
+  });
+
   testWidgets('signing in returns to the guarded route', (tester) async {
     await startScenario(tester, signInGuardScenario);
     await tapLabel(tester, 'open Admin');

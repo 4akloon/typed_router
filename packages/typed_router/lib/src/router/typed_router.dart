@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:typed_router/src/exit/confirmed_navigation.dart';
 import 'package:typed_router/src/operation/stack_operations.dart';
 import 'package:typed_router/src/page/navigator_observers.dart';
 import 'package:typed_router/src/page/navigator_pages.dart';
@@ -6,6 +7,7 @@ import 'package:typed_router/src/page/page_factory.dart';
 import 'package:typed_router/src/redirect/router_mount.dart';
 import 'package:typed_router/src/redirect/stack_recheck.dart';
 import 'package:typed_router/src/route/typed_route.dart';
+import 'package:typed_router/src/router/root_navigator.dart';
 import 'package:typed_router/src/router/router_parts.dart';
 import 'package:typed_router/src/router/slot_navigators.dart';
 import 'package:typed_router/src/router/top_route_pop.dart';
@@ -125,7 +127,9 @@ class TypedRouter implements RouterConfig<Object>, Listenable {
       _recheck = parts.recheck,
       _pages = parts.pages,
       _mount = parts.mount,
-      _observers = parts.observers {
+      _observers = parts.observers,
+      _rootNavigator = parts.rootNavigator,
+      _confirmed = parts.confirmed {
     _refreshListenable?.addListener(_recheck.recheck);
   }
 
@@ -136,6 +140,8 @@ class TypedRouter implements RouterConfig<Object>, Listenable {
   final NavigatorObservers _observers;
   final RouterMount _mount;
   final Listenable? _refreshListenable;
+  final RootNavigator _rootNavigator;
+  final ConfirmedNavigation _confirmed;
   final BackButtonDispatcher _backButtonDispatcher = RootBackButtonDispatcher();
   final SlotNavigators _slotNavigators = const SlotNavigators();
   late final TopRoutePop _topRoutePop = TopRoutePop(
@@ -150,6 +156,7 @@ class TypedRouter implements RouterConfig<Object>, Listenable {
     mount: _mount,
     recheck: _recheck,
     observers: _observers.root,
+    rootNavigator: _rootNavigator,
   );
 
   /// The router of the `MaterialApp.router` (or `WidgetsApp.router`) above
@@ -328,6 +335,7 @@ class TypedRouter implements RouterConfig<Object>, Listenable {
   /// again throws [StateError].
   void dispose() {
     _refreshListenable?.removeListener(_recheck.recheck);
+    _confirmed.dispose();
     _controller.dispose();
   }
 

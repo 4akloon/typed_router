@@ -50,44 +50,68 @@ are the app's first page, the swipe removes nothing.
 - `canPop: false` stops the back button, the predictive back gesture and
   the iOS swipe; `onPopInvokedWithResult` hears every attempt.
 - Router operations (`pop`, `go`, `popUntil` and the rest) do not ask
-  `PopScope`, as `Navigator.pop` does not. A screen that must confirm
-  before its own navigation asks before calling it.
+  `PopScope`, as `Navigator.pop` does not. To ask before them too, use
+  `onExit`.
 
-## Confirming before leaving
+## Confirming before leaving: `onExit`
 
-There is no `onExit`: the screen that owns the unsaved changes asks,
-with `PopScope` for back and before its own navigation:
+A screen that must not be left silently (an unsaved draft, a lobby the
+user is in) gets an `onExit` on its node, as go_router's `GoRoute.onExit`:
 
 ```dart
-class _DraftScreenState extends State<DraftScreen> {
-  bool _hasChanges = false;
-
-  Future<bool> _confirmLeaving() async =>
-      !_hasChanges ||
+RouteNode<DraftRoute>(
+  build: (context, draft) => const DraftScreen(),
+  onExit: (context, draft, target) async =>
+      drafts.isEmpty ||
       (await showDialog<bool>(
             context: context,
             builder: (context) => const DiscardDialog(),
           ) ??
-          false);
-
-  @override
-  Widget build(BuildContext context) => PopScope(
-    canPop: !_hasChanges,
-    onPopInvokedWithResult: (didPop, result) async {
-      if (didPop) return;
-      final navigator = Navigator.of(context);
-      if (await _confirmLeaving()) navigator.pop();
-    },
-    child: DraftForm(
-      onChanged: () => setState(() => _hasChanges = true),
-      onGoHome: () async {
-        final router = TypedRouter.of(context);
-        if (await _confirmLeaving()) router.go(const HomeRoute());
-      },
-    ),
-  );
-}
+          false),
+)
 ```
+
+`true` lets the navigation through, `false` stays. `context` is the root
+navigator's, so a dialog shows above everything; `target` is the state the
+navigation would show, after redirects.
+
+**Who asks.** Every operation that removes the page from the stack on
+screen: `go` (a deep link, a notification, another feature), `replace`,
+`pushReplacement`, `pop`, `popUntil`, `pushAndRemoveUntil` and a tab
+reset. Back asks too: the back button, predictive back,
+`Navigator.maybePop` and `BackButton`. The page then does not take the
+back gesture, as with `PopScope(canPop: false)`: no predictive preview, no
+iOS swipe. A dialog above the page closes first, without asking. Several
+pages leaving at once are asked from the top; the first `false` stops.
+
+**Who does not ask:**
+
+- `push` over the page and switching to another tab: the page stays.
+- A re-check of the stack (`refreshListenable`, `refresh()`): a sign-out
+  is not held by "Leave the draft?". go_router asks there.
+- A page in a branch not on screen that a `go` replaces, as in go_router.
+- `Navigator.pop(context)`, which skips `PopScope` too, and `dispose`.
+
+**The app's only page.** Back there asks `onExit` too, as in go_router,
+and the router closes the app on `true`. Such a page keeps back from the
+platform, so Android 14+ shows no back-to-home preview on it.
+
+**The page's own `PopScope`** decides first, as in go_router: with
+`canPop: false` it hears the attempt and `onExit` is not asked. With
+`canPop: true` it hears `didPop: false` while `onExit` is asked, then
+`didPop: true` when the page leaves.
+
+**A `Future`.** An `onExit` that returns a `bool` keeps the operation
+synchronous: `router.state` changes before the call returns. One that
+returns a `Future` makes the operation wait: the state stays, and `push`
+or `replace` complete later (with `null` when refused). A newer navigation
+while it waits wins, and the late answer is ignored. One that removes the
+same page does not ask again: it takes the open question, so a second
+back pops once. A re-check of the stack or a page popped outside the
+router drops the waiting one. When a waiting navigation commits, the
+router re-checks the stack as `refresh()` does, so a guard whose session
+changed meanwhile still wins. An `onExit` that throws is reported through
+`FlutterError.reportError` and counts as `false`.
 
 ## Back on the first page of a tab
 

@@ -272,9 +272,23 @@ WidgetsBinding.instance.addPostFrameCallback(
 
 ## Confirm before leaving a screen
 
-There is no `onExit`: the screen that has unsaved changes asks, with a
-`PopScope` for back and before its own navigation. See
-[Back and gestures](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/back_and_gestures.md#confirming-before-leaving).
+Give the node an `onExit`; back, `go` from anywhere and a tab reset all
+ask it:
+
+```dart
+RouteNode<DraftRoute>(
+  build: (context, draft) => const DraftScreen(),
+  onExit: (context, draft, target) async =>
+      drafts.isEmpty ||
+      (await showDialog<bool>(
+            context: context,
+            builder: (context) => const DiscardDialog(),
+          ) ??
+          false),
+)
+```
+
+See [Back and gestures](https://github.com/4akloon/typed_router/blob/main/packages/typed_router/doc/back_and_gestures.md#confirming-before-leaving-onexit).
 
 ## Toasts and overlays from a service
 

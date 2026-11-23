@@ -33,6 +33,7 @@ class RouteNode<R extends TypedRoute<Object?>> extends TreeNode<NoParentRoute> {
     this.redirect,
     this.parentNavigatorSlot,
     this.name,
+    this.onExit,
   });
 
   /// A stable name for analytics and crash reports: the name of this route's
@@ -88,6 +89,38 @@ class RouteNode<R extends TypedRoute<Object?>> extends TreeNode<NoParentRoute> {
   )?
   redirect;
 
+  /// Asks before a route of this node leaves the stack on screen: `true` lets
+  /// the navigation through, `false` stays. Optional; as go_router's
+  /// `GoRoute.onExit`.
+  ///
+  /// Asked before `go`, `replace`, `pushReplacement`, `pop`, `popUntil`,
+  /// `pushAndRemoveUntil` or a branch reset removes [route], and on back (the
+  /// back button, predictive back, `Navigator.maybePop`; on the only page,
+  /// `true` closes the app). The page then does
+  /// not take the back gesture, as with `PopScope(canPop: false)`; the page's
+  /// own `PopScope` decides first. Not asked when the router re-checks the
+  /// stack (`refreshListenable`, `TypedRouter.refresh`), for a route in a
+  /// branch not on screen, on `dispose`, or on `Navigator.pop(context)`,
+  /// which skips `PopScope` too. [target] is the state the navigation would
+  /// show, after redirects; [context] is the root navigator's.
+  ///
+  /// A `bool` keeps the navigation synchronous. A `Future` makes it wait,
+  /// and a newer navigation meanwhile wins: this answer is then ignored.
+  ///
+  /// ```dart
+  /// RouteNode<RoomRoute>(
+  ///   build: (context, room) => RoomScreen(id: room.id),
+  ///   onExit: (context, room, target) =>
+  ///       drafts.isEmpty(room.id) || confirmLeaving(context),
+  /// )
+  /// ```
+  final FutureOr<bool> Function(
+    BuildContext context,
+    R route,
+    TypedRouterState target,
+  )?
+  onExit;
+
   /// This node under a parent it builds itself from its own route.
   ///
   /// [P] comes from the `children` list the result is put in, so [parent]
@@ -115,6 +148,21 @@ class RouteNode<R extends TypedRoute<Object?>> extends TreeNode<NoParentRoute> {
   ) => switch (redirect) {
     final redirect? => redirect(context, route as R, target),
     null => null,
+  };
+
+  /// Whether this node has an [onExit].
+  @internal
+  bool get asksOnExit => onExit != null;
+
+  /// Runs [onExit] for [route], which is always an [R]; `true` without one.
+  @internal
+  FutureOr<bool> exitAnswerFor(
+    BuildContext context,
+    TypedRoute<Object?> route,
+    TypedRouterState target,
+  ) => switch (onExit) {
+    final onExit? => onExit(context, route as R, target),
+    null => true,
   };
 
   /// This node's [pageFactory], or [routerFactory] when it has none.

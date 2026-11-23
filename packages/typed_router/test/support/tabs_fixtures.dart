@@ -72,10 +72,7 @@ List<TreeNode<NoParentRoute>> tabsRoutes(
       ],
     ),
     redirect: redirect,
-    branches: [
-      roomsBranch(log),
-      friendsBranch(log),
-    ],
+    branches: [roomsBranch(log), friendsBranch(log)],
   ),
   RouteNode<AccountRoute>(build: (context, account) => const Text('Account')),
 ];

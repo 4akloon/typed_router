@@ -49,9 +49,7 @@ void main() {
     expect(observer.events.last, 'push pageless');
   });
 
-  testWidgets('the page of a node without a name has no name', (
-    tester,
-  ) async {
+  testWidgets('the page of a node without a name has no name', (tester) async {
     final observer = LogObserver();
     final router = await pumpObserved(tester, _routes(), rooms, observer);
 

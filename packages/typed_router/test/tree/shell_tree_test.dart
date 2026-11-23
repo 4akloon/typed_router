@@ -43,9 +43,7 @@ void main() {
   test('a route knows the shells around it, from the outer one in', () {
     final tree = RouteTree([usersShell]);
 
-    expect(tree.nestingsOf(const UsersRoute()), [
-      ShellNesting(usersShell),
-    ]);
+    expect(tree.nestingsOf(const UsersRoute()), [ShellNesting(usersShell)]);
     expect(tree.nestingsOf(const UserRoute('u1')), [
       ShellNesting(usersShell),
       ShellNesting(userShell),

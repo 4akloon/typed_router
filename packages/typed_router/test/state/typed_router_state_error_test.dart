@@ -27,10 +27,7 @@ void main() {
 
     expect(state.withError(error), isNot(state));
     expect(state.withError(error), state.withError(error));
-    expect(
-      state.withError(error).hashCode,
-      state.withError(error).hashCode,
-    );
+    expect(state.withError(error).hashCode, state.withError(error).hashCode);
   });
 
   test('toString shows the error after the routes', () {

@@ -23,11 +23,9 @@ class RouteTree {
         'The route tree has no nodes. Pass at least one RouteNode.',
       );
     }
-    TreeWalk(_registry).placeAll(
-      roots,
-      parent: null,
-      path: const NestingPath.top(),
-    );
+    TreeWalk(
+      _registry,
+    ).placeAll(roots, parent: null, path: const NestingPath.top());
   }
 
   final RouteRegistry _registry = RouteRegistry();

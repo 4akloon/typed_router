@@ -58,9 +58,6 @@ void main() {
       NavigationEntry(room7, levels: [second]),
     ]);
 
-    expect(
-      state.toString(),
-      '[RoomsRoute()] > [RoomRoute(RoomId(7))]',
-    );
+    expect(state.toString(), '[RoomsRoute()] > [RoomRoute(RoomId(7))]');
   });
 }

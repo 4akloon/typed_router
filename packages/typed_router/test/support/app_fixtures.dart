@@ -64,9 +64,7 @@ class TestPage extends Page<Object?> {
   Route<Object?> createRoute(BuildContext context) => PageRouteBuilder<Object?>(
     settings: this,
     pageBuilder: (context, animation, secondaryAnimation) =>
-        switch (ModalRoute.of(
-          context,
-        )?.settings) {
+        switch (ModalRoute.of(context)?.settings) {
           final TestPage page => page.child,
           _ => child,
         },

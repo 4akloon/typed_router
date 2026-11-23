@@ -32,9 +32,7 @@ void main() {
     final router = await pumpPushedOverAccount(
       tester,
       shellRoutes(FrameLog()),
-      [
-        users,
-      ],
+      [users],
     );
     await _pushFailingSheet(tester);
 
@@ -51,9 +49,7 @@ void main() {
     expect(find.text('Sheet'), findsOneWidget);
   });
 
-  testWidgets('the same error is reported through system back', (
-    tester,
-  ) async {
+  testWidgets('the same error is reported through system back', (tester) async {
     await pumpPushedOverAccount(tester, shellRoutes(FrameLog()), [users]);
     await _pushFailingSheet(tester);
 

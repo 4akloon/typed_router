@@ -69,9 +69,9 @@ void main() {
     final router = appRouter(rooms);
     await pumpWidgetsRouter(tester, router);
     var isClosed = false;
-    ModalRoute.of(tester.element(find.text('Rooms')))?.addLocalHistoryEntry(
-      LocalHistoryEntry(onRemove: () => isClosed = true),
-    );
+    ModalRoute.of(
+      tester.element(find.text('Rooms')),
+    )?.addLocalHistoryEntry(LocalHistoryEntry(onRemove: () => isClosed = true));
     await tester.pumpAndSettle();
 
     expect(router.canPop, isTrue);

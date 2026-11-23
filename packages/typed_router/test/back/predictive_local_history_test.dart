@@ -16,15 +16,13 @@ void main() {
     final router = await pumpPushedOverAccount(
       tester,
       shellRoutes(FrameLog()),
-      [
-        users,
-      ],
+      [users],
     );
     var isClosed = false;
     // What a drawer adds to the page's route when it opens.
-    ModalRoute.of(tester.element(find.text('Users')))?.addLocalHistoryEntry(
-      LocalHistoryEntry(onRemove: () => isClosed = true),
-    );
+    ModalRoute.of(
+      tester.element(find.text('Users')),
+    )?.addLocalHistoryEntry(LocalHistoryEntry(onRemove: () => isClosed = true));
     await tester.pumpAndSettle();
 
     await tester.predictiveBack();

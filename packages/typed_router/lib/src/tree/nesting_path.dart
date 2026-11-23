@@ -44,10 +44,7 @@ class NestingPath {
   NestingPath inside(Nesting nesting, NavigatorSlot? slot) => NestingPath._(
     List.unmodifiable([...guarding, nesting]),
     List.unmodifiable([...shown, nesting]),
-    Map.unmodifiable({
-      ..._slots,
-      ?slot: shown.length + 1,
-    }),
+    Map.unmodifiable({..._slots, ?slot: shown.length + 1}),
     _slotsBelowShown,
   );
 

@@ -15,10 +15,7 @@ void main() {
 
     final state = router.state;
 
-    expect(
-      state.toString(),
-      '[UsersRoute() > UserRoute(u1)] > AccountRoute()',
-    );
+    expect(state.toString(), '[UsersRoute() > UserRoute(u1)] > AccountRoute()');
     expect(state.routes, const [users, user1, account]);
     expect(state.top, account);
     expect(state.find<UserRoute>(), user1);

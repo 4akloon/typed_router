@@ -70,16 +70,14 @@ void main() {
     variant: TargetPlatformVariant.only(TargetPlatform.android),
   );
 
-  testWidgets(
-    'an iOS edge swipe removes the top page from the state',
-    (tester) async {
-      final router = await pumpRoomOverRooms(tester);
+  testWidgets('an iOS edge swipe removes the top page from the state', (
+    tester,
+  ) async {
+    final router = await pumpRoomOverRooms(tester);
 
-      await tester.iosEdgeSwipe();
+    await tester.iosEdgeSwipe();
 
-      expect(router.state.routes, const [rooms]);
-      expect(find.text('Rooms'), findsOneWidget);
-    },
-    variant: TargetPlatformVariant.only(TargetPlatform.iOS),
-  );
+    expect(router.state.routes, const [rooms]);
+    expect(find.text('Rooms'), findsOneWidget);
+  }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
 }
